@@ -1,0 +1,66 @@
+{
+  "$comment": "Shared config for the .claude/scripts/audit suite, consumed by verify-build.mjs and every individual linter. Severity controls whether a gate is a hard block (non-zero exit) or advisory (findings printed, exit 0). 'roots' lists where built/served output lives per stack; the orchestrator auto-detects the stack and the linters scan the matching root. Tune the copy lists below to the brand voice — they drive copy-lint.mjs.",
+  "severity": {
+    "$comment": "hard = blocks build, PR, and the Stop hook. soft = surfaces findings but does not block. Mixed-enforcement default per the dev-loop plan.",
+    "contrast-check": "hard",
+    "contrast-coverage": "soft",
+    "config-integrity": "hard",
+    "robots-policy": "hard",
+    "schema-injection": "hard",
+    "llms-txt": "hard",
+    "copy-lint": "soft",
+    "seo-meta": "soft",
+    "schema-lint": "soft",
+    "served-dom": "soft",
+    "token-drift": "soft"
+  },
+  "roots": {
+    "$comment": "Stack output locations. static = the deployable site dir; next = exported HTML if `next export`/`output: export` is used, plus the source tree for source-level checks. Globs are simple suffix/prefix matches, not full globbing.",
+    "static": { "served": "site", "source": "site" },
+    "next": { "served": "out", "source": "app" }
+  },
+  "htmlExtensions": [".html"],
+  "sourceExtensions": [".tsx", ".jsx", ".ts", ".js", ".mjs", ".css", ".md", ".mdx"],
+  "ignoreDirs": ["node_modules", ".next", ".git", "dist", "build", ".claude"],
+  "copy": {
+    "$comment": "copy-lint.mjs rules. bannedPhrases = generic marketing filler that is never acceptable. transitionPhrases = the First/Second/Third + First/Then/Finally structures. emDashMaxPer1000Words = density threshold above which em-dash usage is flagged as an AI-writing tell. contractions = flagged in formal brand copy; allowlist real exceptions (e.g. proper nouns) in contractionAllow.",
+    "bannedPhrases": [
+      "comprehensive solutions",
+      "take your business to the next level",
+      "cutting-edge",
+      "best-in-class",
+      "one-stop shop",
+      "seamless integration",
+      "leverage synergies",
+      "world-class solutions",
+      "unlock your potential",
+      "elevate your brand"
+    ],
+    "transitionPhrases": [
+      "first,",
+      "second,",
+      "third,",
+      "firstly",
+      "secondly",
+      "thirdly",
+      "first / second / third",
+      "first / then / finally",
+      "and finally,"
+    ],
+    "contractions": [
+      "don't", "doesn't", "didn't", "won't", "can't", "couldn't", "shouldn't",
+      "wouldn't", "isn't", "aren't", "wasn't", "weren't", "haven't", "hasn't",
+      "hadn't", "you're", "you'll", "you've", "we're", "we'll", "we've",
+      "they're", "they'll", "it's", "that's", "let's", "here's", "there's"
+    ],
+    "contractionAllow": [],
+    "emDashMaxPer1000Words": 4
+  },
+  "seo": {
+    "$comment": "seo-meta-lint.mjs thresholds.",
+    "metaDescriptionMin": 50,
+    "metaDescriptionMax": 160,
+    "titleMin": 15,
+    "titleMax": 65
+  }
+}

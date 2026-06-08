@@ -1,0 +1,240 @@
+'use client'
+
+// Template: a Formspree-backed contact form with honeypot + last-touch UTM
+// hidden fields. Adapt the visible fields, copy, and section markup to fit
+// the host project's design. The wiring (handleSubmit, populate effect,
+// hidden inputs, honeypot) should stay close to this shape.
+
+import { useState, useRef, useEffect, type FormEvent } from 'react'
+
+type FormStatus = 'idle' | 'submitting' | 'success' | 'error'
+
+// Replace with the project's actual options, or remove the select entirely.
+const TOPIC_OPTIONS = [
+  'General Inquiry',
+  'Sales Question',
+  'Support',
+  'Other',
+]
+
+// Read from env, fall back to the project's actual endpoint so the live site
+// works even if the env var is missing on the deployment.
+const FORM_ENDPOINT =
+  process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT || 'https://formspree.io/f/REPLACE_WITH_FORM_ID'
+
+const ATTRIBUTION_KEY = 'hm_attribution'
+const TRACKING_FIELDS = [
+  'utm_source',
+  'utm_medium',
+  'utm_campaign',
+  'utm_content',
+  'utm_term',
+  'gclid',
+  'msclkid',
+] as const
+
+function readStoredAttribution(): Record<string, string> {
+  try {
+    const raw = window.localStorage.getItem(ATTRIBUTION_KEY)
+    return raw ? JSON.parse(raw) : {}
+  } catch {
+    return {}
+  }
+}
+
+export function ContactForm() {
+  const [status, setStatus] = useState<FormStatus>('idle')
+  const formRef = useRef<HTMLFormElement>(null)
+
+  // Populate hidden tracking inputs from URL (current visit) with localStorage
+  // fallback (last persisted touch). Runs after hydration and during browser
+  // idle time so it never blocks paint or interaction.
+  useEffect(() => {
+    if (!formRef.current) return
+
+    const populate = () => {
+      const form = formRef.current
+      if (!form) return
+
+      const params = new URLSearchParams(window.location.search)
+      const stored = readStoredAttribution()
+
+      const externalReferrer =
+        document.referrer && !document.referrer.startsWith(window.location.origin)
+          ? document.referrer
+          : ''
+
+      const values: Record<string, string> = {
+        original_referrer: externalReferrer || stored.original_referrer || '',
+      }
+      for (const field of TRACKING_FIELDS) {
+        values[field] = params.get(field) || stored[field] || ''
+      }
+
+      for (const [name, value] of Object.entries(values)) {
+        const input = form.querySelector<HTMLInputElement>(`input[name="${name}"]`)
+        if (input) input.value = value
+      }
+    }
+
+    const idle = (window as Window & {
+      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number
+    }).requestIdleCallback
+
+    if (idle) {
+      idle(populate, { timeout: 1000 })
+    } else {
+      setTimeout(populate, 0)
+    }
+  }, [])
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setStatus('submitting')
+
+    try {
+      const res = await fetch(FORM_ENDPOINT, {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: new FormData(e.currentTarget),
+      })
+      if (res.ok) {
+        formRef.current?.reset()
+        setStatus('success')
+      } else {
+        setStatus('error')
+      }
+    } catch {
+      setStatus('error')
+    }
+  }
+
+  if (status === 'success') {
+    return (
+      <div role="alert" aria-live="polite">
+        <p>Thank you! We received your request.</p>
+        <p>Someone from our team will reach out to you shortly.</p>
+      </div>
+    )
+  }
+
+  return (
+    <form
+      ref={formRef}
+      onSubmit={handleSubmit}
+      aria-label="Contact form"
+      noValidate
+    >
+      {/* Honeypot — bots fill this, humans don't see it. Formspree drops any
+          submission with a non-empty _gotcha. */}
+      <input
+        type="text"
+        name="_gotcha"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className="hidden"
+      />
+
+      {/* Hidden tracking fields. Populated client-side from URL + localStorage
+          by the useEffect above. Don't add wrapper divs or rename — the
+          populate logic targets these by `name`. */}
+      <input type="hidden" name="utm_source" />
+      <input type="hidden" name="utm_medium" />
+      <input type="hidden" name="utm_campaign" />
+      <input type="hidden" name="utm_content" />
+      <input type="hidden" name="utm_term" />
+      <input type="hidden" name="gclid" />
+      <input type="hidden" name="msclkid" />
+      <input type="hidden" name="original_referrer" />
+
+      {/* Visible fields. UNCONTROLLED — no value/onChange. Submit reads them
+          via FormData. Adapt names, labels, and required flags to fit the
+          project. */}
+      <div>
+        <label htmlFor="contact-first-name">
+          First Name <span aria-hidden="true">*</span>
+        </label>
+        <input
+          id="contact-first-name"
+          name="firstName"
+          type="text"
+          required
+          autoComplete="given-name"
+          aria-required="true"
+        />
+      </div>
+
+      <div>
+        <label htmlFor="contact-last-name">
+          Last Name <span aria-hidden="true">*</span>
+        </label>
+        <input
+          id="contact-last-name"
+          name="lastName"
+          type="text"
+          required
+          autoComplete="family-name"
+          aria-required="true"
+        />
+      </div>
+
+      <div>
+        <label htmlFor="contact-phone">
+          Phone <span aria-hidden="true">*</span>
+        </label>
+        <input
+          id="contact-phone"
+          name="phone"
+          type="tel"
+          required
+          autoComplete="tel"
+          aria-required="true"
+        />
+      </div>
+
+      <div>
+        <label htmlFor="contact-email">Email</label>
+        <input
+          id="contact-email"
+          name="email"
+          type="email"
+          autoComplete="email"
+        />
+      </div>
+
+      <div>
+        <label htmlFor="contact-topic">Topic</label>
+        <select id="contact-topic" name="topic" defaultValue="">
+          <option value="">Select a topic</option>
+          {TOPIC_OPTIONS.map((opt) => (
+            <option key={opt} value={opt}>{opt}</option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label htmlFor="contact-message">Message</label>
+        <textarea
+          id="contact-message"
+          name="message"
+          rows={4}
+        />
+      </div>
+
+      {status === 'error' && (
+        <p role="alert" aria-live="assertive">
+          Something went wrong. Please try again or contact us directly.
+        </p>
+      )}
+
+      <button
+        type="submit"
+        disabled={status === 'submitting'}
+        aria-label="Submit form"
+      >
+        {status === 'submitting' ? 'Sending…' : 'Send'}
+      </button>
+    </form>
+  )
+}

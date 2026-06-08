@@ -1,0 +1,29 @@
+{
+  "$comment": "Contrast build gate manifest. Copy to accessibility/contrast.config.json in the generated site and fill in every real pairing and state. cssFiles auto-loads the site's CSS custom properties so token edits are checked against the live Style Guide; `tokens` is for inline overrides only. fg/bg accept a literal (#hex, rgb(), hsl(), named) or var(--token). Flags: large=true for >=18pt / >=14pt bold, ui=true for non-text (borders, icons, focus rings).",
+  "cssFiles": ["app/globals.css"],
+  "tokens": {},
+  "coverage": {
+    "$comment": "Used by contrast-coverage.mjs (the companion linter) to find color tokens used in the UI that no pairing above checks. sources = dirs/files to scan; ignoreTokens = colors intentionally left unpaired; failOnUncovered = true turns warnings into a build failure (default warns only).",
+    "sources": ["app", "components"],
+    "ignoreTokens": [],
+    "failOnUncovered": false
+  },
+  "pairs": [
+    { "name": "body text / page",        "fg": "var(--color-ink)",        "bg": "var(--color-bg)" },
+    { "name": "h1 / page",               "fg": "var(--color-heading)",    "bg": "var(--color-bg)",            "large": true },
+    { "name": "h2 / surface",            "fg": "var(--color-heading)",    "bg": "var(--color-surface)",       "large": true },
+    { "name": "muted / page",            "fg": "var(--color-muted)",      "bg": "var(--color-bg)" },
+    { "name": "link / page",             "fg": "var(--color-link)",       "bg": "var(--color-bg)" },
+    { "name": "link :hover / page",      "fg": "var(--color-link-hover)", "bg": "var(--color-bg)" },
+    { "name": "placeholder / input",     "fg": "var(--color-placeholder)","bg": "var(--color-input-bg)" },
+
+    { "name": "primary btn label",        "fg": "var(--color-on-primary)", "bg": "var(--color-primary)" },
+    { "name": "primary btn :hover",       "fg": "var(--color-on-primary)", "bg": "var(--color-primary-hover)" },
+    { "name": "primary btn :active",      "fg": "var(--color-on-primary)", "bg": "var(--color-primary-active)" },
+    { "name": "primary btn :disabled",    "fg": "var(--color-on-primary)", "bg": "var(--color-primary-disabled)" },
+    { "name": "primary btn border / page","fg": "var(--color-primary)",    "bg": "var(--color-bg)", "ui": true },
+
+    { "name": "focus ring / page",        "fg": "var(--color-focus)",      "bg": "var(--color-bg)", "ui": true },
+    { "name": "input border / bg",        "fg": "var(--color-border)",     "bg": "var(--color-bg)", "ui": true }
+  ]
+}

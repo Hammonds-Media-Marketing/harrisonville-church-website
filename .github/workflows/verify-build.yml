@@ -1,0 +1,24 @@
+# Runs the HMM build audit suite on every push and PR. A single run reports all
+# findings but exits non-zero only on a HARD gate (config integrity, color
+# contrast, JSON-LD injection, robots policy, llms.txt); soft gates (copy,
+# SEO-meta, schema validity, served-DOM, token-drift) print findings without
+# failing the build — mixed enforcement, matching the Stop hook. Stays green on
+# the bare template (every gate skips cleanly until a build exists).
+name: Verify Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build audit (hard gates block, soft gates report)
+        run: node .claude/scripts/audit/verify-build.mjs

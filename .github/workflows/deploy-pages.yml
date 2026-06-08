@@ -1,0 +1,55 @@
+# Deploys the static-HTML build to GitHub Pages from the site/ directory.
+# Only relevant for the static-html stack. Requirements:
+#   - Repo Settings -> Pages -> Build and deployment -> Source = GitHub Actions.
+# The job skips cleanly when site/ does not exist yet, so it stays green on the
+# base template and on Next.js builds (which deploy elsewhere).
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment; do not cancel an in-progress run.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for a static build
+        id: check
+        run: |
+          if [ -d site ]; then
+            echo 'exists=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'exists=false' >> "$GITHUB_OUTPUT"
+            echo '::notice::No site/ directory — skipping Pages deploy. Add a static-html build first.'
+          fi
+
+      - name: Configure Pages
+        if: steps.check.outputs.exists == 'true'
+        uses: actions/configure-pages@v5
+
+      - name: Upload site artifact
+        if: steps.check.outputs.exists == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy
+        id: deployment
+        if: steps.check.outputs.exists == 'true'
+        uses: actions/deploy-pages@v4
