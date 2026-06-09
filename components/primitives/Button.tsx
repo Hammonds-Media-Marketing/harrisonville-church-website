@@ -16,12 +16,14 @@ const base =
   'inline-flex items-center justify-center gap-2 font-body font-semibold rounded-full transition-colors duration-base ease-out disabled:cursor-not-allowed select-none text-center'
 
 const variants: Record<Variant, string> = {
+  // Primary CTA — beacon gold with deep-navy label, the dominant action color.
   primary:
-    'bg-primary-strong text-on-primary hover:bg-primary-hover active:bg-primary-active disabled:bg-primary-disabled disabled:text-on-primary-disabled',
+    'bg-secondary text-on-secondary shadow-sm hover:bg-secondary-hover active:bg-secondary-active disabled:bg-primary-disabled disabled:text-on-primary-disabled disabled:shadow-none',
+  // Secondary — lighthouse teal with white label.
   secondary:
-    'bg-secondary text-on-secondary hover:bg-secondary-hover active:bg-secondary-active disabled:bg-primary-disabled disabled:text-on-primary-disabled',
+    'bg-primary-strong text-on-primary shadow-sm hover:bg-primary-hover active:bg-primary-active disabled:bg-primary-disabled disabled:text-on-primary-disabled disabled:shadow-none',
   accent:
-    'bg-accent-strong text-on-accent hover:bg-primary-active active:bg-primary-active disabled:bg-primary-disabled disabled:text-on-primary-disabled',
+    'bg-accent-strong text-on-accent shadow-sm hover:bg-primary-active active:bg-primary-active disabled:bg-primary-disabled disabled:text-on-primary-disabled disabled:shadow-none',
   ghost:
     'bg-transparent text-primary-strong border border-border-strong hover:bg-surface active:bg-surface-2 disabled:text-muted disabled:border-border',
   link: 'bg-transparent text-link hover:text-link-hover underline underline-offset-4 rounded-sm px-0',

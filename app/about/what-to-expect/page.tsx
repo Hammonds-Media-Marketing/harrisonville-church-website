@@ -165,7 +165,7 @@ export default function WhatToExpectPage() {
           <p className="max-w-xl text-lg text-on-deep-muted">
             There is nothing left to be nervous about. We would love to save you a seat this Sunday.
           </p>
-          <Button href="/contact#contact-form" variant="secondary" size="lg">
+          <Button href="/contact#contact-form" variant="primary" size="lg">
             Let us know you are coming
           </Button>
         </Container>

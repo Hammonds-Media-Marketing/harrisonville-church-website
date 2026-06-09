@@ -99,7 +99,7 @@ export default function BibleStudyPage() {
             Request a study and a member will walk through the lessons with you, in person or over video, at whatever
             pace suits you.
           </p>
-          <Button href="/contact#request-bible-study" variant="secondary" size="lg">
+          <Button href="/contact#request-bible-study" variant="primary" size="lg">
             Request a Bible study
           </Button>
         </Container>

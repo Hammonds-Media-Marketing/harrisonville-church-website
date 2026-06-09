@@ -74,7 +74,7 @@ export default function EventsPage() {
           <p className="max-w-xl text-lg text-on-deep-muted">
             Reach out and we will let you know what is coming up, or follow along on Facebook.
           </p>
-          <Button href="/contact#contact-form" variant="secondary" size="lg">
+          <Button href="/contact#contact-form" variant="primary" size="lg">
             Get in touch
           </Button>
         </Container>

@@ -65,7 +65,7 @@ export default function StoriesPage() {
           <p className="max-w-xl text-lg text-on-deep-muted">
             Every member here was once a first-time visitor with questions. There is room for yours.
           </p>
-          <Button href="/about/what-to-expect" variant="secondary" size="lg">
+          <Button href="/about/what-to-expect" variant="primary" size="lg">
             Plan your visit
           </Button>
         </Container>
