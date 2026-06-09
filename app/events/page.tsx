@@ -1,0 +1,84 @@
+import type { Metadata } from 'next'
+import { buildMetadata } from '@/lib/seo'
+import { JsonLd, breadcrumbSchema, eventSchema, webPageSchema } from '@/lib/jsonld'
+import { Container, Section, SectionHeading } from '@/components/primitives/Layout'
+import { Button } from '@/components/primitives/Button'
+import { Breadcrumbs } from '@/components/blocks/Breadcrumbs'
+import { SampleNotice } from '@/components/blocks/SampleNotice'
+import { EventCard } from '@/components/blocks/cards'
+import { upcomingEvents } from '@/content/events'
+
+export const revalidate = 3600
+
+export const metadata: Metadata = buildMetadata({
+  title: 'Events & Gatherings',
+  description:
+    'Upcoming gatherings at the Harrisonville Church of Christ: gospel meetings, fellowship meals, Bible classes, and community outreach across Cass County.',
+  path: '/events',
+  ogTitle: 'What Is Happening at the Church',
+  ogDescription: 'Gospel meetings, shared meals, Bible classes, and outreach. Visitors are welcome at every gathering.',
+})
+
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Events', path: '/events' },
+]
+
+export default function EventsPage() {
+  const events = upcomingEvents()
+
+  return (
+    <>
+      <JsonLd
+        data={[
+          webPageSchema({ name: 'Events', description: metadata.description as string, path: '/events' }),
+          breadcrumbSchema(breadcrumbs),
+          ...events.map((e) =>
+            eventSchema({
+              name: e.title,
+              description: e.summary,
+              slug: e.slug,
+              startDate: e.startDate,
+              endDate: e.endDate,
+            })
+          ),
+        ]}
+      />
+
+      <Section tone="surface">
+        <Container>
+          <Breadcrumbs crumbs={breadcrumbs} />
+          <SectionHeading
+            as="h1"
+            eyebrow="Calendar"
+            title="Upcoming events and gatherings"
+            lead="Beyond Sunday and Wednesday worship, the congregation gathers for study, fellowship, and service in the community. Guests are welcome at all of it, with no expectation to take part."
+          />
+        </Container>
+      </Section>
+
+      <Section tone="light">
+        <Container>
+          <SampleNotice label="The events below are placeholders." />
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {events.map((e) => (
+              <EventCard key={e.slug} event={e} />
+            ))}
+          </div>
+        </Container>
+      </Section>
+
+      <Section tone="deep">
+        <Container className="flex flex-col items-center gap-5 text-center">
+          <h2 className="text-3xl text-on-deep">Want a reminder before the next gathering?</h2>
+          <p className="max-w-xl text-lg text-on-deep-muted">
+            Reach out and we will let you know what is coming up, or follow along on Facebook.
+          </p>
+          <Button href="/contact#contact-form" variant="secondary" size="lg">
+            Get in touch
+          </Button>
+        </Container>
+      </Section>
+    </>
+  )
+}

@@ -22,8 +22,8 @@ import { testimonials } from '@/content/testimonials'
 export const dynamic = 'force-static'
 
 export const metadata: Metadata = buildMetadata({
-  title: 'Simple, Scripture-Based Worship in Harrisonville, MO',
-  rawTitle: false,
+  title: 'Harrisonville Church of Christ | Bible-Based Worship',
+  rawTitle: true,
   description:
     'Harrisonville Church of Christ welcomes Cass County to simple, Scripture-based worship and open Bible study. Visit with no pressure. No creed but the Bible.',
   path: '/',

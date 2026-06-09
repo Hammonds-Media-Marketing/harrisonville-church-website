@@ -1,0 +1,175 @@
+import type { Metadata } from 'next'
+import { buildMetadata } from '@/lib/seo'
+import { JsonLd, breadcrumbSchema, faqSchema, webPageSchema } from '@/lib/jsonld'
+import { Container, Section, SectionHeading } from '@/components/primitives/Layout'
+import { Surface } from '@/components/primitives/Surface'
+import { Button } from '@/components/primitives/Button'
+import { Breadcrumbs } from '@/components/blocks/Breadcrumbs'
+import { Faq } from '@/components/blocks/Faq'
+import { CheckIcon } from '@/components/ui/icons'
+import { visitFaqs } from '@/content/faqs'
+import { PRIMARY_CTA, site } from '@/lib/site'
+
+export const dynamic = 'force-static'
+
+export const metadata: Metadata = buildMetadata({
+  title: 'What to Expect on a Visit',
+  description:
+    'A plain walkthrough of a Sunday at the Harrisonville Church of Christ: where to park, what worship includes, and why you are never put on the spot.',
+  path: '/about/what-to-expect',
+  ogTitle: 'Your First Visit, With No Surprises',
+  ogDescription:
+    'Parking, timing, what a service includes, and what will never happen to you as a guest. Everything you need to walk in at ease.',
+})
+
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'About', path: '/about' },
+  { name: 'What to Expect', path: '/about/what-to-expect' },
+]
+
+const steps = [
+  {
+    title: 'Arriving and parking',
+    body: 'There is parking at the building on Outlook Drive. Come a few minutes early if you can. Someone near the entrance will greet you and can show you where to go, or you are welcome to find a seat on your own.',
+  },
+  {
+    title: 'Finding a seat',
+    body: 'Sit anywhere. There are no reserved sections and no expectation about where guests sit. Many visitors choose a seat toward the back for the first week, and that is completely fine.',
+  },
+  {
+    title: 'The worship itself',
+    body: 'Sunday morning worship lasts about an hour. It includes congregational singing without instruments, prayers, the Lord’s Supper, a sermon from the Bible, and a collection that is for members. As a guest, you simply observe.',
+  },
+  {
+    title: 'Bible classes',
+    body: 'Before or alongside worship there are Bible classes for different ages, where people study a passage together and discuss it. You are welcome to join a class or to skip it on your first visit.',
+  },
+  {
+    title: 'After the service',
+    body: 'When the assembly ends, members are glad to answer questions, but no one will corner you. You are free to slip out quietly or to stay and talk, whichever you prefer.',
+  },
+]
+
+const wontHappen = [
+  'You will not be asked to stand up or introduce yourself.',
+  'You will not be singled out as a visitor in front of the room.',
+  'You will not be pressured to give money or sign anything.',
+  'You will not face a public altar call or be put on the spot.',
+]
+
+export default function WhatToExpectPage() {
+  return (
+    <>
+      <JsonLd
+        data={[
+          webPageSchema({ name: 'What to Expect', description: metadata.description as string, path: '/about/what-to-expect' }),
+          breadcrumbSchema(breadcrumbs),
+          faqSchema(visitFaqs),
+        ]}
+      />
+
+      <Section tone="surface">
+        <Container>
+          <Breadcrumbs crumbs={breadcrumbs} />
+          <SectionHeading
+            as="h1"
+            eyebrow="Planning your visit"
+            title="What a first visit actually looks like"
+            lead="The fear of the unknown keeps a lot of good people standing at the door. Here is exactly what happens on a Sunday, so you can walk in already knowing what to expect."
+          />
+          <div className="flex flex-wrap gap-3">
+            <Button href={PRIMARY_CTA.href} size="lg">
+              {PRIMARY_CTA.label}
+            </Button>
+            <Button href="/contact#contact-form" variant="ghost" size="lg">
+              Ask a question first
+            </Button>
+          </div>
+        </Container>
+      </Section>
+
+      {/* Reassurance */}
+      <Section tone="light">
+        <Container>
+          <div className="grid gap-8 lg:grid-cols-2 lg:items-start">
+            <div>
+              <h2 className="text-2xl">What will never happen to you here</h2>
+              <p className="mt-2 text-muted">
+                For many people the real worry is being embarrassed. We take that seriously, so here is our promise.
+              </p>
+              <ul className="mt-5 flex flex-col gap-3">
+                {wontHappen.map((item) => (
+                  <li key={item} className="flex items-start gap-3">
+                    <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-success text-on-status">
+                      <CheckIcon className="h-4 w-4" />
+                    </span>
+                    <span className="text-ink">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <Surface tone="panel" className="flex flex-col gap-3">
+              <h2 className="text-2xl">When to come</h2>
+              <ul className="flex flex-col gap-3">
+                {site.services.map((s) => (
+                  <li key={s.id} className="flex items-center justify-between gap-4 border-b border-border/50 pb-3 last:border-0 last:pb-0">
+                    <span className="font-display text-xl text-heading">{s.label}</span>
+                    <span className="font-semibold text-primary-strong">
+                      {s.day}, {s.timeDisplay}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <p className="text-muted">
+                {site.address.street}, {site.address.city}, {site.address.region} {site.address.postalCode}
+              </p>
+            </Surface>
+          </div>
+        </Container>
+      </Section>
+
+      {/* Step-by-step */}
+      <Section tone="surface">
+        <Container>
+          <SectionHeading eyebrow="Step by step" title="Walking through a Sunday morning" />
+          <ol className="flex flex-col gap-4">
+            {steps.map((step, i) => (
+              <li key={step.title}>
+                <Surface tone="card" className="flex items-start gap-4">
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary-strong font-display text-lg text-on-primary">
+                    {i + 1}
+                  </span>
+                  <div>
+                    <h3 className="text-xl">{step.title}</h3>
+                    <p className="mt-1 text-ink">{step.body}</p>
+                  </div>
+                </Surface>
+              </li>
+            ))}
+          </ol>
+        </Container>
+      </Section>
+
+      {/* FAQ */}
+      <Section tone="light">
+        <Container prose>
+          <SectionHeading align="center" eyebrow="Common questions" title="Questions visitors ask most" />
+          <Faq items={visitFaqs} />
+        </Container>
+      </Section>
+
+      <Section tone="deep">
+        <Container className="flex flex-col items-center gap-5 text-center">
+          <h2 className="text-3xl text-on-deep">Now that you know what to expect</h2>
+          <p className="max-w-xl text-lg text-on-deep-muted">
+            There is nothing left to be nervous about. We would love to save you a seat this Sunday.
+          </p>
+          <Button href="/contact#contact-form" variant="secondary" size="lg">
+            Let us know you are coming
+          </Button>
+        </Container>
+      </Section>
+    </>
+  )
+}

@@ -43,7 +43,9 @@ export function buildMetadata(input: SeoInput): Metadata {
     : DEFAULT_OG_IMAGE
 
   return {
-    title,
+    // Absolute title so the root layout's title.template does not append the
+    // brand name a second time (buildMetadata already controls the suffix).
+    title: { absolute: title },
     description: input.description,
     alternates: { canonical },
     robots: input.noindex
