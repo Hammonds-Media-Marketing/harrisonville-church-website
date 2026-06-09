@@ -1,0 +1,56 @@
+{
+  "$comment": "WCAG contrast build gate for Harrisonville Church of Christ. cssFiles loads the live Style Guide tokens from app/globals.css so token edits are checked against real values. Every interactive state and every text/UI pairing the site actually uses is listed. Thresholds: text 4.5, large (>=18pt / 14pt bold) 3.0, ui (borders/icons/focus) 3.0. accessibility overrides brand color.",
+  "cssFiles": ["app/globals.css"],
+  "tokens": {},
+  "coverage": {
+    "sources": ["app", "components"],
+    "ignoreTokens": ["--brand-teal", "--brand-navy", "--brand-green", "--brand-gold"],
+    "failOnUncovered": false
+  },
+  "pairs": [
+    { "name": "body / page", "fg": "var(--color-ink)", "bg": "var(--color-bg)" },
+    { "name": "body / surface", "fg": "var(--color-ink)", "bg": "var(--color-surface)" },
+    { "name": "body / surface-2", "fg": "var(--color-ink)", "bg": "var(--color-surface-2)" },
+    { "name": "heading / page", "fg": "var(--color-heading)", "bg": "var(--color-bg)", "large": true },
+    { "name": "heading / surface", "fg": "var(--color-heading)", "bg": "var(--color-surface)", "large": true },
+    { "name": "muted / page", "fg": "var(--color-muted)", "bg": "var(--color-bg)" },
+    { "name": "muted / surface", "fg": "var(--color-muted)", "bg": "var(--color-surface)" },
+
+    { "name": "on-deep / navy", "fg": "var(--color-on-deep)", "bg": "var(--color-surface-deep)" },
+    { "name": "on-deep / navy-2", "fg": "var(--color-on-deep)", "bg": "var(--color-surface-deep-2)" },
+    { "name": "on-deep-muted / navy", "fg": "var(--color-on-deep-muted)", "bg": "var(--color-surface-deep)" },
+    { "name": "heading on navy", "fg": "var(--color-on-deep)", "bg": "var(--color-surface-deep)", "large": true },
+
+    { "name": "link / page", "fg": "var(--color-link)", "bg": "var(--color-bg)" },
+    { "name": "link / surface", "fg": "var(--color-link)", "bg": "var(--color-surface)" },
+    { "name": "link :hover / page", "fg": "var(--color-link-hover)", "bg": "var(--color-bg)" },
+
+    { "name": "primary btn label", "fg": "var(--color-on-primary)", "bg": "var(--color-primary-strong)" },
+    { "name": "primary btn :hover", "fg": "var(--color-on-primary)", "bg": "var(--color-primary-hover)" },
+    { "name": "primary btn :active", "fg": "var(--color-on-primary)", "bg": "var(--color-primary-active)" },
+    { "name": "primary btn :disabled", "fg": "var(--color-on-primary-disabled)", "bg": "var(--color-primary-disabled)" },
+    { "name": "primary accent / page", "fg": "var(--color-primary)", "bg": "var(--color-bg)", "ui": true },
+    { "name": "primary accent text-lg / page", "fg": "var(--color-primary)", "bg": "var(--color-bg)", "large": true },
+
+    { "name": "secondary btn label", "fg": "var(--color-on-secondary)", "bg": "var(--color-secondary)" },
+    { "name": "secondary btn :hover", "fg": "var(--color-on-secondary)", "bg": "var(--color-secondary-hover)" },
+    { "name": "secondary btn :active", "fg": "var(--color-on-secondary)", "bg": "var(--color-secondary-active)" },
+    { "name": "secondary on navy / ui", "fg": "var(--color-secondary)", "bg": "var(--color-surface-deep)", "ui": true },
+
+    { "name": "accent btn label", "fg": "var(--color-on-accent)", "bg": "var(--color-accent-strong)" },
+    { "name": "accent text / page", "fg": "var(--color-accent-strong)", "bg": "var(--color-bg)" },
+
+    { "name": "placeholder / input", "fg": "var(--color-placeholder)", "bg": "var(--color-input-bg)" },
+    { "name": "input border / page", "fg": "var(--color-border)", "bg": "var(--color-bg)", "ui": true },
+    { "name": "input border-strong / page", "fg": "var(--color-border-strong)", "bg": "var(--color-bg)", "ui": true },
+    { "name": "border / surface", "fg": "var(--color-border)", "bg": "var(--color-surface)", "ui": true },
+    { "name": "focus ring / page", "fg": "var(--color-focus)", "bg": "var(--color-bg)", "ui": true },
+    { "name": "focus ring / surface", "fg": "var(--color-focus)", "bg": "var(--color-surface)", "ui": true },
+
+    { "name": "success text / surface", "fg": "var(--color-success)", "bg": "var(--color-success-surface)" },
+    { "name": "success label", "fg": "var(--color-on-status)", "bg": "var(--color-success)" },
+    { "name": "error text / surface", "fg": "var(--color-error)", "bg": "var(--color-error-surface)" },
+    { "name": "error label", "fg": "var(--color-on-status)", "bg": "var(--color-error)" },
+    { "name": "warning text / page", "fg": "var(--color-warning)", "bg": "var(--color-bg)" }
+  ]
+}
