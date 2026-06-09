@@ -135,7 +135,7 @@ export default function HomePage() {
                 title="When and where we gather"
                 lead="There is parking at the building. Come a few minutes early, and a member near the door will help you find your way."
               />
-              <Button href={PRIMARY_CTA.href} variant="secondary" className="w-fit">
+              <Button href={PRIMARY_CTA.href} variant="primary" className="w-fit">
                 {PRIMARY_CTA.label}
               </Button>
             </div>
@@ -307,7 +307,7 @@ export default function HomePage() {
             takes you seriously too.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
-            <Button href={PRIMARY_CTA.href} variant="secondary" size="lg">
+            <Button href={PRIMARY_CTA.href} variant="primary" size="lg">
               {PRIMARY_CTA.label}
             </Button>
             <Button href="/contact" variant="ghost" size="lg" className="border-on-deep-muted/50 text-on-deep hover:bg-surface-deep-2">

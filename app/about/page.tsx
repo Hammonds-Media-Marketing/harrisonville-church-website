@@ -131,7 +131,7 @@ export default function AboutPage() {
             The best way to understand a congregation is to sit with it. You are welcome any Sunday, with no pressure
             and no spotlight.
           </p>
-          <Button href={PRIMARY_CTA.href} variant="secondary" size="lg">
+          <Button href={PRIMARY_CTA.href} variant="primary" size="lg">
             {PRIMARY_CTA.label}
           </Button>
         </Container>
