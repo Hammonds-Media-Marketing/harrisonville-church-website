@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Harrisonville Church of Christ lighthouse mark">
+  <rect width="64" height="64" rx="14" fill="#0b2538"/>
+  <circle cx="44" cy="22" r="6" fill="#ffcf5e"/>
+  <polygon points="44,22 64,14 64,30" fill="#ffcf5e" opacity="0.5"/>
+  <path d="M27 24 L37 24 L40 50 L24 50 Z" fill="#ffffff"/>
+  <rect x="25" y="33" width="14" height="5" fill="#008bbb"/>
+  <path d="M26 20 L38 20 L32 13 Z" fill="#0b2538" stroke="#ffffff" stroke-width="1.5"/>
+  <path d="M0 52 Q16 47 32 52 T64 52 L64 64 L0 64 Z" fill="#008bbb"/>
+</svg>

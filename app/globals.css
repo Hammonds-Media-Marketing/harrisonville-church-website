@@ -1,0 +1,237 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================================
+   Harrisonville Church of Christ — Design Tokens (single source of truth)
+   Aesthetic: "Coastal Beacon" — deep harbor navy + lighthouse teal, with a
+   warm gold beacon accent and a living-water green. Every color, type, space,
+   radius, and shadow value the site uses is defined here so one edit restyles
+   the whole build. Components consume these via Tailwind utilities or var().
+   Color choices are verified against the WCAG contrast gate
+   (accessibility/contrast.config.json) — accessibility overrides brand values.
+   ============================================================================ */
+
+:root {
+  /* --- Brand raw (reference only; UI consumes the semantic roles below) --- */
+  --brand-teal: #008bbb;
+  --brand-navy: #13314f;
+  --brand-green: #5f9023;
+  --brand-gold: #ffcf5e;
+
+  /* --- Surfaces --- */
+  --color-bg: #ffffff;
+  --color-surface: #f1f6f9;        /* pale sea-mist panel on light */
+  --color-surface-2: #e3edf2;      /* slightly deeper panel */
+  --color-surface-deep: #0b2538;   /* deep harbor navy — dark sections */
+  --color-surface-deep-2: #0f3251; /* lifted navy panel on dark */
+
+  /* --- Text on light --- */
+  --color-ink: #16293b;            /* body copy */
+  --color-heading: #0a1f31;        /* headings */
+  --color-muted: #4c5f70;          /* secondary / supporting text */
+
+  /* --- Text on deep navy --- */
+  --color-on-deep: #eef5f9;        /* body on navy */
+  --color-on-deep-muted: #a7c3d4;  /* muted on navy */
+
+  /* --- Links --- */
+  --color-link: #0a6c8c;
+  --color-link-hover: #064f68;
+
+  /* --- Primary action: lighthouse teal --- */
+  --color-primary: #008bbb;            /* brand accent: borders, large text, icons */
+  --color-primary-strong: #015f84;     /* button fill (white label) */
+  --color-primary-hover: #014c6a;
+  --color-primary-active: #013b54;
+  --color-primary-disabled: #c3d4dc;   /* light fill, dimmed */
+  --color-on-primary: #ffffff;
+  --color-on-primary-disabled: #2b4456;/* navy label on disabled fill */
+
+  /* --- Secondary action: beacon gold (navy label) --- */
+  --color-secondary: #ffcf5e;
+  --color-secondary-hover: #f3bd3a;
+  --color-secondary-active: #e0a91d;
+  --color-on-secondary: #281f04;
+
+  /* --- Accent: living-water green --- */
+  --color-accent: #5f9023;
+  --color-accent-strong: #4a7118;      /* button fill (white label) */
+  --color-on-accent: #ffffff;
+
+  /* --- Forms --- */
+  --color-input-bg: #ffffff;
+  --color-border: #728c9a;             /* >= 3:1 on white & surface (non-text contrast) */
+  --color-border-strong: #5d7280;
+  --color-placeholder: #5b6e7b;        /* >= 4.5:1 on input bg */
+  --color-focus: #015f84;              /* focus ring */
+
+  /* --- Feedback --- */
+  --color-success: #2c6e2f;
+  --color-success-surface: #e8f3e8;
+  --color-error: #b3261e;
+  --color-error-surface: #fbeae9;
+  --color-warning: #8a5a00;
+  --color-on-status: #ffffff;
+
+  /* --- Typography --- */
+  --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-body: var(--font-source-serif), "Source Serif 4", Georgia, serif;
+
+  /* Modular type scale (1.25 major third), rem-based */
+  --text-xs: 0.79rem;
+  --text-sm: 0.889rem;
+  --text-base: 1rem;
+  --text-md: 1.125rem;
+  --text-lg: 1.266rem;
+  --text-xl: 1.602rem;
+  --text-2xl: 2.027rem;
+  --text-3xl: 2.566rem;
+  --text-4xl: 3.247rem;
+  --text-5xl: 4.108rem;
+
+  --leading-tight: 1.15;
+  --leading-snug: 1.3;
+  --leading-normal: 1.6;
+  --leading-relaxed: 1.75;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* --- Spacing scale (8px base) --- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+  --space-10: 8rem;
+
+  /* --- Radii --- */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-xl: 28px;
+  --radius-full: 999px;
+
+  /* --- Shadows / elevation --- */
+  --shadow-sm: 0 1px 2px rgba(10, 31, 49, 0.08);
+  --shadow-md: 0 6px 18px rgba(10, 31, 49, 0.1);
+  --shadow-lg: 0 18px 40px rgba(10, 31, 49, 0.16);
+  --shadow-glow: 0 0 48px rgba(255, 207, 94, 0.45);
+
+  /* --- Layout --- */
+  --container-max: 1200px;
+  --container-prose: 720px;
+
+  /* --- Z-index scale --- */
+  --z-base: 0;
+  --z-sticky: 100;
+  --z-header: 200;
+  --z-overlay: 300;
+  --z-modal: 400;
+  --z-toast: 500;
+
+  /* --- Motion --- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast: 150ms;
+  --duration-base: 280ms;
+  --duration-slow: 600ms;
+}
+
+/* ----------------------------------------------------------------------------
+   Base element styling — consumes tokens only.
+   ---------------------------------------------------------------------------- */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--text-md);
+  line-height: var(--leading-normal);
+  font-weight: var(--weight-regular);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  color: var(--color-heading);
+  line-height: var(--leading-tight);
+  font-weight: var(--weight-semibold);
+  margin: 0 0 var(--space-4);
+  letter-spacing: -0.01em;
+}
+
+p {
+  margin: 0 0 var(--space-4);
+}
+
+a {
+  color: var(--color-link);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+a:hover {
+  color: var(--color-link-hover);
+}
+
+/* Visible focus for every interactive element — applied once, inherited everywhere. */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Skip link target reset */
+:target {
+  scroll-margin-top: 6rem;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Utility: visually hidden but available to assistive tech */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
