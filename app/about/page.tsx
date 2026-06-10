@@ -63,9 +63,37 @@ export default function AboutPage() {
         </Container>
       </Section>
 
+      {/* Welcome — written by the congregation's evangelist */}
       <Section tone="light">
         <Container prose>
-          <h2 className="text-2xl">What kind of church is this?</h2>
+          <h2 className="text-2xl">A welcome from the congregation</h2>
+          <p>
+            We are the Harrisonville church of Christ, a community of Christians in Harrisonville, Missouri devoted to
+            following true Christianity as revealed in the New Testament Scriptures. We believe that Jesus Christ is
+            the only Savior and hope for the world, and it is our passion to share His Gospel locally and abroad.
+          </p>
+          <p>
+            We are committed to speaking where the Bible speaks and being silent where the Bible is silent (1 Peter
+            4:11). We are not ashamed of the Gospel of Christ, for it is the power of God unto salvation to everyone
+            who believes (Romans 1:16). We believe God has revealed His will through the New Testament, and we seek to
+            answer all questions regarding salvation, the church, and worship by that inspired Word. In all things, we
+            give precedence to Holy Scripture as inspired and inerrant, above every preference, creed, and tradition
+            of man, resting on our belief that God&rsquo;s Word contains &ldquo;all things that pertain to life and
+            godliness&rdquo; (2 Peter 1:3).
+          </p>
+          <p>
+            Coming from many different backgrounds and walks of life, we come together as God&rsquo;s spiritual
+            family. We strive to serve God, encourage one another, and love our neighbors in an atmosphere of
+            kindness, support, and spiritual growth.
+          </p>
+          <p>
+            The Harrisonville church of Christ is made up of people of all ages and life stages, united by faith in
+            Jesus Christ and love for one another (Ephesians 4:11&ndash;15). <strong>But we are missing&mdash;you.</strong> We
+            invite you to <Link href="/about/what-to-expect">join us for worship</Link>, or to{' '}
+            <Link href="/contact">let us know how we can serve you</Link> in your spiritual journey.
+          </p>
+
+          <h2 className="mt-7 text-2xl">What kind of church is this?</h2>
           <p>
             A Church of Christ is a local congregation that aims to follow the New Testament pattern for the church
             without later additions. There is no headquarters, no denominational hierarchy, and no central office that
