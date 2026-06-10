@@ -51,6 +51,62 @@ const steps = [
   },
 ]
 
+/* Worship explanations written by the congregation's evangelist. */
+const worshipActs = [
+  {
+    title: 'Prayer',
+    body: 'Prayer is God’s appointed means of praising Him, giving thanks, interceding for others, and seeking His guidance (Philippians 4:6; Matthew 6:9–13; 1 Timothy 2:8).',
+  },
+  {
+    title: 'Singing',
+    body: 'We are instructed to “sing and make melody in your heart to the Lord” (Ephesians 5:19; Colossians 3:16). In our assemblies, the whole congregation joins together in vocal praise to God.',
+  },
+  {
+    title: 'Teaching',
+    body: 'Each service includes “the public reading of Scripture, exhortation, and teaching” (1 Timothy 4:13). This is done in an orderly manner (1 Corinthians 14:40), with the goal of instruction, encouragement, and spiritual growth.',
+  },
+  {
+    title: 'Communion',
+    body: 'Each Sunday morning, the members of the congregation partake of the Lord’s Supper following the pattern given by Christ on the night He was betrayed (1 Corinthians 11:23–26; Matthew 26:26–29). This solemn memorial proclaims the Lord’s death and expresses our unity as His body. Scripture calls each participant to examine themselves and partake with reverence (1 Corinthians 11:27–29).',
+  },
+  {
+    title: 'Collection',
+    body: 'The New Testament church is supported by the free-will offerings of its members. On the first day of every week, each member lays by in store as they have been prospered (1 Corinthians 16:1–2). These contributions support gospel preaching, care for needy saints, and the work of qualified servants such as elders and evangelists. This act of giving is for members of the congregation and is not a solicitation of visitors.',
+  },
+]
+
+const serviceOrders = [
+  {
+    heading: 'Sunday 10:00 AM',
+    items: [
+      'Opening announcements and prayer',
+      'Song service',
+      'Prayer',
+      'Song',
+      'Communion',
+      'Collection',
+      'Lesson',
+      'Invitation',
+      'Closing announcements',
+      'Closing song',
+      'Dismissal prayer',
+    ],
+  },
+  {
+    heading: 'Sunday 2:00 PM and Wednesday 7:30 PM',
+    items: [
+      'Opening announcements and prayer',
+      'Song service',
+      'Prayer',
+      'Song',
+      'Lesson',
+      'Invitation',
+      'Closing announcements',
+      'Closing prayer',
+    ],
+  },
+]
+
 const wontHappen = [
   'You will not be asked to stand up or introduce yourself.',
   'You will not be singled out as a visitor in front of the room.',
@@ -148,6 +204,52 @@ export default function WhatToExpectPage() {
               </li>
             ))}
           </ol>
+        </Container>
+      </Section>
+
+      {/* Worship, explained — written by the congregation's evangelist */}
+      <Section tone="light">
+        <Container>
+          <SectionHeading
+            eyebrow="Worship, explained"
+            title="What does each part of worship mean?"
+            lead="Our worship services are a time for Christians to assemble together to glorify God and encourage one another (1 Corinthians 14:23), with the goal that all may learn and be strengthened in faith (1 Corinthians 14:26, 31). Here is what each part is, and the Scripture behind it."
+          />
+          <div className="grid gap-5 md:grid-cols-2">
+            {worshipActs.map((act) => (
+              <Surface key={act.title} tone="card" className="flex flex-col gap-2 md:last:col-span-2">
+                <h3 className="text-xl">{act.title}</h3>
+                <p className="text-ink">{act.body}</p>
+              </Surface>
+            ))}
+          </div>
+          <p className="mt-6 max-w-prose text-muted">
+            We invite you to join with us and experience the joy of worshiping our Creator in spirit and truth (John
+            4:24).
+          </p>
+        </Container>
+      </Section>
+
+      {/* Order of service */}
+      <Section tone="surface">
+        <Container>
+          <SectionHeading
+            eyebrow="A walk through worship"
+            title="What order does the service follow?"
+            lead="No two congregations run the clock identically, but our assemblies follow this simple order, so you can always tell where you are in the hour."
+          />
+          <div className="grid gap-5 md:grid-cols-2">
+            {serviceOrders.map((order) => (
+              <Surface key={order.heading} tone="panel" className="flex flex-col gap-3">
+                <h3 className="text-xl">{order.heading}</h3>
+                <ol className="flex list-decimal flex-col gap-1.5 pl-5 text-ink marker:font-semibold marker:text-primary-strong">
+                  {order.items.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ol>
+              </Surface>
+            ))}
+          </div>
         </Container>
       </Section>
 
