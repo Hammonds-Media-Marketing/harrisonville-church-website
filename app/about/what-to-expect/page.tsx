@@ -129,21 +129,21 @@ export default function WhatToExpectPage() {
         </Container>
       </Section>
 
-      {/* Step-by-step */}
+      {/* Step-by-step — cards pin below the header and stack as you scroll,
+          each new step sliding over the last with the earlier card edges
+          peeking out above. Pure CSS sticky; no scripting needed. */}
       <Section tone="surface">
         <Container>
           <SectionHeading eyebrow="Step by step" title="Walking through a Sunday morning" />
           <ol className="flex flex-col gap-4">
             {steps.map((step, i) => (
-              <li key={step.title}>
-                <Surface tone="card" className="flex items-start gap-4">
-                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary-strong font-display text-lg text-on-primary">
-                    {i + 1}
-                  </span>
-                  <div>
-                    <h3 className="text-xl">{step.title}</h3>
-                    <p className="mt-1 text-ink">{step.body}</p>
-                  </div>
+              <li key={step.title} className="sticky" style={{ top: `calc(6rem + ${i * 0.75}rem)` }}>
+                <Surface tone="card" className="flex flex-col gap-2">
+                  <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary-strong">
+                    Step {i + 1} of {steps.length}
+                  </p>
+                  <h3 className="text-xl">{step.title}</h3>
+                  <p className="text-ink">{step.body}</p>
                 </Surface>
               </li>
             ))}
