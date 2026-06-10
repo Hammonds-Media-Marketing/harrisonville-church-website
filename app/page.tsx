@@ -89,7 +89,8 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* Interactive lighthouse — move your cursor to steer the beam. */}
+          {/* Interactive lighthouse — the beam follows the cursor on desktop
+              and swings with scroll position on touch screens. */}
           <div className="relative mx-auto aspect-square w-full max-w-md lg:max-w-none">
             <LighthouseScene />
           </div>

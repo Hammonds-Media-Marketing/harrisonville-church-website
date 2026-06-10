@@ -134,15 +134,10 @@ const config: Config = {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
         },
-        'beam-sweep': {
-          '0%, 100%': { transform: 'rotate(-22deg)' },
-          '50%': { transform: 'rotate(22deg)' },
-        },
       },
       animation: {
         'fade-up': 'fade-up var(--duration-slow) var(--ease-out) both',
         'fade-in': 'fade-in var(--duration-base) var(--ease-out) both',
-        'beam-sweep': 'beam-sweep 8s var(--ease-in-out) infinite',
       },
     },
   },
