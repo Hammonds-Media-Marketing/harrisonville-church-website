@@ -110,8 +110,8 @@ All claims must be grounded in cited Scripture; tone must be warm and inviting, 
 | `--color-ink` | Text / ink | #111111 |
 | `--color-bg` | Background | #ffffff |
 
-- **Display font:** Display: Cormorant Garamond / Body: Source Serif 4
-- **Body font:** `Source Serif 4`
+- **Display font:** Display: Montserrat / Body: Mulish
+- **Body font:** `Mulish`
 - **Aesthetic direction:** N/A
 - **Logo / assets:** Raster only (needs vectorizing)
 

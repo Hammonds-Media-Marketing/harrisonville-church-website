@@ -119,7 +119,7 @@ export default function StyleGuidePage() {
                 </div>
               ))}
               <p className="mt-2 text-sm text-muted">
-                Display font: Cormorant Garamond. Body font: Source Serif 4.
+                Display font: Montserrat. Body font: Mulish.
               </p>
             </div>
           </GalleryBlock>

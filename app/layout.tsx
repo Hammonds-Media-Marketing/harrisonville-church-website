@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Cormorant_Garamond, Source_Serif_4 } from 'next/font/google'
+import { Montserrat, Mulish } from 'next/font/google'
 import './globals.css'
 import { SkipLink } from '@/components/layout/SkipLink'
 import { Header } from '@/components/layout/Header'
@@ -10,16 +10,17 @@ import { JsonLd, churchSchema, websiteSchema } from '@/lib/jsonld'
 import { SITE_URL, site } from '@/lib/site'
 
 // next/font handles loading + preconnect internally — no manual <link> or @import.
-const cormorant = Cormorant_Garamond({
+// Sans-serif system echoing the logo wordmark: Montserrat for display, Mulish for body.
+const montserrat = Montserrat({
   subsets: ['latin'],
   weight: ['500', '600', '700'],
-  variable: '--font-cormorant',
+  variable: '--font-montserrat',
   display: 'swap',
 })
-const sourceSerif = Source_Serif_4({
+const mulish = Mulish({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
-  variable: '--font-source-serif',
+  variable: '--font-mulish',
   display: 'swap',
 })
 
@@ -47,7 +48,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${sourceSerif.variable}`}>
+    <html lang="en" className={`${montserrat.variable} ${mulish.variable}`}>
       <head>
         {/* Site-wide structured data — server-rendered into the served HTML. */}
         <JsonLd data={[churchSchema(), websiteSchema()]} />
