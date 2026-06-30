@@ -96,8 +96,8 @@ export function Eyebrow({
 function EyebrowRule({ className = '' }: { className?: string }) {
   return (
     <svg
-      width="26"
-      height="8"
+      width="20"
+      height="6"
       viewBox="0 0 26 8"
       className={`shrink-0 ${className}`}
       aria-hidden="true"
