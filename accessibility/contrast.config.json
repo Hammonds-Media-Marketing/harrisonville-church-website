@@ -42,6 +42,8 @@
     { "name": "secondary btn :hover", "fg": "var(--color-on-secondary)", "bg": "var(--color-secondary-hover)" },
     { "name": "secondary btn :active", "fg": "var(--color-on-secondary)", "bg": "var(--color-secondary-active)" },
     { "name": "secondary on navy / ui", "fg": "var(--color-secondary)", "bg": "var(--color-surface-deep)", "ui": true },
+    { "name": "script tagline / navy", "fg": "var(--color-secondary)", "bg": "var(--color-surface-deep)" },
+    { "name": "script accent / page", "fg": "var(--color-primary-strong)", "bg": "var(--color-bg)" },
 
     { "name": "accent btn label", "fg": "var(--color-on-accent)", "bg": "var(--color-accent-strong)" },
     { "name": "accent text / page", "fg": "var(--color-accent-strong)", "bg": "var(--color-bg)" },

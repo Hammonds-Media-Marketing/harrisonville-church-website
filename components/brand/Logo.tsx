@@ -31,6 +31,9 @@ export function Wordmark({ onDeep = false }: { onDeep?: boolean }) {
       >
         Church of Christ
       </span>
+      <span className={`mt-1 font-script text-lg leading-none ${onDeep ? 'text-secondary' : 'text-primary-strong'}`}>
+        on Outlook Drive
+      </span>
     </span>
   )
 }
