@@ -78,26 +78,22 @@ export function Eyebrow({
   )
 }
 
-/** Decorative arrow-rule that flanks an Eyebrow label, matching the logo lockup. */
+/**
+ * Decorative arrow-like prism that flanks an Eyebrow label. A solid, elongated
+ * spearhead whose sharp apex points inward toward the text, framing it on both
+ * sides. Rendered once and mirrored (rotate-180) for the opposite side.
+ */
 function EyebrowRule({ className = '' }: { className?: string }) {
   return (
     <svg
-      width="28"
+      width="26"
       height="8"
-      viewBox="0 0 28 8"
+      viewBox="0 0 26 8"
       className={`shrink-0 ${className}`}
       aria-hidden="true"
       focusable="false"
     >
-      <line x1="0" y1="4" x2="20" y2="4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      <polyline
-        points="27,1 21,4 27,7"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <polygon points="0,4 7,1 26,4 7,7" fill="currentColor" />
     </svg>
   )
 }
