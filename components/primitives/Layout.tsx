@@ -60,16 +60,26 @@ export function Eyebrow({
   children,
   onDeep = false,
   center = false,
+  marks = true,
 }: {
   children: ReactNode
   onDeep?: boolean
   center?: boolean
+  marks?: boolean
 }) {
+  const colorClass = onDeep ? 'text-secondary' : 'text-primary-strong'
+  const typeClass = `font-display text-sm font-semibold uppercase tracking-[0.18em] ${colorClass}`
+
+  // `marks={false}` drops the flanking prisms (used in the homepage hero).
+  if (!marks) {
+    return <p className={`${typeClass} ${center ? 'text-center' : ''}`}>{children}</p>
+  }
+
   return (
     <p
-      className={`flex items-center gap-2.5 font-display text-sm font-semibold uppercase tracking-[0.18em] ${
-        onDeep ? 'text-secondary' : 'text-primary-strong'
-      } ${center ? 'mx-auto w-fit justify-center text-center' : ''}`}
+      className={`flex items-center gap-2.5 ${typeClass} ${
+        center ? 'mx-auto w-fit justify-center text-center' : ''
+      }`}
     >
       <EyebrowRule />
       <span>{children}</span>
@@ -79,9 +89,9 @@ export function Eyebrow({
 }
 
 /**
- * Decorative arrow-like prism that flanks an Eyebrow label. A solid, elongated
- * spearhead whose sharp apex points inward toward the text, framing it on both
- * sides. Rendered once and mirrored (rotate-180) for the opposite side.
+ * Decorative arrow-like prism that flanks an Eyebrow label. A solid, rounded
+ * teardrop: the thick (bulbous) end sits toward the text and it tapers to a soft
+ * point outward. Rendered once and mirrored (rotate-180) for the opposite side.
  */
 function EyebrowRule({ className = '' }: { className?: string }) {
   return (
@@ -93,7 +103,10 @@ function EyebrowRule({ className = '' }: { className?: string }) {
       aria-hidden="true"
       focusable="false"
     >
-      <polygon points="0,4 7,1 26,4 7,7" fill="currentColor" />
+      <path
+        d="M26 4 C26 1.8 24 1 20.5 1.1 C12 1.4 5 2.4 0 4 C5 5.6 12 6.6 20.5 6.9 C24 7 26 6.2 26 4 Z"
+        fill="currentColor"
+      />
     </svg>
   )
 }

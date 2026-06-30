@@ -69,7 +69,7 @@ export default function HomePage() {
       >
         <div className="mx-auto grid max-w-container items-center gap-6 px-5 pb-9 pt-8 md:pb-10 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="flex flex-col gap-5">
-            <Eyebrow>Harrisonville Church of Christ &middot; On Outlook Drive</Eyebrow>
+            <Eyebrow marks={false}>Harrisonville Church of Christ &middot; On Outlook Drive</Eyebrow>
             <h1 id="hero-heading" className="text-4xl md:text-5xl">
               A steady light for people seeking something real.
             </h1>
