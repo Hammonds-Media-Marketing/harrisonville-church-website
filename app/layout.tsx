@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Montserrat, Mulish } from 'next/font/google'
+import { Montserrat, Mulish, Dancing_Script } from 'next/font/google'
 import './globals.css'
 import { SkipLink } from '@/components/layout/SkipLink'
 import { Header } from '@/components/layout/Header'
@@ -21,6 +21,14 @@ const mulish = Mulish({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
   variable: '--font-mulish',
+  display: 'swap',
+})
+// Specialty script accent (echoes the logo's "on Outlook Drive" tagline).
+// Loaded site-wide but applied sparingly — see the Style Guide usage note.
+const dancingScript = Dancing_Script({
+  subsets: ['latin'],
+  weight: ['500', '600', '700'],
+  variable: '--font-dancing',
   display: 'swap',
 })
 
@@ -48,7 +56,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${montserrat.variable} ${mulish.variable}`}>
+    <html lang="en" className={`${montserrat.variable} ${mulish.variable} ${dancingScript.variable}`}>
       <head>
         {/* Site-wide structured data — server-rendered into the served HTML. */}
         <JsonLd data={[churchSchema(), websiteSchema()]} />

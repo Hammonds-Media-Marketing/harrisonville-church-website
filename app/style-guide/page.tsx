@@ -121,6 +121,14 @@ export default function StyleGuidePage() {
               <p className="mt-2 text-sm text-muted">
                 Display font: Montserrat. Body font: Mulish.
               </p>
+              <div className="mt-3 flex items-baseline gap-4 border-t border-border/40 pt-3">
+                <span className="w-32 shrink-0 text-sm text-muted">Script accent</span>
+                <span className="font-script text-3xl text-primary-strong">on Outlook Drive</span>
+              </div>
+              <p className="text-sm text-muted">
+                Specialty script (Dancing Script): a stylistic accent only. Use it sparingly to highlight a single key
+                word or short phrase, and never for body copy, headings, buttons, or anything lengthy.
+              </p>
             </div>
           </GalleryBlock>
 
