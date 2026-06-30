@@ -62,14 +62,18 @@ export default function HomePage() {
       />
 
       {/* ---------------------------------------------------------------- Hero */}
-      <section aria-labelledby="hero-heading" className="relative overflow-hidden bg-surface-deep text-on-deep">
+      <section
+        aria-labelledby="hero-heading"
+        className="relative overflow-hidden text-ink"
+        style={{ background: 'var(--gradient-hero-sky)' }}
+      >
         <div className="mx-auto grid max-w-container items-center gap-6 px-5 pb-9 pt-8 md:pb-10 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="flex flex-col gap-5">
-            <Eyebrow onDeep>Harrisonville Church of Christ &middot; On Outlook Drive</Eyebrow>
-            <h1 id="hero-heading" className="text-4xl text-on-deep md:text-5xl">
+            <Eyebrow>Harrisonville Church of Christ &middot; On Outlook Drive</Eyebrow>
+            <h1 id="hero-heading" className="text-4xl md:text-5xl">
               A steady light for people seeking something real.
             </h1>
-            <p className="max-w-xl text-lg text-on-deep-muted">
+            <p className="max-w-xl text-lg text-muted">
               We are New Testament Christians in Harrisonville, gathered around simple worship and an open Bible. If
               you are tired of noise and unsure who to trust, you are welcome here. Come, sit, and see for yourself.
             </p>
@@ -81,9 +85,9 @@ export default function HomePage() {
                 Start a Free Bible Study
               </Button>
             </div>
-            <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-on-deep">
+            <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-ink">
               <span className="inline-flex items-center gap-2">
-                <ClockIcon className="h-5 w-5 text-secondary" />
+                <ClockIcon className="h-5 w-5 text-primary-strong" />
                 Sundays 10:00 AM &amp; 2:00 PM, Wednesdays 7:30 PM
               </span>
             </p>

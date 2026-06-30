@@ -5,7 +5,8 @@ import { useEffect, useRef, useState } from 'react'
 /**
  * Interactive lighthouse, drawn in the brand logo's line-art style — white
  * tapered tower with navy outlines and stripes, gold-lit lantern, starburst
- * rays, scribbled grass, and teal swoosh water strokes. The light beam follows
+ * rays, scribbled grass, and teal swoosh water strokes, set against a bright
+ * daytime sky with soft clouds. The light beam follows
  * the visitor: on devices with a fine pointer (desktop) it tracks the cursor
  * anywhere on screen; on coarse pointers (phones, tablets) it swings with
  * scroll position instead. This is the only interactive part of the hero; the
@@ -93,31 +94,33 @@ export function LighthouseScene() {
     >
       <defs>
         <linearGradient id="beamGrad" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="var(--color-secondary)" stopOpacity="0.45" />
-          <stop offset="55%" stopColor="var(--color-secondary)" stopOpacity="0.14" />
+          <stop offset="0%" stopColor="var(--color-secondary)" stopOpacity="0.6" />
+          <stop offset="55%" stopColor="var(--color-secondary)" stopOpacity="0.22" />
           <stop offset="100%" stopColor="var(--color-secondary)" stopOpacity="0" />
         </linearGradient>
         <linearGradient id="beamCoreGrad" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#fff3cf" stopOpacity="0.8" />
-          <stop offset="60%" stopColor="var(--color-secondary)" stopOpacity="0.25" />
+          <stop offset="0%" stopColor="var(--color-secondary-active)" stopOpacity="0.9" />
+          <stop offset="60%" stopColor="var(--color-secondary)" stopOpacity="0.35" />
           <stop offset="100%" stopColor="var(--color-secondary)" stopOpacity="0" />
         </linearGradient>
         <radialGradient id="lampGlow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="var(--color-secondary)" stopOpacity="0.9" />
+          <stop offset="0%" stopColor="var(--color-secondary)" stopOpacity="0.95" />
           <stop offset="100%" stopColor="var(--color-secondary)" stopOpacity="0" />
         </radialGradient>
       </defs>
 
-      {/* Night sky */}
-      <g fill="#eef5f9">
-        <circle cx="70" cy="120" r="1.4" opacity="0.55" />
-        <circle cx="140" cy="60" r="1.1" opacity="0.45" />
-        <circle cx="208" cy="100" r="1.2" opacity="0.5" />
-        <circle cx="362" cy="56" r="1" opacity="0.45" />
-        <circle cx="440" cy="42" r="1.2" opacity="0.5" />
-        <circle cx="490" cy="120" r="1.4" opacity="0.55" />
-        <circle cx="548" cy="70" r="1.1" opacity="0.45" />
-        <circle cx="46" cy="200" r="1.2" opacity="0.45" />
+      {/* Daytime sky — soft drifting clouds */}
+      <g fill="#ffffff">
+        <g opacity="0.9">
+          <ellipse cx="108" cy="80" rx="34" ry="14" />
+          <ellipse cx="138" cy="72" rx="24" ry="13" />
+          <ellipse cx="84" cy="74" rx="20" ry="11" />
+        </g>
+        <g opacity="0.75">
+          <ellipse cx="470" cy="62" rx="30" ry="12" />
+          <ellipse cx="494" cy="55" rx="20" ry="11" />
+          <ellipse cx="448" cy="57" rx="16" ry="9" />
+        </g>
       </g>
 
       {/* Rotating beam — pivots at the lamp. A clean cone flanked by straight
@@ -137,11 +140,11 @@ export function LighthouseScene() {
           points={`${LAMP_X + 8},${LAMP_Y - 6} 600,${LAMP_Y - 54} 610,${LAMP_Y} 600,${LAMP_Y + 54} ${LAMP_X + 8},${LAMP_Y + 6}`}
           fill="url(#beamCoreGrad)"
         />
-        <g stroke="var(--color-secondary)" strokeWidth="2.5" strokeLinecap="round">
-          <line x1="320" y1="129" x2="354" y2="103" opacity="0.85" />
-          <line x1="324" y1="135" x2="368" y2="116" opacity="0.7" />
-          <line x1="324" y1="151" x2="368" y2="170" opacity="0.7" />
-          <line x1="320" y1="157" x2="354" y2="183" opacity="0.85" />
+        <g stroke="var(--color-secondary-active)" strokeWidth="2.5" strokeLinecap="round">
+          <line x1="320" y1="129" x2="354" y2="103" opacity="0.9" />
+          <line x1="324" y1="135" x2="368" y2="116" opacity="0.75" />
+          <line x1="324" y1="151" x2="368" y2="170" opacity="0.75" />
+          <line x1="320" y1="157" x2="354" y2="183" opacity="0.9" />
         </g>
       </g>
 
