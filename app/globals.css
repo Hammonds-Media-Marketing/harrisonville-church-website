@@ -26,6 +26,11 @@
   --color-surface-deep: #0b2538;   /* deep harbor navy — dark sections */
   --color-surface-deep-2: #0f3251; /* lifted navy panel on dark */
 
+  /* --- Hero daytime sky (Coastal Beacon, daylight) --- */
+  --color-hero-sky-top: #cfe8fa;     /* soft daylight blue at the top of the hero */
+  --color-hero-sky-bottom: #f1f6f9;  /* fades into the sea-mist surface below */
+  --gradient-hero-sky: linear-gradient(180deg, var(--color-hero-sky-top) 0%, var(--color-hero-sky-bottom) 100%);
+
   /* --- Text on light --- */
   --color-ink: #16293b;            /* body copy */
   --color-heading: #0a1f31;        /* headings */
