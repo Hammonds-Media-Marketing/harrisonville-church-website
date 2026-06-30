@@ -51,16 +51,54 @@ export function Section({
   )
 }
 
-/** Eyebrow — a small uppercase label above a heading. */
-export function Eyebrow({ children, onDeep = false }: { children: ReactNode; onDeep?: boolean }) {
+/**
+ * Eyebrow — a small uppercase sans label flanked by the logo's arrow-rule marks
+ * (a short line tipped with an outward chevron), echoing the "CHURCH OF CHRIST"
+ * lockup in the brand logo. The flanking rules are decorative (aria-hidden).
+ */
+export function Eyebrow({
+  children,
+  onDeep = false,
+  center = false,
+}: {
+  children: ReactNode
+  onDeep?: boolean
+  center?: boolean
+}) {
   return (
     <p
-      className={`font-body text-sm font-semibold uppercase tracking-[0.18em] ${
+      className={`flex items-center gap-2.5 font-display text-sm font-semibold uppercase tracking-[0.18em] ${
         onDeep ? 'text-secondary' : 'text-primary-strong'
-      }`}
+      } ${center ? 'mx-auto w-fit justify-center text-center' : ''}`}
     >
-      {children}
+      <EyebrowRule />
+      <span>{children}</span>
+      <EyebrowRule className="rotate-180" />
     </p>
+  )
+}
+
+/** Decorative arrow-rule that flanks an Eyebrow label, matching the logo lockup. */
+function EyebrowRule({ className = '' }: { className?: string }) {
+  return (
+    <svg
+      width="28"
+      height="8"
+      viewBox="0 0 28 8"
+      className={`shrink-0 ${className}`}
+      aria-hidden="true"
+      focusable="false"
+    >
+      <line x1="0" y1="4" x2="20" y2="4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <polyline
+        points="27,1 21,4 27,7"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   )
 }
 
@@ -84,7 +122,7 @@ export function SectionHeading({
 }) {
   return (
     <div className={`${align === 'center' ? 'mx-auto text-center max-w-prose' : 'max-w-prose'} mb-6 flex flex-col gap-3`}>
-      {eyebrow ? <Eyebrow onDeep={onDeep}>{eyebrow}</Eyebrow> : null}
+      {eyebrow ? <Eyebrow onDeep={onDeep} center={align === 'center'}>{eyebrow}</Eyebrow> : null}
       <Tag id={id} className={`text-3xl md:text-4xl ${onDeep ? 'text-on-deep' : ''}`}>
         {title}
       </Tag>
