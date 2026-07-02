@@ -28,7 +28,7 @@ export const visitFaqs: Faq[] = [
   {
     question: 'Do you have a place for my children?',
     answer:
-      'Yes. Children are welcome in the assembly, and Bible classes are available for different ages. Ask a member when you arrive and they will help you find the right class.',
+      'Children are welcome to stay with you in the assembly. The congregation worships together as one, so there is no separate program, and no one minds the normal sounds of little ones during worship.',
   },
   {
     question: 'What makes a Church of Christ different from other churches?',
