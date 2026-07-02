@@ -13,10 +13,10 @@ export const revalidate = 3600
 export const metadata: Metadata = buildMetadata({
   title: 'Events & Gatherings',
   description:
-    'Upcoming gatherings at the Harrisonville Church of Christ: gospel meetings, fellowship meals, Bible studies, and community outreach across Cass County.',
+    'Upcoming gatherings at the Harrisonville Church of Christ: gospel meetings, fellowship meals, and community outreach across Cass County.',
   path: '/events',
   ogTitle: 'What Is Happening at the Church',
-  ogDescription: 'Gospel meetings, shared meals, Bible studies, and outreach. Visitors are welcome at every gathering.',
+  ogDescription: 'Gospel meetings, shared meals, and community outreach. Visitors are welcome at every gathering.',
 })
 
 const breadcrumbs = [

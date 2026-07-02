@@ -40,7 +40,7 @@ export const site = {
   services: [
     { id: 'sun-am', day: 'Sunday', dayCode: 'Sunday', label: 'Sunday Morning Worship', time: '10:00', timeDisplay: '10:00 AM' },
     { id: 'sun-pm', day: 'Sunday', dayCode: 'Sunday', label: 'Sunday Afternoon Worship', time: '14:00', timeDisplay: '2:00 PM' },
-    { id: 'wed', day: 'Wednesday', dayCode: 'Wednesday', label: 'Wednesday Bible Study', time: '19:30', timeDisplay: '7:30 PM' },
+    { id: 'wed', day: 'Wednesday', dayCode: 'Wednesday', label: 'Wednesday Evening Worship', time: '19:30', timeDisplay: '7:30 PM' },
   ],
   social: {
     facebook: 'https://www.facebook.com/harrisonvillecoc/',

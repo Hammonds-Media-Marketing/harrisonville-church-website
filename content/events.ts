@@ -26,17 +26,6 @@ export const events: ChurchEvent[] = [
     sample: true,
   },
   {
-    slug: 'ladies-bible-study',
-    title: 'Ladies Bible Study',
-    summary: 'A weekday study for women working through a book of the Bible together.',
-    description:
-      'A weekly study where women of the congregation work through a book of the Bible together, with discussion and prayer. New participants are welcome at any point in the study.',
-    startDate: '2026-07-09T10:00:00-05:00',
-    category: 'Bible Study',
-    recurring: 'Weekly on Thursdays',
-    sample: true,
-  },
-  {
     slug: 'community-food-drive',
     title: 'Cass County Food Drive',
     summary: 'Collecting non-perishable food for neighbors in need across Cass County.',
