@@ -26,8 +26,8 @@ export const events: ChurchEvent[] = [
     sample: true,
   },
   {
-    slug: 'ladies-bible-class',
-    title: 'Ladies Bible Class',
+    slug: 'ladies-bible-study',
+    title: 'Ladies Bible Study',
     summary: 'A weekday study for women working through a book of the Bible together.',
     description:
       'A weekly study where women of the congregation work through a book of the Bible together, with discussion and prayer. New participants are welcome at any point in the study.',

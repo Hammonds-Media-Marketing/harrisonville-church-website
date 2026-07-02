@@ -42,10 +42,6 @@ const steps = [
     body: 'Sunday morning worship lasts about an hour. It includes congregational singing without instruments, prayers, the Lord’s Supper, a sermon from the Bible, and a collection that is for members. As a guest, you simply observe.',
   },
   {
-    title: 'Bible classes',
-    body: 'Before or alongside worship there are Bible classes for different ages, where people study a passage together and discuss it. You are welcome to join a class or to skip it on your first visit.',
-  },
-  {
     title: 'After the service',
     body: 'When the assembly ends, members are glad to answer questions, but no one will corner you. You are free to slip out quietly or to stay and talk, whichever you prefer.',
   },
