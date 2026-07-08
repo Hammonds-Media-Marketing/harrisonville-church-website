@@ -1,5 +1,5 @@
 import { SITE_URL, site } from '@/lib/site'
-import { recentPosts, getAuthor } from '@/content/blog'
+import { getAllAuthors, recentPosts } from '@/lib/blog'
 
 /** RSS 2.0 feed for the blog, generated from content and kept in sync with
  *  published articles. Served at /feed.xml. */
@@ -15,12 +15,13 @@ function escapeXml(s: string): string {
 }
 
 export async function GET() {
-  const posts = recentPosts()
+  const [posts, authors] = await Promise.all([recentPosts(), getAllAuthors()])
+  const authorBySlug = new Map(authors.map((a) => [a.slug, a]))
   const updated = posts[0] ? new Date(posts[0].dateModified || posts[0].datePublished) : new Date()
 
   const items = posts
     .map((p) => {
-      const author = getAuthor(p.authorSlug)
+      const author = authorBySlug.get(p.authorSlug)
       const link = `${SITE_URL}/blog/${p.slug}`
       return `    <item>
       <title>${escapeXml(p.title)}</title>

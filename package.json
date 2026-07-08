@@ -12,6 +12,7 @@
     "contrast": "node .claude/skills/web-accessibility/assets/contrast-check.mjs accessibility/contrast.config.json"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.110.1",
     "next": "^16.2.7",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"

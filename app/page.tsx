@@ -15,7 +15,7 @@ import { PostCard, SermonCard, StoryCard, TestimonialCard, CardLink } from '@/co
 import { BookIcon, CheckIcon, ClockIcon, MapPinIcon } from '@/components/ui/icons'
 import { homeFaqs } from '@/content/faqs'
 import { recentSermons } from '@/content/sermons'
-import { recentPosts, getAuthor } from '@/content/blog'
+import { getAllAuthors, recentPosts } from '@/lib/blog'
 import { memberStories } from '@/content/stories'
 import { testimonials } from '@/content/testimonials'
 
@@ -47,9 +47,11 @@ const reassurances = [
   },
 ]
 
-export default function HomePage() {
+export default async function HomePage() {
   const sermons = recentSermons().slice(0, 3)
-  const posts = recentPosts().slice(0, 3)
+  const [allPosts, authors] = await Promise.all([recentPosts(), getAllAuthors()])
+  const posts = allPosts.slice(0, 3)
+  const authorBySlug = new Map(authors.map((a) => [a.slug, a]))
   const stories = memberStories.slice(0, 3)
 
   return (
@@ -251,7 +253,7 @@ export default function HomePage() {
           <SampleNotice label="These articles are sample drafts." />
           <div className="grid gap-5 md:grid-cols-3">
             {posts.map((p) => (
-              <PostCard key={p.slug} post={p} author={getAuthor(p.authorSlug)} />
+              <PostCard key={p.slug} post={p} author={authorBySlug.get(p.authorSlug)} />
             ))}
           </div>
         </Container>

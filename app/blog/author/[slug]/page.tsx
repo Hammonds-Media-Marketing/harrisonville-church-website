@@ -8,17 +8,18 @@ import { Breadcrumbs } from '@/components/blocks/Breadcrumbs'
 import { SampleNotice } from '@/components/blocks/SampleNotice'
 import { PostCard } from '@/components/blocks/cards'
 import { LinkedInIcon } from '@/components/ui/icons'
-import { authors, getAuthor, postsByAuthor } from '@/content/blog'
+import { getAllAuthors, getAuthor, postsByAuthor } from '@/lib/blog'
 
 export const dynamic = 'force-static'
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const authors = await getAllAuthors()
   return authors.map((a) => ({ slug: a.slug }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
-  const author = getAuthor(slug)
+  const author = await getAuthor(slug)
   if (!author) return { title: 'Author Not Found' }
   return buildMetadata({
     title: author.name,
@@ -33,9 +34,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function AuthorPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const author = getAuthor(slug)
+  const author = await getAuthor(slug)
   if (!author) notFound()
-  const posts = postsByAuthor(author.slug)
+  const posts = await postsByAuthor(author.slug)
 
   const breadcrumbs = [
     { name: 'Home', path: '/' },
