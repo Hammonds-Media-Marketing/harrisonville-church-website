@@ -18,18 +18,20 @@ import { AuthorBlock } from '@/components/blog/AuthorBlock'
 import { Comments } from '@/components/blog/Comments'
 import { EyeIcon, ClockIcon } from '@/components/ui/icons'
 import { formatDate, formatViews } from '@/lib/format'
-import { getAuthor, getPost, posts, relatedPosts } from '@/content/blog'
+import { getAllAuthors, getAllPosts, getApprovedComments, getAuthor, getPost, relatedPosts } from '@/lib/blog'
 
 export const revalidate = 3600
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const posts = await getAllPosts()
   return posts.map((p) => ({ slug: p.slug }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
-  const post = getPost(slug)
+  const post = await getPost(slug)
   if (!post) return { title: 'Article Not Found' }
+  const author = await getAuthor(post.authorSlug)
   return buildMetadata({
     title: post.title,
     // Article titles stand on their own; omit the brand suffix to keep the meta
@@ -44,7 +46,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     article: {
       publishedTime: post.datePublished,
       modifiedTime: post.dateModified,
-      authors: [getAuthor(post.authorSlug)?.name || ''],
+      authors: [author?.name || ''],
       tags: post.tags,
     },
   })
@@ -52,11 +54,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const post = getPost(slug)
+  const post = await getPost(slug)
   if (!post) notFound()
-  const author = getAuthor(post.authorSlug)
+  const [author, related, comments, authors] = await Promise.all([
+    getAuthor(post.authorSlug),
+    relatedPosts(post),
+    getApprovedComments(post.slug),
+    getAllAuthors(),
+  ])
+  const authorBySlug = new Map(authors.map((a) => [a.slug, a]))
   const toc = tocFromBody(post.body)
-  const related = relatedPosts(post)
   const url = `${SITE_URL}/blog/${post.slug}`
   const revised = Boolean(post.dateModified && post.dateModified !== post.datePublished)
 
@@ -163,7 +170,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
               {/* Comments */}
               <div className="mt-10">
-                <Comments slug={post.slug} />
+                <Comments slug={post.slug} comments={comments} />
               </div>
             </article>
           </div>
@@ -177,7 +184,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             <h2 className="mb-6 text-2xl">Keep reading</h2>
             <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {related.map((r) => (
-                <PostCard key={r.slug} post={r} author={getAuthor(r.authorSlug)} />
+                <PostCard key={r.slug} post={r} author={authorBySlug.get(r.authorSlug)} />
               ))}
             </div>
             <p className="mt-6">

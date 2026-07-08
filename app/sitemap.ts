@@ -1,14 +1,15 @@
 import type { MetadataRoute } from 'next'
 import { SITE_URL } from '@/lib/site'
-import { posts, authors } from '@/content/blog'
+import { getAllAuthors, getAllPosts } from '@/lib/blog'
 
 /**
- * Sitemap generated from routes and content — never hardcoded. lastModified is
- * pulled from real content timestamps; changefreq and priority are set per
- * route type per the full-website mode doc. When the blog moves to Supabase,
- * swap the content imports for a query; the shape stays the same.
+ * Sitemap generated from routes and content — never hardcoded. Blog and author
+ * entries are pulled live from Supabase (with seed-content fallback);
+ * lastModified uses real content timestamps; changefreq and priority are set
+ * per route type per the full-website mode doc.
  */
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const [posts, authors] = await Promise.all([getAllPosts(), getAllAuthors()])
   const now = new Date()
   const url = (path: string) => `${SITE_URL}${path === '/' ? '' : path}`
 

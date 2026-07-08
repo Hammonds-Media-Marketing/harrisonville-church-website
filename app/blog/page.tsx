@@ -6,7 +6,7 @@ import { Container, Section, SectionHeading } from '@/components/primitives/Layo
 import { Breadcrumbs } from '@/components/blocks/Breadcrumbs'
 import { SampleNotice } from '@/components/blocks/SampleNotice'
 import { PostCard } from '@/components/blocks/cards'
-import { blogCategories, getAuthor, recentPosts } from '@/content/blog'
+import { getAllAuthors, getBlogCategories, recentPosts } from '@/lib/blog'
 
 export const revalidate = 3600
 
@@ -26,9 +26,10 @@ const breadcrumbs = [
 
 export default async function BlogPage({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
   const { category } = await searchParams
-  const all = recentPosts()
-  const active = category && blogCategories.includes(category as never) ? category : null
+  const [all, categories, authors] = await Promise.all([recentPosts(), getBlogCategories(), getAllAuthors()])
+  const active = category && categories.includes(category) ? category : null
   const posts = active ? all.filter((p) => p.category === active) : all
+  const authorBySlug = new Map(authors.map((a) => [a.slug, a]))
 
   const chip = (label: string, href: string, isActive: boolean) => (
     <Link
@@ -71,7 +72,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
           {/* Category filter */}
           <nav aria-label="Filter by category" className="mb-6 flex flex-wrap gap-2">
             {chip('All', '/blog', !active)}
-            {blogCategories.map((c) => chip(c, `/blog?category=${encodeURIComponent(c)}`, active === c))}
+            {categories.map((c) => chip(c, `/blog?category=${encodeURIComponent(c)}`, active === c))}
           </nav>
 
           <SampleNotice label="These articles are sample drafts written to demonstrate the layout." />
@@ -79,7 +80,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
           {posts.length ? (
             <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {posts.map((p) => (
-                <PostCard key={p.slug} post={p} author={getAuthor(p.authorSlug)} />
+                <PostCard key={p.slug} post={p} author={authorBySlug.get(p.authorSlug)} />
               ))}
             </div>
           ) : (
