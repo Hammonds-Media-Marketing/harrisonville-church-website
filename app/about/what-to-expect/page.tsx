@@ -63,7 +63,7 @@ const worshipActs = [
   },
   {
     title: 'Communion',
-    body: 'Each Sunday morning, the members of the congregation partake of the Lord’s Supper following the pattern given by Christ on the night He was betrayed (1 Corinthians 11:23–26; Matthew 26:26–29). This solemn memorial proclaims the Lord’s death and expresses our unity as His body. Scripture calls each participant to examine themselves and partake with reverence (1 Corinthians 11:27–29).',
+    body: 'Each Sunday morning the members of the congregation partake of the Lord’s Supper, following the pattern Christ gave on the night He was betrayed (1 Corinthians 11:23–26; Matthew 26:26–29). The congregation shares one loaf and one cup, the bread and the fruit of the vine that Scripture ties to the one body of Christ (1 Corinthians 10:16–17), as a memorial that proclaims His death and expresses our unity. Scripture calls each participant to examine themselves and partake with reverence (1 Corinthians 11:27–29). As a guest, you are free to let the loaf and cup pass, with no notice taken.',
   },
   {
     title: 'Collection',
