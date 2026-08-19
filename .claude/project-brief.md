@@ -22,7 +22,7 @@ Community welcome and visitor support
 - **Phone (E.164):** +18163261082
 - **Public email:** gospel@harrisonvillecoc.com
 - **Service area / locations served:** Harrisonville, Missouri and surrounding Cass County area
-- **Hours (for OpeningHoursSpecification):** Sundays at 10:00am and 2:00pm, Wednesdays at 7:30pm
+- **Hours (for OpeningHoursSpecification):** Sundays at 10:00am and 2:00pm, Wednesdays at 7:00pm
 
 ## 3. Audience & Positioning
 - **Target audience:** Residents of Harrisonville and Cass County who are spiritually seeking, unchurched, or looking for a welcoming congregation rooted in New Testament teaching
