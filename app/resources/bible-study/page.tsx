@@ -10,9 +10,8 @@ import { bibleCourse, bibleLessons } from '@/content/bible-study'
 import { getLeader } from '@/content/leadership'
 
 /** External home of the online, self-paced course (the study the congregation
- *  also mails as a booklet). Set once the final URL is confirmed with HMM;
- *  while empty, the "See the lessons" button points at the outline below. */
-const ONLINE_COURSE_URL = ''
+ *  also mails as a booklet). Opens in a new tab via the Button primitive. */
+const ONLINE_COURSE_URL = 'https://thetruthfrees.com/'
 
 export const dynamic = 'force-static'
 
