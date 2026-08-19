@@ -50,10 +50,13 @@ export default function HomePage() {
     <>
       <JsonLd data={[webPageSchema({ name: site.name, description: site.description, path: '/' })]} />
 
-      {/* ---------------------------------------------------------------- Hero */}
+      {/* ---------------------------------------------------------------- Hero
+          Pulled up behind the sticky header (with matching padding) so the sky
+          gradient fills the strip behind the translucent nav instead of the
+          white page background showing through. */}
       <section
         aria-labelledby="hero-heading"
-        className="relative overflow-hidden text-ink"
+        className="relative -mt-24 overflow-hidden pt-24 text-ink"
         style={{ background: 'var(--gradient-hero-sky)' }}
       >
         <div className="mx-auto grid max-w-container items-center gap-6 px-5 pb-9 pt-8 md:pb-10 md:pt-9 lg:grid-cols-[1.05fr_0.95fr]">
