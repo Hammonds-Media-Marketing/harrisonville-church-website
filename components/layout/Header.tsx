@@ -3,11 +3,9 @@ import { Logo } from '@/components/brand/Logo'
 import { SiteNav } from '@/components/layout/SiteNav'
 import { PRIMARY_CTA, primaryNav, site } from '@/lib/site'
 
-/** Shared glass treatment for the header bar and the cloud edge. Applied to
- *  each piece directly (rather than the <header> wrapper) because a
- *  backdrop-filter parent becomes the backdrop root for its children — the
- *  cloud strip must sample the page behind it, not the header's paint. */
-const GLASS = 'bg-bg/95 backdrop-blur supports-[backdrop-filter]:bg-bg/85'
+/** Shared background for the header bar and the cloud edge: slightly
+ *  translucent white, constant in every scroll state. */
+const NAV_BG = 'bg-white/90'
 
 /** Cloud-puff outline, shared by the mask (fill) and the outline (stroke).
  *  Irregular arc widths and depths keep it reading as a cloud rather than a
@@ -21,16 +19,16 @@ const CLOUD_MASK = `url("data:image/svg+xml,${encodeURIComponent(
 
 /** Decorative cloud-puff bottom edge for the desktop header — echoes the sky
  *  scene in the hero. Purely visual: hidden from assistive tech and mouse
- *  events, so the nav's function is untouched. The fill is the same glass
- *  treatment as the bar, shaped by a CSS mask; the faint outline rides on a
- *  separate unmasked SVG. */
+ *  events, so the nav's function is untouched. The fill matches the bar's
+ *  background, shaped by a CSS mask; the faint outline rides on a separate
+ *  unmasked SVG. */
 function CloudEdge() {
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-full hidden h-[24px] md:block">
-      {/* Glass fill, cloud-shaped. -mt-px tucks 1px under the bar so no
-          hairline gap opens at the seam. */}
+      {/* Cloud-shaped fill. -mt-px tucks 1px under the bar so no hairline
+          gap opens at the seam. */}
       <div
-        className={`-mt-px h-full w-full ${GLASS}`}
+        className={`-mt-px h-full w-full ${NAV_BG}`}
         style={{
           maskImage: CLOUD_MASK,
           maskSize: '100% 100%',
@@ -65,7 +63,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-header">
       {/* Main bar — flat border on mobile, cloud edge on desktop */}
-      <div className={`border-b border-border/50 md:border-b-0 ${GLASS}`}>
+      <div className={`border-b border-border/50 md:border-b-0 ${NAV_BG}`}>
         <div className="mx-auto flex max-w-container items-center justify-between gap-4 px-5 py-3">
           <Link href="/" className="inline-flex items-center" aria-label={`${site.name} — home`}>
             <Logo className="h-12 w-auto md:h-14" />
