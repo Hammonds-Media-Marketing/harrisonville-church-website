@@ -3,7 +3,6 @@ import { buildMetadata } from '@/lib/seo'
 import { JsonLd, breadcrumbSchema, webPageSchema } from '@/lib/jsonld'
 import { Container, Section, SectionHeading } from '@/components/primitives/Layout'
 import { Breadcrumbs } from '@/components/blocks/Breadcrumbs'
-import { SampleNotice } from '@/components/blocks/SampleNotice'
 import { LeaderCard } from '@/components/blocks/cards'
 import { leaders } from '@/content/leadership'
 
@@ -17,6 +16,8 @@ export const metadata: Metadata = buildMetadata({
   ogTitle: 'The Men Who Serve and Shepherd the Congregation',
   ogDescription:
     'Each congregation governs itself under its own elders. Meet the people who carry that responsibility here.',
+  ogImage: '/assets/og/og-leadership.jpg',
+  ogImageAlt: 'Portraits of Issac Moreno, Jim Bradford, and Larry Bradford of the Harrisonville Church of Christ',
 })
 
 const breadcrumbs = [
@@ -49,7 +50,9 @@ export default function LeadershipPage() {
 
       <Section tone="light">
         <Container>
-          <SampleNotice label="The leaders shown below are placeholders." />
+          <p role="note" className="mb-6 text-sm text-muted">
+            Individual roles and full biographies are being finalized with the congregation and will be added here.
+          </p>
           <div className="grid gap-5 md:grid-cols-3">
             {leaders.map((leader) => (
               <LeaderCard key={leader.slug} leader={leader} />

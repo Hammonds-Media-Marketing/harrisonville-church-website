@@ -1,34 +1,36 @@
 import type { Leader } from './types'
 
-/** SAMPLE leadership records. Replace names, roles, bios, and photos with the
- *  real congregation before launch. Structure matches the future Supabase table. */
+/** Leadership records. Photos and names are the real congregation leadership;
+ *  individual titles and full biographies are pending confirmation from the
+ *  church, so the role label stays general until they are supplied.
+ *  Structure matches the future Supabase table. */
 export const leaders: Leader[] = [
   {
-    slug: 'sample-evangelist',
-    name: 'Sample Name',
-    role: 'Evangelist / Preacher',
-    bio: 'Placeholder biography for the preaching evangelist. The real bio will describe his background, his years of study in the New Testament, and his approach to teaching the Gospel plainly and patiently.',
-    photo: '/assets/images/placeholder.jpg',
-    photoAlt: 'Placeholder portrait — leadership photo to be supplied by the church',
-    sample: true,
+    slug: 'issac-moreno',
+    name: 'Issac Moreno',
+    role: 'Leadership',
+    bio: 'A full biography for Issac is being prepared. Until it is ready, the best introduction is a simple one: say hello after any service.',
+    photo: '/assets/photos/issac-moreno.jpg',
+    photoAlt: 'Issac Moreno smiling in a light gray suit in front of a wall of books',
+    sample: false,
   },
   {
-    slug: 'sample-elder-one',
-    name: 'Sample Elder',
-    role: 'Elder / Shepherd',
-    bio: 'Placeholder biography for a shepherding elder. Elders in a Church of Christ oversee the spiritual care of the congregation. The real text will describe his family, his service, and how members can reach him for prayer or counsel.',
-    photo: '/assets/images/placeholder.jpg',
-    photoAlt: 'Placeholder portrait — elder photo to be supplied by the church',
-    sample: true,
+    slug: 'jim-bradford',
+    name: 'Jim Bradford',
+    role: 'Leadership',
+    bio: 'A full biography for Jim will be added soon. Visitors are always welcome to meet the leadership in person on a Sunday.',
+    photo: '/assets/photos/jim-bradford.jpg',
+    photoAlt: 'Jim Bradford smiling in a blue jacket in front of a bookshelf',
+    sample: false,
   },
   {
-    slug: 'sample-deacon-one',
-    name: 'Sample Deacon',
-    role: 'Deacon',
-    bio: 'Placeholder biography for a serving deacon. Deacons care for practical needs of the congregation, from benevolence to facilities. The real bio will name the area he serves and how to contact him.',
-    photo: '/assets/images/placeholder.jpg',
-    photoAlt: 'Placeholder portrait — deacon photo to be supplied by the church',
-    sample: true,
+    slug: 'larry-bradford',
+    name: 'Larry Bradford',
+    role: 'Leadership',
+    bio: 'A biography for Larry is on its way. If you would like to reach the leadership sooner, the contact page is the quickest path.',
+    photo: '/assets/photos/larry-bradford.jpg',
+    photoAlt: 'Larry Bradford wearing glasses and a green tie in front of a bookshelf',
+    sample: false,
   },
 ]
 
