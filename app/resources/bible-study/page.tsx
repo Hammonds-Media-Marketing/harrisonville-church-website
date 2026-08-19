@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import { buildMetadata } from '@/lib/seo'
 import { JsonLd, breadcrumbSchema, courseSchema, webPageSchema } from '@/lib/jsonld'
 import { Container, Section, SectionHeading } from '@/components/primitives/Layout'
@@ -6,6 +7,12 @@ import { Surface } from '@/components/primitives/Surface'
 import { Button } from '@/components/primitives/Button'
 import { Breadcrumbs } from '@/components/blocks/Breadcrumbs'
 import { bibleCourse, bibleLessons } from '@/content/bible-study'
+import { getLeader } from '@/content/leadership'
+
+/** External home of the online, self-paced course (the study the congregation
+ *  also mails as a booklet). Set once the final URL is confirmed with HMM;
+ *  while empty, the "See the lessons" button points at the outline below. */
+const ONLINE_COURSE_URL = ''
 
 export const dynamic = 'force-static'
 
@@ -25,6 +32,7 @@ const breadcrumbs = [
 ]
 
 export default function BibleStudyPage() {
+  const evangelist = getLeader('issac-moreno')
   return (
     <>
       <JsonLd
@@ -53,9 +61,51 @@ export default function BibleStudyPage() {
             <Button href="/contact#request-bible-study" size="lg">
               Study with someone
             </Button>
-            <Button href="#lessons" variant="ghost" size="lg">
+            <Button href={ONLINE_COURSE_URL || '#lessons'} variant="ghost" size="lg">
               See the lessons
             </Button>
+          </div>
+        </Container>
+      </Section>
+
+      {/* Two ways to take the course */}
+      <Section tone="surface">
+        <Container>
+          <SectionHeading eyebrow="Two ways to study" title="How would you like to take the course?" />
+          <div className="grid gap-5 md:grid-cols-2">
+            <Surface tone="card" className="flex flex-col gap-3">
+              <h3 className="text-xl">Online, at your own pace</h3>
+              <p className="text-ink">
+                The full course is available online, the same study the congregation mails as a printed booklet. Work
+                through the lessons whenever it suits you, save your place, and return anytime.
+              </p>
+              <Button href={ONLINE_COURSE_URL || '#lessons'} className="mt-auto w-fit">
+                Start the online course
+              </Button>
+            </Surface>
+            <Surface tone="card" className="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-5">
+              {evangelist ? (
+                <Image
+                  src={evangelist.photo}
+                  alt={evangelist.photoAlt}
+                  width={400}
+                  height={400}
+                  loading="lazy"
+                  sizes="(max-width: 640px) 100vw, 10rem"
+                  className="h-40 w-40 shrink-0 rounded-xl object-cover object-top"
+                />
+              ) : null}
+              <div className="flex flex-1 flex-col gap-3">
+                <h3 className="text-xl">In person, with our evangelist</h3>
+                <p className="text-ink">
+                  We invite you to study with our evangelist in person. He will walk through the same lessons with
+                  you, answer questions from the Bible as they come up, and go at whatever pace suits you.
+                </p>
+                <Button href="/contact#request-bible-study" variant="secondary" className="mt-auto w-fit">
+                  Request an in-person study
+                </Button>
+              </div>
+            </Surface>
           </div>
         </Container>
       </Section>

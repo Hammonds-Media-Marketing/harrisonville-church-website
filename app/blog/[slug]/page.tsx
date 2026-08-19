@@ -15,10 +15,9 @@ import { TableOfContents } from '@/components/blog/TableOfContents'
 import { ScrollProgress } from '@/components/blog/ScrollProgress'
 import { ShareButtons } from '@/components/blog/ShareButtons'
 import { AuthorBlock } from '@/components/blog/AuthorBlock'
-import { Comments } from '@/components/blog/Comments'
 import { EyeIcon, ClockIcon } from '@/components/ui/icons'
 import { formatDate, formatViews } from '@/lib/format'
-import { getAllAuthors, getAllPosts, getApprovedComments, getAuthor, getPost, relatedPosts } from '@/lib/blog'
+import { getAllAuthors, getAllPosts, getAuthor, getPost, relatedPosts } from '@/lib/blog'
 
 export const revalidate = 3600
 
@@ -49,6 +48,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       authors: [author?.name || ''],
       tags: post.tags,
     },
+    // Hidden from navigation and search while the blog is hidden.
+    noindex: true,
   })
 }
 
@@ -56,10 +57,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   const { slug } = await params
   const post = await getPost(slug)
   if (!post) notFound()
-  const [author, related, comments, authors] = await Promise.all([
+  const [author, related, authors] = await Promise.all([
     getAuthor(post.authorSlug),
     relatedPosts(post),
-    getApprovedComments(post.slug),
     getAllAuthors(),
   ])
   const authorBySlug = new Map(authors.map((a) => [a.slug, a]))
@@ -163,14 +163,10 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 ))}
               </div>
 
-              {/* Author block bottom */}
+              {/* Author block bottom. The comment section is removed at the
+                  congregation's direction: the blog is publish-only. */}
               <div className="mt-8">
                 <AuthorBlock author={author!} variant="full" />
-              </div>
-
-              {/* Comments */}
-              <div className="mt-10">
-                <Comments slug={post.slug} comments={comments} />
               </div>
             </article>
           </div>

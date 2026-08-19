@@ -43,7 +43,7 @@ export default function LeadershipPage() {
             as="h1"
             eyebrow="The people who serve"
             title="Leadership at the Harrisonville Church of Christ"
-            lead="A Church of Christ is overseen by its own elders, taught by an evangelist, and served by deacons. There is no outside hierarchy. These are the members who carry that work here."
+            lead="A Church of Christ is overseen by its own elders, taught by an evangelist, and served by deacons. There is no outside hierarchy. These are the members who serve here."
           />
         </Container>
       </Section>

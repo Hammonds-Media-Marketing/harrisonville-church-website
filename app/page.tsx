@@ -1,24 +1,17 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
-import Link from 'next/link'
 import { buildMetadata } from '@/lib/seo'
-import { JsonLd, faqSchema, webPageSchema } from '@/lib/jsonld'
+import { JsonLd, webPageSchema } from '@/lib/jsonld'
 import { PRIMARY_CTA, site } from '@/lib/site'
 import { Container, Eyebrow, Section, SectionHeading } from '@/components/primitives/Layout'
 import { Button } from '@/components/primitives/Button'
 import { Surface } from '@/components/primitives/Surface'
-import { Badge } from '@/components/primitives/Badge'
 import { Wave } from '@/components/decor/Wave'
-import { Faq } from '@/components/blocks/Faq'
 import { SampleNotice } from '@/components/blocks/SampleNotice'
 import { LighthouseScene } from '@/components/hero/LighthouseScene'
-import { PostCard, SermonCard, StoryCard, TestimonialCard, CardLink } from '@/components/blocks/cards'
+import { SermonCard, CardLink } from '@/components/blocks/cards'
 import { BookIcon, CheckIcon, ClockIcon, MapPinIcon } from '@/components/ui/icons'
-import { homeFaqs } from '@/content/faqs'
 import { recentSermons } from '@/content/sermons'
-import { getAllAuthors, recentPosts } from '@/lib/blog'
-import { memberStories } from '@/content/stories'
-import { testimonials } from '@/content/testimonials'
 
 export const dynamic = 'force-static'
 
@@ -38,7 +31,7 @@ export const metadata: Metadata = buildMetadata({
 const reassurances = [
   {
     title: 'Worship stays simple',
-    body: 'Singing, prayer, the Lord’s Supper, and a sermon from the Bible. No production, no spectacle, nothing to perform.',
+    body: 'Singing, prayer, the Lord’s Supper, and a sermon from the Bible, in the pattern the New Testament describes.',
   },
   {
     title: 'You are never put on the spot',
@@ -50,21 +43,12 @@ const reassurances = [
   },
 ]
 
-export default async function HomePage() {
+export default function HomePage() {
   const sermons = recentSermons().slice(0, 3)
-  const [allPosts, authors] = await Promise.all([recentPosts(), getAllAuthors()])
-  const posts = allPosts.slice(0, 3)
-  const authorBySlug = new Map(authors.map((a) => [a.slug, a]))
-  const stories = memberStories.slice(0, 3)
 
   return (
     <>
-      <JsonLd
-        data={[
-          webPageSchema({ name: site.name, description: site.description, path: '/' }),
-          faqSchema(homeFaqs.map((f) => ({ question: f.question, answer: f.answer }))),
-        ]}
-      />
+      <JsonLd data={[webPageSchema({ name: site.name, description: site.description, path: '/' })]} />
 
       {/* ---------------------------------------------------------------- Hero */}
       <section
@@ -114,7 +98,7 @@ export default async function HomePage() {
             id="welcome-heading"
             eyebrow="You are welcome here"
             title="Walking into a new church should not feel like a risk"
-            lead="Many people who visit have questions they were never allowed to ask, or a bad memory of being singled out. None of that happens here. We try to make the first step small."
+            lead="Many people who visit have questions they were never allowed to ask. Here, every question is welcome, and every visitor is treated as a guest."
           />
           <figure className="mb-7 overflow-hidden rounded-xl">
             <Image
@@ -191,33 +175,17 @@ export default async function HomePage() {
           <SectionHeading
             id="beliefs-heading"
             align="center"
-            eyebrow="No creed but the Bible"
-            title="What holds this congregation together"
-            lead="We let Scripture alone answer every question about God, salvation, and worship. That single commitment shapes everything we do."
+            eyebrow="Simply Christians"
+            title="A church family with open hearts and open doors"
+            lead="We are a Christ-centered church family in Harrisonville, Missouri. If you have been thinking, praying, searching, or hoping for a place to belong, there is a home waiting for you here in God's family."
           />
-          <div className="mx-auto grid max-w-4xl gap-4 md:grid-cols-3">
-            <Link href="/blog/how-do-i-know-which-church-is-right" className="group">
-              <Surface tone="card" interactive className="h-full">
-                <Badge tone="primary" className="mb-2">The Church</Badge>
-                <h3 className="text-xl group-hover:text-link-hover">Restoring the first-century church</h3>
-                <p className="mt-2 text-ink">We follow the pattern the New Testament shows, not later tradition.</p>
-              </Surface>
-            </Link>
-            <Link href="/blog/why-no-instruments-in-worship" className="group">
-              <Surface tone="card" interactive className="h-full">
-                <Badge tone="primary" className="mb-2">Worship</Badge>
-                <h3 className="text-xl group-hover:text-link-hover">Singing without instruments</h3>
-                <p className="mt-2 text-ink">Voices alone, in the pattern the early church kept.</p>
-              </Surface>
-            </Link>
-            <Link href="/blog/what-does-the-bible-say-about-baptism" className="group">
-              <Surface tone="card" interactive className="h-full">
-                <Badge tone="primary" className="mb-2">Salvation</Badge>
-                <h3 className="text-xl group-hover:text-link-hover">Plain answers about baptism</h3>
-                <p className="mt-2 text-ink">Read the passages in context and weigh them for yourself.</p>
-              </Surface>
-            </Link>
-          </div>
+          <p className="mx-auto max-w-2xl text-center text-lg text-ink">
+            You are always welcome to visit during any of our public worship services. Come as you are, meet the
+            family, and see for yourself.
+          </p>
+          <p className="mt-6 text-center">
+            <CardLink href="/about">Learn who we are</CardLink>
+          </p>
         </Container>
       </Section>
 
@@ -257,68 +225,6 @@ export default async function HomePage() {
               <SermonCard key={s.slug} sermon={s} />
             ))}
           </div>
-        </Container>
-      </Section>
-
-      {/* -------------------------------------------------------------- Blog */}
-      <Section tone="light" ariaLabelledby="blog-heading">
-        <Container>
-          <div className="mb-6 flex items-end justify-between gap-4">
-            <SectionHeading id="blog-heading" eyebrow="From the blog" title="Plain answers from Scripture" />
-            <CardLink href="/blog">Read the blog</CardLink>
-          </div>
-          <SampleNotice label="These articles are sample drafts." />
-          <div className="grid gap-5 md:grid-cols-3">
-            {posts.map((p) => (
-              <PostCard key={p.slug} post={p} author={authorBySlug.get(p.authorSlug)} />
-            ))}
-          </div>
-        </Container>
-      </Section>
-
-      {/* ------------------------------------------------------ Member stories */}
-      <Section tone="surface" ariaLabelledby="stories-heading">
-        <Container>
-          <SectionHeading
-            id="stories-heading"
-            eyebrow="Member stories"
-            title="How people found a church home here"
-          />
-          <SampleNotice label="These stories are placeholders pending real, consented accounts." />
-          <div className="grid gap-5 md:grid-cols-3">
-            {stories.map((s) => (
-              <StoryCard key={s.slug} story={s} />
-            ))}
-          </div>
-          <p className="mt-6">
-            <CardLink href="/about/stories">Read more stories</CardLink>
-          </p>
-        </Container>
-      </Section>
-
-      {/* ------------------------------------------------------- Testimonials */}
-      <Section tone="light" ariaLabelledby="reviews-heading">
-        <Container>
-          <SectionHeading
-            id="reviews-heading"
-            align="center"
-            eyebrow="From the community"
-            title="What neighbors say"
-          />
-          <SampleNotice label="Real Google reviews will replace these once supplied." />
-          <div className="grid gap-5 md:grid-cols-3">
-            {testimonials.map((t) => (
-              <TestimonialCard key={t.id} t={t} />
-            ))}
-          </div>
-        </Container>
-      </Section>
-
-      {/* --------------------------------------------------------------- FAQ */}
-      <Section tone="surface" ariaLabelledby="faq-heading">
-        <Container prose>
-          <SectionHeading id="faq-heading" align="center" eyebrow="Questions" title="Questions people ask before visiting" />
-          <Faq items={homeFaqs} />
         </Container>
       </Section>
 

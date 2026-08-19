@@ -29,6 +29,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     ogDescription: author.bio,
     ogImage: author.photo,
     ogImageAlt: author.photoAlt,
+    // Hidden from navigation and search while the blog is hidden.
+    noindex: true,
   })
 }
 

@@ -56,7 +56,10 @@ export type NavItem = {
   children?: NavItem[]
 }
 
-/** Primary navigation. Dropdowns group the About and Resources sections. */
+/** Primary navigation. Dropdowns group the About and Resources sections.
+ *  The blog and member-stories pages are hidden from all navigation for now,
+ *  at the congregation's direction; the routes remain so they can be made
+ *  visible again later. */
 export const primaryNav: NavItem[] = [
   {
     label: 'About',
@@ -65,7 +68,6 @@ export const primaryNav: NavItem[] = [
       { label: 'Who We Are', href: '/about', description: 'What the church believes and why' },
       { label: 'What to Expect', href: '/about/what-to-expect', description: 'A walkthrough of a first visit' },
       { label: 'Leadership', href: '/about/leadership', description: 'The men who serve and teach' },
-      { label: 'Member Stories', href: '/about/stories', description: 'How people found a church home here' },
     ],
   },
   { label: 'Events', href: '/events' },
@@ -75,7 +77,6 @@ export const primaryNav: NavItem[] = [
     children: [
       { label: 'Sermons & Videos', href: '/resources/sermons', description: 'Watch and listen to recent lessons' },
       { label: 'Bible Study Course', href: '/resources/bible-study', description: 'A free, self-paced study of the Gospel' },
-      { label: 'Blog', href: '/blog', description: 'Plain answers from Scripture' },
     ],
   },
   { label: 'Connect', href: '/contact' },
@@ -88,7 +89,6 @@ export const footerNav: { heading: string; items: NavItem[] }[] = [
       { label: 'Who We Are', href: '/about' },
       { label: 'What to Expect', href: '/about/what-to-expect' },
       { label: 'Leadership', href: '/about/leadership' },
-      { label: 'Member Stories', href: '/about/stories' },
     ],
   },
   {
@@ -96,7 +96,6 @@ export const footerNav: { heading: string; items: NavItem[] }[] = [
     items: [
       { label: 'Sermons & Videos', href: '/resources/sermons' },
       { label: 'Bible Study Course', href: '/resources/bible-study' },
-      { label: 'Blog', href: '/blog' },
       { label: 'Events', href: '/events' },
     ],
   },
