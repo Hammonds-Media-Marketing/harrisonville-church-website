@@ -49,7 +49,7 @@ export function PageHero({
       style={{ background: 'var(--gradient-hero-sky)' }}
     >
       <div
-        className={`mx-auto grid max-w-container items-center gap-8 px-5 pb-9 pt-8 md:pb-10 ${
+        className={`mx-auto grid max-w-container items-center gap-8 px-5 pb-9 pt-8 md:pb-10 md:pt-9 ${
           hasVisual ? 'lg:grid-cols-[1.15fr_0.85fr]' : ''
         }`}
       >

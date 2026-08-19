@@ -12,7 +12,7 @@ function CloudEdge() {
     'M0 8 A65 10 0 0 0 130 8 A70 14 0 0 0 270 8 A60 9 0 0 0 390 8 A90 13 0 0 0 570 8 A60 8 0 0 0 690 8 A90 14 0 0 0 870 8 A60 9 0 0 0 990 8 A85 13 0 0 0 1160 8 A70 10 0 0 0 1300 8 A70 12 0 0 0 1440 8'
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-full hidden md:block">
-      <svg viewBox="0 0 1440 26" preserveAspectRatio="none" focusable="false" className="block h-[24px] w-full">
+      <svg viewBox="0 0 1440 26" preserveAspectRatio="none" focusable="false" className="block h-[18px] w-full">
         {/* -1px overlap up into the bar prevents a hairline seam */}
         <path d={`${puffs} V-1 H0 Z`} fill="var(--color-bg)" />
         <path
