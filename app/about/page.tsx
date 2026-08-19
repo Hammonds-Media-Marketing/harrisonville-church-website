@@ -61,7 +61,7 @@ export default function AboutPage() {
             as="h1"
             eyebrow="About the congregation"
             title="A church with one authority: the Bible"
-            lead="We are a family of New Testament Christians in Harrisonville, Missouri. We claim to take God at His Word, and to welcome anyone willing to study it honestly."
+            lead="We are a group of Christians in Harrisonville, Missouri, dedicated to worshiping God, honoring the Lord Jesus Christ, and growing together in the understanding of the Bible."
           />
         </Container>
       </Section>
