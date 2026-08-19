@@ -1,23 +1,23 @@
 import Image from 'next/image'
 import { site } from '@/lib/site'
 
-/** Brand logo lockup (raster — pending a vector version). Eager-loaded in the
+/** Brand logo lockup — the vector primary logo. Eager-loaded in the
  *  header since it sits above the fold. */
 export function Logo({ className = '', priority = true }: { className?: string; priority?: boolean }) {
   return (
     <Image
-      src="/assets/logos/logo.png"
+      src="/assets/logos/harrisonville-logo-primary.svg"
       alt={`${site.name} logo — a lighthouse on Outlook Drive`}
-      width={260}
-      height={100}
+      width={272}
+      height={120}
       priority={priority}
       className={className}
     />
   )
 }
 
-/** Text wordmark — used on the deep navy footer where the raster logo would not
- *  sit cleanly. Styled from type tokens. */
+/** Text wordmark — used on the deep navy footer where the full-color logo would
+ *  not sit cleanly. Styled from type tokens. */
 export function Wordmark({ onDeep = false }: { onDeep?: boolean }) {
   return (
     <span className="inline-flex flex-col leading-none">

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import { buildMetadata } from '@/lib/seo'
 import { JsonLd, breadcrumbSchema, webPageSchema } from '@/lib/jsonld'
@@ -19,6 +20,8 @@ export const metadata: Metadata = buildMetadata({
   ogTitle: 'New Testament Christians in Harrisonville, Missouri',
   ogDescription:
     'No creed but the Bible. See how letting Scripture answer every question shapes the way this congregation worships and teaches.',
+  ogImage: '/assets/og/og-about.jpg',
+  ogImageAlt: 'Two members of the congregation follow along in an open book together in the pews',
 })
 
 const breadcrumbs = [
@@ -86,6 +89,20 @@ export default function AboutPage() {
             family. We strive to serve God, encourage one another, and love our neighbors in an atmosphere of
             kindness, support, and spiritual growth.
           </p>
+          <figure className="my-6">
+            <Image
+              src="/assets/photos/singing-in-the-pews.jpg"
+              alt="An older and a younger member of the congregation lean over an open book together across the pews"
+              width={1000}
+              height={1500}
+              loading="lazy"
+              sizes="(max-width: 768px) 100vw, 28rem"
+              className="mx-auto h-auto w-full max-w-md rounded-xl"
+            />
+            <figcaption className="mt-2 text-center text-sm text-muted">
+              Studying and singing together across the pews.
+            </figcaption>
+          </figure>
           <p>
             The Harrisonville church of Christ is made up of people of all ages and life stages, united by faith in
             Jesus Christ and love for one another (Ephesians 4:11&ndash;15). <strong>But we are missing&mdash;you.</strong> We

@@ -34,7 +34,7 @@ export function churchSchema(): Json {
     url: `${SITE_URL}/`,
     telephone: site.phone,
     email: site.email,
-    logo: `${SITE_URL}/assets/logos/logo.png`,
+    logo: `${SITE_URL}/assets/logos/logo-structured-data.png`,
     image: `${SITE_URL}/assets/og/og-default.svg`,
     address: {
       '@type': 'PostalAddress',

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import { buildMetadata } from '@/lib/seo'
 import { JsonLd, faqSchema, webPageSchema } from '@/lib/jsonld'
@@ -30,6 +31,8 @@ export const metadata: Metadata = buildMetadata({
   ogTitle: 'A Welcoming Church Home on Outlook Drive',
   ogDescription:
     'Come as you are, sit, and observe. Worship rooted in the New Testament, with plain answers to honest questions about faith.',
+  ogImage: '/assets/og/og-home.jpg',
+  ogImageAlt: 'The Harrisonville Church of Christ congregation gathered at the front of the auditorium',
 })
 
 const reassurances = [
@@ -113,6 +116,20 @@ export default async function HomePage() {
             title="Walking into a new church should not feel like a risk"
             lead="Many people who visit have questions they were never allowed to ask, or a bad memory of being singled out. None of that happens here. We try to make the first step small."
           />
+          <figure className="mb-7 overflow-hidden rounded-xl">
+            <Image
+              src="/assets/photos/congregation-outlook-drive.jpg"
+              alt="The Harrisonville Church of Christ congregation, several generations together at the front of the auditorium beneath the wooden cross"
+              width={1600}
+              height={900}
+              loading="lazy"
+              sizes="(max-width: 1160px) 100vw, 1100px"
+              className="h-auto w-full object-cover"
+            />
+            <figcaption className="mt-2 text-sm text-muted">
+              The congregation, gathered in the auditorium on Outlook Drive.
+            </figcaption>
+          </figure>
           <div className="grid gap-5 md:grid-cols-3">
             {reassurances.map((r) => (
               <Surface key={r.title} tone="card" className="flex flex-col gap-3">

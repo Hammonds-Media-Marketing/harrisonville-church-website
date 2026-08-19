@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import { buildMetadata } from '@/lib/seo'
 import { JsonLd, breadcrumbSchema, faqSchema, webPageSchema } from '@/lib/jsonld'
 import { Container, Section, SectionHeading } from '@/components/primitives/Layout'
@@ -20,6 +21,8 @@ export const metadata: Metadata = buildMetadata({
   ogTitle: 'Your First Visit, With No Surprises',
   ogDescription:
     'Parking, timing, what a service includes, and what will never happen to you as a guest. Everything you need to walk in at ease.',
+  ogImage: '/assets/og/og-what-to-expect.jpg',
+  ogImageAlt: 'Two members shake hands by the front door of the church building',
 })
 
 const breadcrumbs = [
@@ -187,19 +190,35 @@ export default function WhatToExpectPage() {
       <Section tone="surface">
         <Container>
           <SectionHeading eyebrow="Step by step" title="Walking through a Sunday morning" />
-          <ol className="flex flex-col gap-4">
-            {steps.map((step, i) => (
-              <li key={step.title} className="sticky" style={{ top: `calc(6rem + ${i * 0.75}rem)` }}>
-                <Surface tone="card" className="flex flex-col gap-2">
-                  <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary-strong">
-                    Step {i + 1} of {steps.length}
-                  </p>
-                  <h3 className="text-xl">{step.title}</h3>
-                  <p className="text-ink">{step.body}</p>
-                </Surface>
-              </li>
-            ))}
-          </ol>
+          <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+            <figure className="lg:sticky lg:top-24">
+              <Image
+                src="/assets/photos/welcome-handshake.jpg"
+                alt="A member welcomes a visitor with a handshake just inside the front door of the building"
+                width={1000}
+                height={1500}
+                loading="lazy"
+                sizes="(max-width: 1024px) 100vw, 38vw"
+                className="h-auto w-full rounded-xl"
+              />
+              <figcaption className="mt-2 text-sm text-muted">
+                A welcome at the door is as formal as it gets.
+              </figcaption>
+            </figure>
+            <ol className="flex flex-col gap-4">
+              {steps.map((step, i) => (
+                <li key={step.title} className="sticky" style={{ top: `calc(6rem + ${i * 0.75}rem)` }}>
+                  <Surface tone="card" className="flex flex-col gap-2">
+                    <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary-strong">
+                      Step {i + 1} of {steps.length}
+                    </p>
+                    <h3 className="text-xl">{step.title}</h3>
+                    <p className="text-ink">{step.body}</p>
+                  </Surface>
+                </li>
+              ))}
+            </ol>
+          </div>
         </Container>
       </Section>
 
