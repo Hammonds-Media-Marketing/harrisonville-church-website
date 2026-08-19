@@ -68,7 +68,9 @@ export function Eyebrow({
   marks?: boolean
 }) {
   const colorClass = onDeep ? 'text-secondary' : 'text-primary-strong'
-  const typeClass = `font-display text-sm font-semibold uppercase tracking-[0.18em] ${colorClass}`
+  // m-0 cancels the global paragraph margin: the parent flex gap owns the
+  // spacing, so the eyebrow hugs the heading it introduces.
+  const typeClass = `m-0 font-display text-sm font-semibold uppercase tracking-[0.18em] ${colorClass}`
 
   // `marks={false}` drops the flanking prisms (used in the homepage hero).
   if (!marks) {

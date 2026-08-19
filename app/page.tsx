@@ -30,15 +30,15 @@ export const metadata: Metadata = buildMetadata({
 
 const reassurances = [
   {
-    title: 'Worship stays simple',
+    title: 'Bible-based worship services',
     body: 'Singing, prayer, the Lord’s Supper, and a sermon from the Bible, in the pattern the New Testament describes.',
   },
   {
-    title: 'You are never put on the spot',
+    title: 'Visitors are honored guests',
     body: 'Visitors are guests. No one will ask you to stand, speak, raise a hand, or give. Come and simply observe.',
   },
   {
-    title: 'Every belief is open to the Book',
+    title: 'Questions are welcome here',
     body: 'Ask anything. We will open the New Testament and show you the reasoning, rather than hand you an opinion.',
   },
 ]
