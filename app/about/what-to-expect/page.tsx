@@ -34,19 +34,19 @@ const breadcrumbs = [
 const steps = [
   {
     title: 'Arriving and parking',
-    body: 'There is parking at the building on Outlook Drive. Come a few minutes early if you can. Someone near the entrance will greet you and can show you where to go, or you are welcome to find a seat on your own.',
+    body: 'Parking is accessed from 2 Highway, at the corner of 2 Highway and Outlook Drive. Come a few minutes early if you can. Someone near the entrance will greet you when you arrive.',
   },
   {
     title: 'Finding a seat',
-    body: 'Sit anywhere. There are no reserved sections and no expectation about where guests sit. Many visitors choose a seat toward the back for the first week, and that is completely fine.',
+    body: 'Sit anywhere. There are no reserved sections and no expectation about where guests sit.',
   },
   {
     title: 'The worship itself',
-    body: 'Sunday morning worship lasts about an hour. It includes congregational singing without instruments, prayers, the Lord’s Supper, a sermon from the Bible, and a collection that is for members. As a guest, you simply observe.',
+    body: 'Sunday morning worship lasts about 75 to 90 minutes. It includes congregational singing, prayers, the Lord’s Supper, a sermon from the Bible, and a collection that is for members. As a guest, you simply observe.',
   },
   {
     title: 'After the service',
-    body: 'When the assembly ends, members are glad to answer questions, but no one will corner you. You are free to slip out quietly or to stay and talk, whichever you prefer.',
+    body: 'When the assembly ends, members are glad to visit with one another. We encourage you to stay, visit with us, and ask any question on your mind.',
   },
 ]
 
@@ -66,11 +66,11 @@ const worshipActs = [
   },
   {
     title: 'Communion',
-    body: 'Each Sunday morning the members of the congregation partake of the Lord’s Supper, following the pattern Christ gave on the night He was betrayed (1 Corinthians 11:23–26; Matthew 26:26–29). The congregation shares one loaf and one cup, the bread and the fruit of the vine that Scripture ties to the one body of Christ (1 Corinthians 10:16–17), as a memorial that proclaims His death and expresses our unity. Scripture calls each participant to examine themselves and partake with reverence (1 Corinthians 11:27–29). As a guest, you are free to let the loaf and cup pass, with no notice taken.',
+    body: 'Each Sunday morning the members of the congregation partake of the Lord’s Supper, following the pattern Christ gave on the night He was betrayed (1 Corinthians 11:23–26; Matthew 26:26–29). As a visitor, you are not obligated to participate.',
   },
   {
     title: 'Collection',
-    body: 'The New Testament church is supported by the free-will offerings of its members. On the first day of every week, each member lays by in store as they have been prospered (1 Corinthians 16:1–2). These contributions support gospel preaching, care for needy saints, and the work of qualified servants such as elders and evangelists. This act of giving is for members of the congregation and is not a solicitation of visitors.',
+    body: 'The New Testament church is supported by the free-will offerings of its members. On the first day of every week, each member lays by in store as they have been prospered (1 Corinthians 16:1–2). This act of giving is for members of the congregation and is not a solicitation of visitors.',
   },
 ]
 
@@ -109,8 +109,8 @@ const serviceOrders = [
 const wontHappen = [
   'You will not be asked to stand up or introduce yourself.',
   'You will not be singled out as a visitor in front of the room.',
-  'You will not be pressured to give money or sign anything.',
-  'You will not face a public altar call or be put on the spot.',
+  'You will not be expected to give.',
+  'You will not be put on the spot.',
 ]
 
 export default function WhatToExpectPage() {
@@ -228,7 +228,7 @@ export default function WhatToExpectPage() {
           <SectionHeading
             eyebrow="Worship, explained"
             title="What does each part of worship mean?"
-            lead="Our worship services are a time for Christians to assemble together to glorify God and encourage one another (1 Corinthians 14:23), with the goal that all may learn and be strengthened in faith (1 Corinthians 14:26, 31). Here is what each part is, and the Scripture behind it."
+            lead="Our worship services are a time for Christians to assemble together to glorify God and encourage one another (1 Corinthians 14:23), with the goal that all may learn and be strengthened in faith (1 Corinthians 14:26, 31). Here is a description of each part of our worship and some supporting scriptures."
           />
           <div className="grid gap-5 md:grid-cols-2">
             {worshipActs.map((act) => (
@@ -248,11 +248,7 @@ export default function WhatToExpectPage() {
       {/* Order of service */}
       <Section tone="surface">
         <Container>
-          <SectionHeading
-            eyebrow="A walk through worship"
-            title="What order does the service follow?"
-            lead="No two congregations run the clock identically, but our assemblies follow this simple order, so you can always tell where you are in the hour."
-          />
+          <SectionHeading eyebrow="A walk through worship" title="What order does the service follow?" />
           <div className="grid gap-5 md:grid-cols-2">
             {serviceOrders.map((order) => (
               <Surface key={order.heading} tone="panel" className="flex flex-col gap-3">
@@ -265,13 +261,16 @@ export default function WhatToExpectPage() {
               </Surface>
             ))}
           </div>
+          <p className="mt-6 max-w-prose text-ink">
+            On the third Wednesday of every month, our evening service is a singing and prayer service.
+          </p>
         </Container>
       </Section>
 
       {/* FAQ */}
       <Section tone="light">
         <Container prose>
-          <SectionHeading align="center" eyebrow="Common questions" title="Questions visitors ask most" />
+          <SectionHeading align="center" eyebrow="Before you visit" title="Frequently asked questions" />
           <Faq items={visitFaqs} />
         </Container>
       </Section>

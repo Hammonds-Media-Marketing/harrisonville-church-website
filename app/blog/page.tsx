@@ -17,6 +17,8 @@ export const metadata: Metadata = buildMetadata({
   path: '/blog',
   ogTitle: 'Honest Questions, Answered From the Bible',
   ogDescription: 'Short, Scripture-first articles that take real questions seriously, without denominational spin.',
+  // Hidden from navigation and search at the congregation's direction.
+  noindex: true,
 })
 
 const breadcrumbs = [

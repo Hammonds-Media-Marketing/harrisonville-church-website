@@ -5,14 +5,14 @@ import { Container, Eyebrow, Section, SectionHeading } from '@/components/primit
 import { Surface } from '@/components/primitives/Surface'
 import { Breadcrumbs } from '@/components/blocks/Breadcrumbs'
 import { CardLink } from '@/components/blocks/cards'
-import { BookIcon, PlayIcon, QuoteIcon } from '@/components/ui/icons'
+import { BookIcon, PlayIcon } from '@/components/ui/icons'
 
 export const dynamic = 'force-static'
 
 export const metadata: Metadata = buildMetadata({
   title: 'Resources for Studying the Bible',
   description:
-    'Free resources from the Harrisonville Church of Christ: a self-paced Bible study course, a sermon and video library, and a Scripture-first blog.',
+    'Free resources from the Harrisonville Church of Christ: a self-paced Bible study course and a library of sermons and videos drawn straight from Scripture.',
   path: '/resources',
   ogTitle: 'Study the Bible at Your Own Pace',
   ogDescription: 'Sermons, a free Bible study course, and articles that answer honest questions from the New Testament.',
@@ -26,7 +26,6 @@ const breadcrumbs = [
 const resources = [
   { icon: PlayIcon, title: 'Sermons & Videos', body: 'Watch and listen to recent lessons drawn straight from Scripture.', href: '/resources/sermons', cta: 'Browse sermons' },
   { icon: BookIcon, title: 'Bible Study Course', body: 'A free, self-paced study of the Gospel from the beginning. No cost, no obligation.', href: '/resources/bible-study', cta: 'Begin the course' },
-  { icon: QuoteIcon, title: 'Blog', body: 'Plain, Scripture-first answers to the questions people actually ask.', href: '/blog', cta: 'Read the blog' },
 ]
 
 export default function ResourcesPage() {
@@ -51,7 +50,7 @@ export default function ResourcesPage() {
       </Section>
       <Section tone="light">
         <Container>
-          <div className="grid gap-5 md:grid-cols-3">
+          <div className="grid gap-5 md:grid-cols-2">
             {resources.map((r) => (
               <Surface key={r.title} tone="card" interactive className="flex flex-col gap-3">
                 <span className="grid h-12 w-12 place-items-center rounded-full bg-primary-strong text-on-primary">

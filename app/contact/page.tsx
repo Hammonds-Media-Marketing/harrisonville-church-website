@@ -43,7 +43,7 @@ const bibleStudyFields: FormField[] = [
   { kind: 'email', name: 'email', label: 'Email', required: true, autoComplete: 'email' },
   { kind: 'tel', name: 'phone', label: 'Phone', autoComplete: 'tel' },
   { kind: 'select', name: 'format', label: 'Preferred format', required: true, options: ['In person', 'Online (video)', 'Either is fine'] },
-  { kind: 'select', name: 'interest', label: 'Where would you like to begin?', required: true, options: ['The Gospel from the beginning', 'A specific question I have', 'Not sure yet, guide me'] },
+  { kind: 'textarea', name: 'about', label: 'Tell us about yourself', required: true, placeholder: 'Tell us about your religious background, or how we may assist you spiritually.', rows: 4, full: true },
   { kind: 'textarea', name: 'availability', label: 'Anything else, including your availability', placeholder: 'Optional: days or times that work, and any question on your mind.', rows: 4 },
 ]
 
@@ -112,9 +112,7 @@ export default function ContactPage() {
               {/* Bible study request */}
               <section id="request-bible-study" aria-labelledby="study-heading" className="scroll-mt-32 border-t border-border/50 pt-10">
                 <h2 id="study-heading" className="text-2xl">Request a Bible study</h2>
-                <p className="mb-5 mt-1 text-muted">
-                  A free, no-pressure study in person or online. You set the pace and the questions.
-                </p>
+                <p className="mb-5 mt-1 text-muted">A free Bible study, in person or online.</p>
                 <LeadForm
                   formType="bible-study-request"
                   ariaLabel="Bible study request form"

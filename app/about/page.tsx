@@ -61,7 +61,7 @@ export default function AboutPage() {
             as="h1"
             eyebrow="About the congregation"
             title="A church with one authority: the Bible"
-            lead="We are a family of New Testament Christians in Harrisonville, Missouri. We do not claim to be impressive. We claim to take God at His Word, and to welcome anyone willing to study it honestly."
+            lead="We are a family of New Testament Christians in Harrisonville, Missouri. We claim to take God at His Word, and to welcome anyone willing to study it honestly."
           />
         </Container>
       </Section>
@@ -146,7 +146,7 @@ export default function AboutPage() {
       {/* Internal links to the deeper pages */}
       <Section tone="light">
         <Container>
-          <div className="grid gap-5 md:grid-cols-3">
+          <div className="grid gap-5 md:grid-cols-2">
             <Surface tone="panel" className="flex flex-col gap-2">
               <Eyebrow>For visitors</Eyebrow>
               <h3 className="text-xl">What to expect on a first visit</h3>
@@ -158,12 +158,6 @@ export default function AboutPage() {
               <h3 className="text-xl">Meet the leadership</h3>
               <p className="text-ink">The men who teach, shepherd, and serve this congregation.</p>
               <CardLink href="/about/leadership">Meet the leaders</CardLink>
-            </Surface>
-            <Surface tone="panel" className="flex flex-col gap-2">
-              <Eyebrow>In their words</Eyebrow>
-              <h3 className="text-xl">Member stories</h3>
-              <p className="text-ink">How real people found a church home and answers to hard questions here.</p>
-              <CardLink href="/about/stories">Read member stories</CardLink>
             </Surface>
           </div>
         </Container>

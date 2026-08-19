@@ -18,6 +18,8 @@ export const metadata: Metadata = buildMetadata({
   ogTitle: 'How People Found a Church Home Here',
   ogDescription:
     'Honest accounts from members about first visits, hard questions, and finding a place to belong.',
+  // Hidden from navigation and search until real, consented stories are supplied.
+  noindex: true,
 })
 
 const breadcrumbs = [
