@@ -3,7 +3,6 @@ import Link from 'next/link'
 import { buildMetadata } from '@/lib/seo'
 import { JsonLd, breadcrumbSchema, webPageSchema } from '@/lib/jsonld'
 import { Container, Section, SectionHeading } from '@/components/primitives/Layout'
-import { Breadcrumbs } from '@/components/blocks/Breadcrumbs'
 import { SampleNotice } from '@/components/blocks/SampleNotice'
 import { PostCard } from '@/components/blocks/cards'
 import { getAllAuthors, getBlogCategories, recentPosts } from '@/lib/blog'
@@ -59,7 +58,6 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
 
       <Section tone="surface">
         <Container>
-          <Breadcrumbs crumbs={breadcrumbs} />
           <SectionHeading
             as="h1"
             eyebrow="From the congregation"

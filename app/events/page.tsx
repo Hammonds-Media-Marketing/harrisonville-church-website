@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 import { buildMetadata } from '@/lib/seo'
 import { JsonLd, breadcrumbSchema, eventSchema, webPageSchema } from '@/lib/jsonld'
-import { Container, Section, SectionHeading } from '@/components/primitives/Layout'
+import { Container, Section } from '@/components/primitives/Layout'
+import { PageHero } from '@/components/blocks/PageHero'
 import { Button } from '@/components/primitives/Button'
-import { Breadcrumbs } from '@/components/blocks/Breadcrumbs'
 import { SampleNotice } from '@/components/blocks/SampleNotice'
 import { EventCard } from '@/components/blocks/cards'
 import { upcomingEvents } from '@/content/events'
@@ -45,17 +45,11 @@ export default function EventsPage() {
         ]}
       />
 
-      <Section tone="surface">
-        <Container>
-          <Breadcrumbs crumbs={breadcrumbs} />
-          <SectionHeading
-            as="h1"
-            eyebrow="Calendar"
-            title="Upcoming events and gatherings"
-            lead="Beyond Sunday and Wednesday worship, the congregation gathers for study, fellowship, and service in the community. Guests are welcome at all of it, with no expectation to take part."
-          />
-        </Container>
-      </Section>
+      <PageHero
+        eyebrow="Calendar"
+        title="Upcoming events and gatherings"
+        lead="Beyond Sunday and Wednesday worship, the congregation gathers for study, fellowship, and service in the community. Guests are welcome at all of it, with no expectation to take part."
+      />
 
       <Section tone="light">
         <Container>

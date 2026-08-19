@@ -5,11 +5,11 @@ import { JsonLd, breadcrumbSchema, faqSchema, webPageSchema } from '@/lib/jsonld
 import { Container, Section, SectionHeading } from '@/components/primitives/Layout'
 import { Surface } from '@/components/primitives/Surface'
 import { Button } from '@/components/primitives/Button'
-import { Breadcrumbs } from '@/components/blocks/Breadcrumbs'
 import { Faq } from '@/components/blocks/Faq'
+import { PageHero } from '@/components/blocks/PageHero'
 import { CheckIcon } from '@/components/ui/icons'
 import { visitFaqs } from '@/content/faqs'
-import { PRIMARY_CTA, site } from '@/lib/site'
+import { site } from '@/lib/site'
 
 export const dynamic = 'force-static'
 
@@ -124,25 +124,24 @@ export default function WhatToExpectPage() {
         ]}
       />
 
-      <Section tone="surface">
-        <Container>
-          <Breadcrumbs crumbs={breadcrumbs} />
-          <SectionHeading
-            as="h1"
-            eyebrow="Planning your visit"
-            title="What a first visit actually looks like"
-            lead="The fear of the unknown keeps a lot of good people standing at the door. Here is exactly what happens on a Sunday, so you can walk in already knowing what to expect."
-          />
-          <div className="flex flex-wrap gap-3">
-            <Button href={PRIMARY_CTA.href} size="lg">
-              {PRIMARY_CTA.label}
-            </Button>
-            <Button href="/contact#contact-form" variant="ghost" size="lg">
-              Ask a question first
-            </Button>
-          </div>
-        </Container>
-      </Section>
+      <PageHero
+        eyebrow="Planning your visit"
+        title="What a first visit actually looks like"
+        lead="The fear of the unknown keeps a lot of good people standing at the door. Here is exactly what happens on a Sunday, so you can walk in already knowing what to expect."
+        photo={{
+          src: '/assets/photos/singing-in-the-pews.jpg',
+          alt: 'An older and a younger member of the congregation lean over an open book together across the pews',
+        }}
+      >
+        <div className="flex flex-wrap gap-3">
+          <Button href="/contact#contact-form" size="lg">
+            Let us know you are coming
+          </Button>
+          <Button href="/contact#contact-form" variant="ghost" size="lg">
+            Ask a question first
+          </Button>
+        </div>
+      </PageHero>
 
       {/* Reassurance */}
       <Section tone="light">

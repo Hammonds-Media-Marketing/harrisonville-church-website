@@ -2,11 +2,11 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import { buildMetadata } from '@/lib/seo'
 import { JsonLd, breadcrumbSchema, webPageSchema } from '@/lib/jsonld'
-import { Container, Section, SectionHeading } from '@/components/primitives/Layout'
+import { Container, Section } from '@/components/primitives/Layout'
+import { PageHero } from '@/components/blocks/PageHero'
 import { Surface } from '@/components/primitives/Surface'
 import { Badge } from '@/components/primitives/Badge'
 import { Button } from '@/components/primitives/Button'
-import { Breadcrumbs } from '@/components/blocks/Breadcrumbs'
 import { SampleNotice } from '@/components/blocks/SampleNotice'
 import { SermonCard } from '@/components/blocks/cards'
 import { PlayIcon } from '@/components/ui/icons'
@@ -43,17 +43,11 @@ export default function SermonsPage() {
         ]}
       />
 
-      <Section tone="surface">
-        <Container>
-          <Breadcrumbs crumbs={breadcrumbs} />
-          <SectionHeading
-            as="h1"
-            eyebrow="Watch and listen"
-            title="Sermon and video library"
-            lead="Every lesson is built on a passage of Scripture, named up front, so you can open your Bible and follow along or study further on your own."
-          />
-        </Container>
-      </Section>
+      <PageHero
+        eyebrow="Watch and listen"
+        title="Sermon and video library"
+        lead="Every lesson is built on a passage of Scripture, named up front, so you can open your Bible and follow along or study further on your own."
+      />
 
       <Section tone="light">
         <Container>

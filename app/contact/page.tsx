@@ -2,9 +2,9 @@ import type { Metadata } from 'next'
 import { buildMetadata } from '@/lib/seo'
 import { JsonLd, breadcrumbSchema, webPageSchema } from '@/lib/jsonld'
 import { site } from '@/lib/site'
-import { Container, Section, SectionHeading } from '@/components/primitives/Layout'
+import { Container, Section } from '@/components/primitives/Layout'
 import { Surface } from '@/components/primitives/Surface'
-import { Breadcrumbs } from '@/components/blocks/Breadcrumbs'
+import { PageHero } from '@/components/blocks/PageHero'
 import { LeadForm, type FormField } from '@/components/forms/LeadForm'
 import { ClockIcon, MailIcon, MapPinIcon, PhoneIcon } from '@/components/ui/icons'
 
@@ -62,18 +62,16 @@ export default function ContactPage() {
         ]}
       />
 
-      <Section tone="surface">
-        <Container>
-          <Breadcrumbs crumbs={breadcrumbs} />
-          <SectionHeading
-            as="h1"
-            id="contact-heading"
-            eyebrow="Connect with us"
-            title="We would be glad to hear from you"
-            lead="Whether you are planning a first visit, carrying something heavy, or want to open a Bible together, there is a way to reach us below. A real member reads every message and replies personally."
-          />
-        </Container>
-      </Section>
+      <PageHero
+        id="contact-heading"
+        eyebrow="Connect with us"
+        title="We would be glad to hear from you"
+        lead="Whether you are planning a first visit, carrying something heavy, or want to open a Bible together, there is a way to reach us below. A real member reads every message and replies personally."
+        photo={{
+          src: '/assets/photos/welcome-handshake.jpg',
+          alt: 'A member welcomes a visitor with a handshake just inside the front door of the building',
+        }}
+      />
 
       <Section tone="light">
         <Container>
