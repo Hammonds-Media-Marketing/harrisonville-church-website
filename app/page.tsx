@@ -180,12 +180,19 @@ export default function HomePage() {
             align="center"
             eyebrow="Simply Christians"
             title="A church family with open hearts and open doors"
-            lead="We are a Christ-centered church family in Harrisonville, Missouri. If you have been thinking, praying, searching, or hoping for a place to belong, there is a home waiting for you here in God's family."
+            lead="We are a Christ-centered church family in Harrisonville, Missouri. If you have been thinking, praying, searching, or hoping for a place to belong, there is a home awaiting you here in God's family."
           />
-          <p className="mx-auto max-w-2xl text-center text-lg text-ink">
-            You are always welcome to visit during any of our public worship services. Come as you are, meet the
-            family, and see for yourself.
-          </p>
+          <div className="mx-auto flex max-w-2xl flex-col gap-4 text-center text-lg text-ink">
+            <p>
+              Every person, whatever their background or walk of life, has been created in the image of God and
+              possesses an everlasting soul. It is our desire to share the joy of living a life in service to the
+              Lord Jesus Christ with anyone who is willing.
+            </p>
+            <p>
+              Our spiritual family has open hearts and open hands. You are always welcome to visit during any of our
+              public worship services. Come on in and see for yourself.
+            </p>
+          </div>
           <p className="mt-6 text-center">
             <CardLink href="/about">Learn who we are</CardLink>
           </p>
