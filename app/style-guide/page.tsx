@@ -6,7 +6,6 @@ import { Button } from '@/components/primitives/Button'
 import { Badge, SampleBadge } from '@/components/primitives/Badge'
 import { Surface } from '@/components/primitives/Surface'
 import { FieldShell, SelectField, TextArea, TextField } from '@/components/primitives/Field'
-import { Breadcrumbs } from '@/components/blocks/Breadcrumbs'
 import { SampleNotice } from '@/components/blocks/SampleNotice'
 import { Logo, Wordmark } from '@/components/brand/Logo'
 import { SearchIcon } from '@/components/ui/icons'
@@ -83,7 +82,6 @@ export default function StyleGuidePage() {
 
       <Section tone="surface">
         <Container>
-          <Breadcrumbs crumbs={breadcrumbs} />
           <h1 className="mt-5 text-4xl">Style guide and component gallery</h1>
           <p className="mt-3 max-w-2xl text-lg text-muted">
             Every color, type size, and component the site uses is defined once and shown here. Editing the tokens in{' '}
@@ -265,14 +263,6 @@ export default function StyleGuidePage() {
                 </div>
               </dl>
             </div>
-          </GalleryBlock>
-
-          {/* Navigations */}
-          <GalleryBlock id="navigations" category="Navigations" title="Breadcrumbs">
-            <Breadcrumbs crumbs={[{ name: 'Home', path: '/' }, { name: 'About', path: '/about' }, { name: 'What to Expect', path: '/about/what-to-expect' }]} />
-            <p className="mt-3 text-sm text-muted">
-              The primary header navigation and footer navigation are shown live on every page.
-            </p>
           </GalleryBlock>
 
           {/* Feedback */}

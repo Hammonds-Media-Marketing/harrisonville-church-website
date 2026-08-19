@@ -3,7 +3,6 @@ import Link from 'next/link'
 import { buildMetadata } from '@/lib/seo'
 import { JsonLd, breadcrumbSchema, webPageSchema } from '@/lib/jsonld'
 import { Container, Section } from '@/components/primitives/Layout'
-import { Breadcrumbs } from '@/components/blocks/Breadcrumbs'
 import { site } from '@/lib/site'
 
 export const dynamic = 'force-static'
@@ -33,7 +32,6 @@ export default function CookiePolicyPage() {
       />
       <Section tone="surface">
         <Container prose>
-          <Breadcrumbs crumbs={breadcrumbs} />
           <h1 className="mt-5 text-4xl">Cookie Usage Policy</h1>
           <p className="text-muted">Last updated June 9, 2026</p>
         </Container>

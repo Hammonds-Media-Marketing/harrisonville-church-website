@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 import { buildMetadata } from '@/lib/seo'
 import { JsonLd, breadcrumbSchema, webPageSchema } from '@/lib/jsonld'
-import { Container, Section, SectionHeading } from '@/components/primitives/Layout'
-import { Breadcrumbs } from '@/components/blocks/Breadcrumbs'
+import { Container, Section } from '@/components/primitives/Layout'
 import { LeaderCard } from '@/components/blocks/cards'
+import { PageHero } from '@/components/blocks/PageHero'
 import { leaders } from '@/content/leadership'
 
 export const dynamic = 'force-static'
@@ -36,17 +36,12 @@ export default function LeadershipPage() {
         ]}
       />
 
-      <Section tone="surface">
-        <Container>
-          <Breadcrumbs crumbs={breadcrumbs} />
-          <SectionHeading
-            as="h1"
-            eyebrow="The people who serve"
-            title="Leadership at the Harrisonville Church of Christ"
-            lead="A Church of Christ is overseen by its own elders, taught by an evangelist, and served by deacons. There is no outside hierarchy. These are the members who serve here."
-          />
-        </Container>
-      </Section>
+      <PageHero
+        eyebrow="The people who serve"
+        title="Leadership at the Harrisonville Church of Christ"
+        lead="A Church of Christ is overseen by its own elders, taught by an evangelist, and served by deacons. There is no outside hierarchy. These are the members who serve here."
+        portraits={leaders.map((l) => ({ src: l.photo, alt: l.photoAlt }))}
+      />
 
       <Section tone="light">
         <Container>

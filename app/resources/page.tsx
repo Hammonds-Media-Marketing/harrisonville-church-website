@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 import { buildMetadata } from '@/lib/seo'
 import { JsonLd, breadcrumbSchema, webPageSchema } from '@/lib/jsonld'
-import { Container, Eyebrow, Section, SectionHeading } from '@/components/primitives/Layout'
+import { Container, Eyebrow, Section } from '@/components/primitives/Layout'
+import { PageHero } from '@/components/blocks/PageHero'
 import { Surface } from '@/components/primitives/Surface'
-import { Breadcrumbs } from '@/components/blocks/Breadcrumbs'
 import { CardLink } from '@/components/blocks/cards'
 import { BookIcon, PlayIcon } from '@/components/ui/icons'
 
@@ -37,17 +37,11 @@ export default function ResourcesPage() {
           breadcrumbSchema(breadcrumbs),
         ]}
       />
-      <Section tone="surface">
-        <Container>
-          <Breadcrumbs crumbs={breadcrumbs} />
-          <SectionHeading
-            as="h1"
-            eyebrow="Free resources"
-            title="Study the Bible on your own terms"
-            lead="Everything here is free, and none of it requires you to attend or join anything. Start wherever your questions are."
-          />
-        </Container>
-      </Section>
+      <PageHero
+        eyebrow="Free resources"
+        title="Study the Bible on your own terms"
+        lead="Everything here is free, and none of it requires you to attend or join anything. Start wherever your questions are."
+      />
       <Section tone="light">
         <Container>
           <div className="grid gap-5 md:grid-cols-2">

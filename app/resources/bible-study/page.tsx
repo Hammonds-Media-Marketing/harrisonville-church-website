@@ -3,9 +3,9 @@ import Image from 'next/image'
 import { buildMetadata } from '@/lib/seo'
 import { JsonLd, breadcrumbSchema, courseSchema, webPageSchema } from '@/lib/jsonld'
 import { Container, Section, SectionHeading } from '@/components/primitives/Layout'
+import { PageHero } from '@/components/blocks/PageHero'
 import { Surface } from '@/components/primitives/Surface'
 import { Button } from '@/components/primitives/Button'
-import { Breadcrumbs } from '@/components/blocks/Breadcrumbs'
 import { bibleCourse, bibleLessons } from '@/content/bible-study'
 import { getLeader } from '@/content/leadership'
 
@@ -47,25 +47,21 @@ export default function BibleStudyPage() {
         ]}
       />
 
-      <Section tone="surface">
-        <Container>
-          <Breadcrumbs crumbs={breadcrumbs} />
-          <SectionHeading
-            as="h1"
-            eyebrow="Free, self-paced study"
-            title={bibleCourse.title}
-            lead={bibleCourse.description}
-          />
-          <div className="flex flex-wrap gap-3">
-            <Button href="/contact#request-bible-study" size="lg">
-              Study with someone
-            </Button>
-            <Button href={ONLINE_COURSE_URL || '#lessons'} variant="ghost" size="lg">
-              See the lessons
-            </Button>
-          </div>
-        </Container>
-      </Section>
+      <PageHero
+        eyebrow="Free, self-paced study"
+        title={bibleCourse.title}
+        lead={bibleCourse.description}
+        waveFill="var(--color-surface)"
+      >
+        <div className="flex flex-wrap gap-3">
+          <Button href="/contact#request-bible-study" size="lg">
+            Study with someone
+          </Button>
+          <Button href={ONLINE_COURSE_URL || '#lessons'} variant="ghost" size="lg">
+            See the lessons
+          </Button>
+        </div>
+      </PageHero>
 
       {/* Two ways to take the course */}
       <Section tone="surface">

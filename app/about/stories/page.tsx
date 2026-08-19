@@ -3,7 +3,6 @@ import { buildMetadata } from '@/lib/seo'
 import { JsonLd, breadcrumbSchema, webPageSchema } from '@/lib/jsonld'
 import { Container, Section, SectionHeading } from '@/components/primitives/Layout'
 import { Button } from '@/components/primitives/Button'
-import { Breadcrumbs } from '@/components/blocks/Breadcrumbs'
 import { SampleNotice } from '@/components/blocks/SampleNotice'
 import { StoryCard } from '@/components/blocks/cards'
 import { memberStories } from '@/content/stories'
@@ -40,7 +39,6 @@ export default function StoriesPage() {
 
       <Section tone="surface">
         <Container>
-          <Breadcrumbs crumbs={breadcrumbs} />
           <SectionHeading
             as="h1"
             eyebrow="In their own words"

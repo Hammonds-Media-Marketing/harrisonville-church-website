@@ -4,7 +4,6 @@ import { notFound } from 'next/navigation'
 import { buildMetadata } from '@/lib/seo'
 import { JsonLd, breadcrumbSchema, personSchema } from '@/lib/jsonld'
 import { Container, Section } from '@/components/primitives/Layout'
-import { Breadcrumbs } from '@/components/blocks/Breadcrumbs'
 import { SampleNotice } from '@/components/blocks/SampleNotice'
 import { PostCard } from '@/components/blocks/cards'
 import { LinkedInIcon } from '@/components/ui/icons'
@@ -64,7 +63,6 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
 
       <Section tone="surface">
         <Container>
-          <Breadcrumbs crumbs={breadcrumbs} />
           <div className="mt-5 flex flex-col items-start gap-5 sm:flex-row sm:gap-6">
             <Image
               src={author.photo}

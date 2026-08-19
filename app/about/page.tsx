@@ -6,8 +6,8 @@ import { JsonLd, breadcrumbSchema, webPageSchema } from '@/lib/jsonld'
 import { Container, Eyebrow, Section, SectionHeading } from '@/components/primitives/Layout'
 import { Surface } from '@/components/primitives/Surface'
 import { Button } from '@/components/primitives/Button'
-import { Breadcrumbs } from '@/components/blocks/Breadcrumbs'
 import { CardLink } from '@/components/blocks/cards'
+import { PageHero } from '@/components/blocks/PageHero'
 import { PRIMARY_CTA } from '@/lib/site'
 
 export const dynamic = 'force-static'
@@ -54,17 +54,15 @@ export default function AboutPage() {
         ]}
       />
 
-      <Section tone="surface">
-        <Container>
-          <Breadcrumbs crumbs={breadcrumbs} />
-          <SectionHeading
-            as="h1"
-            eyebrow="About the congregation"
-            title="A church with one authority: the Bible"
-            lead="We are a group of Christians in Harrisonville, Missouri, dedicated to worshiping God, honoring the Lord Jesus Christ, and growing together in the understanding of the Bible."
-          />
-        </Container>
-      </Section>
+      <PageHero
+        eyebrow="About the congregation"
+        title="A church with one authority: the Bible"
+        lead="We are a group of Christians in Harrisonville, Missouri, dedicated to worshiping God, honoring the Lord Jesus Christ, and growing together in the understanding of the Bible."
+        photo={{
+          src: '/assets/photos/congregation-outlook-drive.jpg',
+          alt: 'The Harrisonville Church of Christ congregation, several generations together at the front of the auditorium beneath the wooden cross',
+        }}
+      />
 
       {/* Welcome — written by the congregation's evangelist */}
       <Section tone="light">

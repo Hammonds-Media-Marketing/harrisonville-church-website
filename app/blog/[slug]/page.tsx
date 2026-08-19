@@ -7,7 +7,6 @@ import { JsonLd, articleSchema, breadcrumbSchema } from '@/lib/jsonld'
 import { SITE_URL } from '@/lib/site'
 import { Container, Section } from '@/components/primitives/Layout'
 import { Badge } from '@/components/primitives/Badge'
-import { Breadcrumbs } from '@/components/blocks/Breadcrumbs'
 import { SampleNotice } from '@/components/blocks/SampleNotice'
 import { PostCard } from '@/components/blocks/cards'
 import { ArticleBody, tocFromBody } from '@/components/blog/ArticleBody'
@@ -94,7 +93,6 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
       <Section tone="surface" className="pb-6">
         <Container>
-          <Breadcrumbs crumbs={breadcrumbs} />
           <div className="mt-5 flex flex-col gap-4">
             <div className="flex flex-wrap items-center gap-3">
               <Badge tone="primary">{post.category}</Badge>
