@@ -93,7 +93,7 @@ export default async function HomePage() {
             <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-ink">
               <span className="inline-flex items-center gap-2">
                 <ClockIcon className="h-5 w-5 text-primary-strong" />
-                Sundays 10:00 AM &amp; 2:00 PM, Wednesdays 7:30 PM
+                Sundays 10:00 AM &amp; 2:00 PM, Wednesdays 7:00 PM
               </span>
             </p>
           </div>

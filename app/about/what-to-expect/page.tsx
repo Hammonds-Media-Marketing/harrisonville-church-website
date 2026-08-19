@@ -92,7 +92,7 @@ const serviceOrders = [
     ],
   },
   {
-    heading: 'Sunday 2:00 PM and Wednesday 7:30 PM',
+    heading: 'Sunday 2:00 PM and Wednesday 7:00 PM',
     items: [
       'Opening announcements and prayer',
       'Song service',

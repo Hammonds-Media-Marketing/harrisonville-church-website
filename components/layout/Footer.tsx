@@ -36,7 +36,7 @@ export function Footer() {
                 <span>
                   Sundays 10:00 AM &amp; 2:00 PM
                   <br />
-                  Wednesdays 7:30 PM
+                  Wednesdays 7:00 PM
                 </span>
               </p>
             </address>

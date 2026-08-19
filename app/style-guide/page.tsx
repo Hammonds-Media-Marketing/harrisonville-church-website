@@ -261,7 +261,7 @@ export default function StyleGuidePage() {
                 </div>
                 <div className="flex justify-between">
                   <dt className="text-muted">Wednesday</dt>
-                  <dd className="font-semibold text-heading">7:30 PM</dd>
+                  <dd className="font-semibold text-heading">7:00 PM</dd>
                 </div>
               </dl>
             </div>
