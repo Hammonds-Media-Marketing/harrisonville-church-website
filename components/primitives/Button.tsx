@@ -15,17 +15,21 @@ type Size = 'sm' | 'md' | 'lg'
 const base =
   'inline-flex items-center justify-center gap-2 font-body font-semibold rounded-full transition-colors duration-base ease-out disabled:cursor-not-allowed select-none text-center'
 
+/* Each variant restates its label color on hover/active: buttons render as
+ * anchors when `href` is set, and the global `a:hover` color rule in
+ * globals.css would otherwise repaint the label to the link-hover teal —
+ * invisible against the teal button backgrounds. */
 const variants: Record<Variant, string> = {
   // Primary CTA — beacon gold with deep-navy label, the dominant action color.
   primary:
-    'bg-secondary text-on-secondary shadow-sm hover:bg-secondary-hover active:bg-secondary-active disabled:bg-primary-disabled disabled:text-on-primary-disabled disabled:shadow-none',
+    'bg-secondary text-on-secondary shadow-sm hover:bg-secondary-hover hover:text-on-secondary active:bg-secondary-active active:text-on-secondary disabled:bg-primary-disabled disabled:text-on-primary-disabled disabled:shadow-none',
   // Secondary — lighthouse teal with white label.
   secondary:
-    'bg-primary-strong text-on-primary shadow-sm hover:bg-primary-hover active:bg-primary-active disabled:bg-primary-disabled disabled:text-on-primary-disabled disabled:shadow-none',
+    'bg-primary-strong text-on-primary shadow-sm hover:bg-primary-hover hover:text-on-primary active:bg-primary-active active:text-on-primary disabled:bg-primary-disabled disabled:text-on-primary-disabled disabled:shadow-none',
   accent:
-    'bg-accent-strong text-on-accent shadow-sm hover:bg-primary-active active:bg-primary-active disabled:bg-primary-disabled disabled:text-on-primary-disabled disabled:shadow-none',
+    'bg-accent-strong text-on-accent shadow-sm hover:bg-primary-active hover:text-on-accent active:bg-primary-active active:text-on-accent disabled:bg-primary-disabled disabled:text-on-primary-disabled disabled:shadow-none',
   ghost:
-    'bg-transparent text-primary-strong border border-border-strong hover:bg-surface active:bg-surface-2 disabled:text-muted disabled:border-border',
+    'bg-transparent text-primary-strong border border-border-strong hover:bg-surface hover:text-primary-strong active:bg-surface-2 active:text-primary-strong disabled:text-muted disabled:border-border',
   link: 'bg-transparent text-link hover:text-link-hover underline underline-offset-4 rounded-sm px-0',
 }
 
