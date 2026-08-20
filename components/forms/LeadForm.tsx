@@ -163,7 +163,8 @@ export function LeadForm({
         </Button>
       </div>
       <p className="text-sm text-muted">
-        We will never share your information. Expect a personal reply, never an automated sales sequence.
+        We will never share your information. A member of the congregation will read your message and reply to you
+        personally.
       </p>
     </form>
   )

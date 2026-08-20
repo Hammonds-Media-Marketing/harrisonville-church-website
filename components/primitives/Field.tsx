@@ -37,12 +37,12 @@ export function FieldShell({
           </span>
         ) : null}
       </label>
+      <div data-described-by={describedBy || undefined}>{children}</div>
       {helper ? (
         <p id={`${id}-helper`} className="text-sm text-muted">
           {helper}
         </p>
       ) : null}
-      <div data-described-by={describedBy || undefined}>{children}</div>
       {error ? (
         <p id={`${id}-error`} role="alert" className="text-sm font-semibold text-error">
           {error}

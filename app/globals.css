@@ -212,6 +212,14 @@ a:hover {
   color: var(--color-link-hover);
 }
 
+/* Brand grade for congregation photography — a light, uniform pull on
+   saturation so the warm auditorium tones sit comfortably beside the site's
+   navy-and-gold palette. Originals stay untouched; remove this class to
+   revert any photo. */
+.photo-grade {
+  filter: saturate(0.82) contrast(1.03);
+}
+
 /* Visible focus for every interactive element — applied once, inherited everywhere. */
 :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
   outline: 3px solid var(--color-focus);

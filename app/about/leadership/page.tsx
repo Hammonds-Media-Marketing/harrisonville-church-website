@@ -63,7 +63,7 @@ export default function LeadershipPage() {
             Each congregation is independent and self-governing. Qualified men called elders, also described in
             Scripture as shepherds or overseers, watch over the spiritual welfare of the group. Deacons attend to
             practical needs, from benevolence to the care of the building. An evangelist, sometimes called the
-            preacher, teaches publicly and studies with people one on one. This is the simple structure the New
+            preacher, teaches publicly and studies with people one-on-one. This is the simple structure the New
             Testament describes, with no office above the local congregation.
           </p>
         </Container>
