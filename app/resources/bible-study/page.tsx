@@ -87,7 +87,7 @@ export default function BibleStudyPage() {
                   height={400}
                   loading="lazy"
                   sizes="(max-width: 640px) 100vw, 10rem"
-                  className="h-40 w-40 shrink-0 rounded-xl object-cover object-top"
+                  className="photo-grade h-40 w-40 shrink-0 rounded-xl object-cover object-top"
                 />
               ) : null}
               <div className="flex flex-1 flex-col gap-3">

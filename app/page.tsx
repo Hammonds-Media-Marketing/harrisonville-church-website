@@ -67,7 +67,7 @@ export default function HomePage() {
               A steady light for people seeking something real.
             </h1>
             <p className="max-w-xl text-lg text-muted">
-              We are New Testament Christians in Harrisonville, gathered around simple worship and an open Bible. If
+              We are New Testament Christians in Harrisonville, Missouri, gathered around simple worship and an open Bible. If
               you are tired of noise and unsure who to trust, you are welcome here. Come, sit, and see for yourself.
             </p>
             <div className="flex flex-wrap gap-3">
@@ -104,7 +104,7 @@ export default function HomePage() {
             title="Walking into a new church should not feel like a risk"
             lead="Many people who visit have questions they were never allowed to ask. Here, every question is welcome, and every visitor is treated as a guest."
           />
-          <figure className="mb-7 overflow-hidden rounded-xl">
+          <figure className="mb-7">
             <Image
               src="/assets/photos/congregation-outlook-drive.jpg"
               alt="The Harrisonville Church of Christ congregation, several generations together at the front of the auditorium beneath the wooden cross"
@@ -112,7 +112,7 @@ export default function HomePage() {
               height={900}
               loading="lazy"
               sizes="(max-width: 1160px) 100vw, 1100px"
-              className="h-auto w-full object-cover"
+              className="photo-grade h-auto w-full rounded-xl object-cover"
             />
             <figcaption className="mt-2 text-sm text-muted">
               The congregation, gathered in the auditorium on Outlook Drive.
@@ -154,11 +154,9 @@ export default function HomePage() {
             <Surface tone="deep" className="flex flex-col gap-4">
               <ul className="flex flex-col gap-3">
                 {site.services.map((s) => (
-                  <li key={s.id} className="flex items-center justify-between gap-4 border-b border-on-deep-muted/20 pb-3 last:border-0 last:pb-0">
+                  <li key={s.id} className="flex items-baseline justify-between gap-4 border-b border-on-deep-muted/20 pb-3 last:border-0 last:pb-0">
                     <span className="font-display text-xl text-on-deep">{s.label}</span>
-                    <span className="font-semibold text-secondary">
-                      {s.day}, {s.timeDisplay}
-                    </span>
+                    <span className="whitespace-nowrap font-semibold text-secondary">{s.timeDisplay}</span>
                   </li>
                 ))}
               </ul>
@@ -181,9 +179,12 @@ export default function HomePage() {
             align="center"
             eyebrow="Simply Christians"
             title="A church family with open hearts and open doors"
-            lead="We are a Christ-centered church family in Harrisonville, Missouri. If you have been thinking, praying, searching, or hoping for a place to belong, there is a home awaiting you here in God's family."
           />
           <div className="mx-auto flex max-w-2xl flex-col gap-4 text-center text-lg text-ink">
+            <p>
+              We are a Christ-centered church family in Harrisonville, Missouri. If you have been thinking, praying,
+              searching, or hoping for a place to belong, there is a home awaiting you here in God&rsquo;s family.
+            </p>
             <p>
               Every person, whatever their background or walk of life, has been created in the image of God and
               possesses an everlasting soul. It is our desire to share the joy of living a life in service to the

@@ -143,7 +143,7 @@ export function LeaderCard({ leader }: { leader: Leader }) {
           width={112}
           height={112}
           loading="lazy"
-          className="h-full w-full object-cover"
+          className="photo-grade h-full w-full object-cover"
         />
       </div>
       <div>

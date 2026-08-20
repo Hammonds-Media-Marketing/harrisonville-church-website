@@ -2,6 +2,7 @@
 
 import { useId, useRef, useState } from 'react'
 import { Surface } from '@/components/primitives/Surface'
+import { ClockIcon } from '@/components/ui/icons'
 
 export type WorshipAct = { title: string; body: string }
 export type ServicePhase = { label: string; items: string[] }
@@ -15,20 +16,15 @@ export type ServiceOrder = {
   actTitles: string[]
 }
 
-/* Phase accents cycle through the palette so each block of the service reads
-   as its own chapter, echoing the grouped-timeline treatment on the Valley
-   Parkway build. Colors are decorative; text stays on heading/ink tokens. */
-const phaseAccents = [
-  { pill: 'border-secondary-active', dot: 'bg-secondary-active' },
-  { pill: 'border-accent-strong', dot: 'bg-accent-strong' },
-  { pill: 'border-primary-strong', dot: 'bg-primary-strong' },
-]
-
 /**
  * ServiceOrderTabs — pick a service time to see the order it follows beside
- * an explanation of each part of worship it includes. All three panels are
+ * an explanation of each part of worship it includes. All panels are
  * server-rendered into the page; the tabs only toggle the `hidden` attribute,
  * so crawlers that do not run JavaScript still read every order of service.
+ *
+ * The order itself renders in the site's own visual language: gold-dashed
+ * small-caps phase labels, with the steps of each phase as numbered navy
+ * markers on a connected line, numbered continuously through the service.
  */
 export function ServiceOrderTabs({
   orders,
@@ -87,6 +83,7 @@ export function ServiceOrderTabs({
 
       {orders.map((order, i) => {
         const orderActs = acts.filter((act) => order.actTitles.includes(act.title))
+        let step = 0
         return (
           <div
             key={order.id}
@@ -97,43 +94,41 @@ export function ServiceOrderTabs({
             className="mt-7"
           >
             <div className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
-              {/* Order of service as a grouped timeline */}
+              {/* Order of service */}
               <Surface tone="card">
                 <h3 className="sr-only">{order.tabLabel} order of service</h3>
-                {order.note ? <p className="mb-4 text-muted">{order.note}</p> : null}
-                <div className="relative">
-                  <span aria-hidden="true" className="absolute bottom-1 left-1 top-3 w-px bg-border-strong" />
-                  <p className="m-0 flex items-center gap-3">
-                    <span aria-hidden="true" className="relative h-2.5 w-2.5 shrink-0 bg-heading" />
-                    <span className="font-display text-2xl text-heading">{order.time}</span>
-                  </p>
-                  <ol className="flex flex-col">
-                    {order.phases.map((phase, p) => {
-                      const accent = phaseAccents[p % phaseAccents.length]
-                      return (
-                        <li key={phase.label} className="pt-5">
-                          <p
-                            className={`relative m-0 inline-block rounded-full border-2 bg-bg px-4 py-1 text-sm font-semibold text-heading ${accent.pill}`}
-                          >
-                            {phase.label}
-                          </p>
-                          <ol className="flex flex-col">
-                            {phase.items.map((item) => (
-                              <li key={item} className="flex items-center gap-0 pt-4">
-                                <span aria-hidden="true" className={`relative h-2 w-2 shrink-0 rounded-full ${accent.dot}`} />
-                                <span aria-hidden="true" className="mx-2 w-8 shrink-0 border-t border-dotted border-border-strong" />
-                                <span className="text-sm text-ink">{item}</span>
-                              </li>
-                            ))}
-                          </ol>
-                        </li>
-                      )
-                    })}
-                  </ol>
-                  <p aria-hidden="true" className="m-0 pt-5">
-                    <span className="relative block h-2.5 w-2.5 bg-heading" />
-                  </p>
-                </div>
+                <p className="m-0 flex items-center gap-3">
+                  <ClockIcon className="h-6 w-6 shrink-0 text-primary-strong" />
+                  <span className="font-display text-2xl text-heading">{order.time}</span>
+                </p>
+                {order.note ? <p className="m-0 mt-3 text-muted">{order.note}</p> : null}
+                <ol className="mt-2 flex flex-col">
+                  {order.phases.map((phase) => {
+                    const start = step
+                    step += phase.items.length
+                    return (
+                      <li key={phase.label}>
+                        <p className="m-0 flex items-center gap-2 pb-3 pt-5 text-sm font-semibold uppercase tracking-[0.18em] text-primary-strong">
+                          <span aria-hidden="true" className="inline-block h-0.5 w-5 rounded-full bg-secondary-active" />
+                          {phase.label}
+                        </p>
+                        <ol className="flex flex-col">
+                          {phase.items.map((item, j) => (
+                            <li key={item} className="relative flex gap-3 pb-4 last:pb-0">
+                              {j < phase.items.length - 1 ? (
+                                <span aria-hidden="true" className="absolute bottom-0 left-3.5 top-7 w-px bg-border-strong" />
+                              ) : null}
+                              <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-primary-strong text-sm font-semibold text-on-primary">
+                                {start + j + 1}
+                              </span>
+                              <span className="pt-0.5 text-ink">{item}</span>
+                            </li>
+                          ))}
+                        </ol>
+                      </li>
+                    )
+                  })}
+                </ol>
               </Surface>
 
               {/* What each part of this service means */}

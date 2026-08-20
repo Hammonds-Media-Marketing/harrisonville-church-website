@@ -30,8 +30,8 @@ const generalFields: FormField[] = [
 ]
 
 const prayerFields: FormField[] = [
-  { kind: 'text', name: 'firstName', label: 'First name', required: true, autoComplete: 'given-name', helper: 'A last name is optional. Use only what you are comfortable sharing.' },
-  { kind: 'text', name: 'lastName', label: 'Last name', autoComplete: 'family-name' },
+  { kind: 'text', name: 'firstName', label: 'First name', required: true, autoComplete: 'given-name' },
+  { kind: 'text', name: 'lastName', label: 'Last name', autoComplete: 'family-name', helper: 'A last name is optional. Use only what you are comfortable sharing.' },
   { kind: 'email', name: 'email', label: 'Email', autoComplete: 'email' },
   { kind: 'select', name: 'visibility', label: 'How should we handle this request?', required: true, options: ['Keep it private to the leadership', 'Share it with the congregation for prayer'], full: true },
   { kind: 'textarea', name: 'request', label: 'Your prayer request', required: true, placeholder: 'Share as much or as little as you wish.', rows: 5 },
@@ -143,18 +143,19 @@ export default function ContactPage() {
                   <PhoneIcon className="h-5 w-5 shrink-0 text-primary-strong" />
                   {site.phoneDisplay}
                 </a>
-                <a href={`mailto:${site.email}`} className="flex items-center gap-3 break-all text-ink hover:text-link">
+                <a href={`mailto:${site.email}`} className="flex items-center gap-3 text-sm text-ink hover:text-link">
                   <MailIcon className="h-5 w-5 shrink-0 text-primary-strong" />
-                  {site.email}
+                  <span className="whitespace-nowrap">{site.email}</span>
                 </a>
                 <div className="flex items-start gap-3 border-t border-border/50 pt-4 text-ink">
                   <ClockIcon className="mt-0.5 h-5 w-5 shrink-0 text-primary-strong" />
-                  <div>
+                  <div className="flex-1">
                     <p className="font-semibold text-heading">Assembly times</p>
-                    <ul className="mt-1 text-muted">
+                    <ul className="mt-2 flex flex-col gap-1.5 text-sm">
                       {site.services.map((s) => (
-                        <li key={s.id}>
-                          {s.day} {s.timeDisplay}, {s.label}
+                        <li key={s.id} className="flex items-baseline justify-between gap-3">
+                          <span className="whitespace-nowrap text-muted">{s.label.replace(' Worship', '')}</span>
+                          <span className="whitespace-nowrap font-semibold text-heading">{s.timeDisplay}</span>
                         </li>
                       ))}
                     </ul>

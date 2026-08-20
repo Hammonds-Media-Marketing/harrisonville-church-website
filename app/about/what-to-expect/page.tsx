@@ -90,9 +90,22 @@ const serviceOrders: ServiceOrder[] = [
     actTitles: ['Prayer', 'Singing', 'Teaching', 'Communion', 'Collection'],
   },
   {
-    id: 'sunday-afternoon-wednesday',
-    tabLabel: 'Sunday Afternoon & Wednesday',
-    time: '2:00 PM & 7:00 PM',
+    id: 'sunday-afternoon',
+    tabLabel: 'Sunday Afternoon',
+    time: '2:00 PM',
+    phases: [
+      { label: 'Welcome & opening', items: ['Announcements', 'Opening prayer'] },
+      { label: 'Congregational singing', items: ['Song service', 'Prayer', 'Song'] },
+      { label: 'Teaching & invitation', items: ['Lesson', 'Invitation'] },
+      { label: 'Closing', items: ['Closing announcements', 'Closing prayer'] },
+    ],
+    actTitles: ['Prayer', 'Singing', 'Teaching'],
+  },
+  {
+    id: 'wednesday-evening',
+    tabLabel: 'Wednesday Evening',
+    time: '7:00 PM',
+    note: 'On the third Wednesday of each month, the evening service is devoted to singing and prayer instead.',
     phases: [
       { label: 'Welcome & opening', items: ['Announcements', 'Opening prayer'] },
       { label: 'Congregational singing', items: ['Song service', 'Prayer', 'Song'] },
@@ -159,7 +172,7 @@ export default function WhatToExpectPage() {
             <div>
               <h2 className="text-2xl">What will never happen to you here</h2>
               <p className="mt-2 text-muted">
-                For many people the real worry is being embarrassed. We take that seriously, so here is our promise.
+                For many people, the real worry is being embarrassed. We take that seriously, so here is our promise.
               </p>
               <ul className="mt-5 flex flex-col gap-3">
                 {wontHappen.map((item) => (
@@ -176,11 +189,9 @@ export default function WhatToExpectPage() {
               <h2 className="text-2xl">When to come</h2>
               <ul className="flex flex-col gap-3">
                 {site.services.map((s) => (
-                  <li key={s.id} className="flex items-center justify-between gap-4 border-b border-border/50 pb-3 last:border-0 last:pb-0">
+                  <li key={s.id} className="flex items-baseline justify-between gap-4 border-b border-border/50 pb-3 last:border-0 last:pb-0">
                     <span className="font-display text-xl text-heading">{s.label}</span>
-                    <span className="font-semibold text-primary-strong">
-                      {s.day}, {s.timeDisplay}
-                    </span>
+                    <span className="whitespace-nowrap font-semibold text-primary-strong">{s.timeDisplay}</span>
                   </li>
                 ))}
               </ul>
@@ -207,7 +218,7 @@ export default function WhatToExpectPage() {
                 height={1500}
                 loading="lazy"
                 sizes="(max-width: 1024px) 100vw, 38vw"
-                className="h-auto w-full rounded-xl"
+                className="photo-grade h-auto w-full rounded-xl"
               />
               <figcaption className="mt-2 text-sm text-muted">
                 A welcome at the door is as formal as it gets.

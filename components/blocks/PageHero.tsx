@@ -73,7 +73,7 @@ export function PageHero({
                 fill
                 priority
                 sizes="(max-width: 1024px) 100vw, 40vw"
-                className="object-cover"
+                className="photo-grade object-cover"
               />
             </div>
           </div>
@@ -91,7 +91,7 @@ export function PageHero({
                     height={176}
                     priority
                     sizes="(max-width: 640px) 7rem, 11rem"
-                    className="h-28 w-28 rounded-full border-4 border-bg object-cover object-top shadow-md md:h-44 md:w-44"
+                    className="photo-grade h-28 w-28 rounded-full border-4 border-bg object-cover object-top shadow-md md:h-44 md:w-44"
                   />
                 </li>
               ))}
