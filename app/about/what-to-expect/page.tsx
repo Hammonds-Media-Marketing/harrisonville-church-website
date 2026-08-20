@@ -74,7 +74,7 @@ const worshipActs = [
   },
 ]
 
-const serviceOrders = [
+const serviceOrders: { heading: string; note?: string; items: string[] }[] = [
   {
     heading: 'Sunday 10:00 AM',
     items: [
@@ -102,6 +102,17 @@ const serviceOrders = [
       'Invitation',
       'Closing announcements',
       'Closing prayer',
+    ],
+  },
+  {
+    heading: 'Third Wednesday 7:00 PM',
+    note: 'On the third Wednesday of each month, the evening service is devoted to singing and prayer.',
+    items: [
+      'Opening announcements and prayer',
+      'Songs and prayers, alternating through the evening',
+      'Closing announcements',
+      'Closing song',
+      'Dismissal prayer',
     ],
   },
 ]
@@ -227,7 +238,7 @@ export default function WhatToExpectPage() {
           <SectionHeading
             eyebrow="Worship, explained"
             title="What does each part of worship mean?"
-            lead="Our worship services are a time for Christians to assemble together to glorify God and encourage one another (1 Corinthians 14:23), with the goal that all may learn and be strengthened in faith (1 Corinthians 14:26, 31). Here is a description of each part of our worship and some supporting scriptures."
+            lead="Our worship is a time to glorify God and encourage one another. Here is a description of each part of our worship and some supporting scriptures."
           />
           <div className="grid gap-5 md:grid-cols-2">
             {worshipActs.map((act) => (
@@ -248,10 +259,11 @@ export default function WhatToExpectPage() {
       <Section tone="surface">
         <Container>
           <SectionHeading eyebrow="A walk through worship" title="What order does the service follow?" />
-          <div className="grid gap-5 md:grid-cols-2">
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {serviceOrders.map((order) => (
               <Surface key={order.heading} tone="panel" className="flex flex-col gap-3">
                 <h3 className="text-xl">{order.heading}</h3>
+                {order.note ? <p className="text-muted">{order.note}</p> : null}
                 <ol className="flex list-decimal flex-col gap-1.5 pl-5 text-ink marker:font-semibold marker:text-primary-strong">
                   {order.items.map((item) => (
                     <li key={item}>{item}</li>
@@ -260,16 +272,13 @@ export default function WhatToExpectPage() {
               </Surface>
             ))}
           </div>
-          <p className="mt-6 max-w-prose text-ink">
-            On the third Wednesday of every month, our evening service is a singing and prayer service.
-          </p>
         </Container>
       </Section>
 
       {/* FAQ */}
       <Section tone="light">
         <Container prose>
-          <SectionHeading align="center" eyebrow="Before you visit" title="Frequently asked questions" />
+          <SectionHeading align="center" eyebrow="Before you visit" title="Frequently Asked Questions" />
           <Faq items={visitFaqs} />
         </Container>
       </Section>

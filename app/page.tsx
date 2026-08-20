@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
+import Link from 'next/link'
 import { buildMetadata } from '@/lib/seo'
 import { JsonLd, webPageSchema } from '@/lib/jsonld'
 import { PRIMARY_CTA, site } from '@/lib/site'
@@ -190,7 +191,7 @@ export default function HomePage() {
             </p>
             <p>
               Our spiritual family has open hearts and open hands. You are always welcome to visit during any of our
-              public worship services. Come on in and see for yourself.
+              public worship services. <Link href="/about/what-to-expect">Come and see</Link> for yourself.
             </p>
           </div>
           <p className="mt-6 text-center">
