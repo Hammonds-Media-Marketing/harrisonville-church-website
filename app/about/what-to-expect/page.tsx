@@ -74,9 +74,10 @@ const worshipActs = [
   },
 ]
 
-const serviceOrders: { heading: string; note?: string; items: string[] }[] = [
+const serviceOrders: { label: string; times: { day: string; time: string }[]; note?: string; items: string[] }[] = [
   {
-    heading: 'Sunday 10:00 AM',
+    label: 'Sunday morning worship',
+    times: [{ day: 'Sunday', time: '10:00 AM' }],
     items: [
       'Opening announcements and prayer',
       'Song service',
@@ -92,7 +93,11 @@ const serviceOrders: { heading: string; note?: string; items: string[] }[] = [
     ],
   },
   {
-    heading: 'Sunday 2:00 PM and Wednesday 7:00 PM',
+    label: 'Afternoon and evening worship',
+    times: [
+      { day: 'Sunday', time: '2:00 PM' },
+      { day: 'Wednesday', time: '7:00 PM' },
+    ],
     items: [
       'Opening announcements and prayer',
       'Song service',
@@ -105,7 +110,8 @@ const serviceOrders: { heading: string; note?: string; items: string[] }[] = [
     ],
   },
   {
-    heading: 'Third Wednesday 7:00 PM',
+    label: 'Singing and prayer service',
+    times: [{ day: 'Third Wednesday', time: '7:00 PM' }],
     note: 'On the third Wednesday of each month, the evening service is devoted to singing and prayer.',
     items: [
       'Opening announcements and prayer',
@@ -259,14 +265,30 @@ export default function WhatToExpectPage() {
       <Section tone="surface">
         <Container>
           <SectionHeading eyebrow="A walk through worship" title="What order does the service follow?" />
-          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid items-start gap-5 md:grid-cols-2 lg:grid-cols-3">
             {serviceOrders.map((order) => (
-              <Surface key={order.heading} tone="panel" className="flex flex-col gap-3">
-                <h3 className="text-xl">{order.heading}</h3>
-                {order.note ? <p className="text-muted">{order.note}</p> : null}
-                <ol className="flex list-decimal flex-col gap-1.5 pl-5 text-ink marker:font-semibold marker:text-primary-strong">
-                  {order.items.map((item) => (
-                    <li key={item}>{item}</li>
+              <Surface key={order.label} tone="card" className="flex flex-col overflow-hidden">
+                <div className="-mx-6 -mt-6 mb-6 flex flex-col gap-2 bg-surface-deep-2 px-6 py-5">
+                  <h3 className="text-xl text-on-deep">{order.label}</h3>
+                  {order.times.map(({ day, time }) => (
+                    <p key={`${day} ${time}`} className="m-0 flex items-baseline justify-between gap-3">
+                      <span className="text-sm font-semibold uppercase tracking-[0.18em] text-on-deep-muted">{day}</span>
+                      <span className="whitespace-nowrap font-display text-2xl text-secondary">{time}</span>
+                    </p>
+                  ))}
+                </div>
+                {order.note ? <p className="mb-4 text-muted">{order.note}</p> : null}
+                <ol className="flex flex-col">
+                  {order.items.map((item, i) => (
+                    <li key={item} className="relative flex gap-3 pb-4 last:pb-0">
+                      {i < order.items.length - 1 ? (
+                        <span aria-hidden="true" className="absolute bottom-0 left-3.5 top-7 w-px bg-border-strong" />
+                      ) : null}
+                      <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-primary-strong text-sm font-semibold text-on-primary">
+                        {i + 1}
+                      </span>
+                      <span className="pt-0.5 text-ink">{item}</span>
+                    </li>
                   ))}
                 </ol>
               </Surface>
