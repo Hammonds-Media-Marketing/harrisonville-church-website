@@ -127,7 +127,7 @@ export default function AboutPage() {
         <Container>
           <SectionHeading
             align="center"
-            eyebrow="What holds us together"
+            eyebrow="Our convictions"
             title="Three convictions that shape everything"
           />
           <div className="grid gap-5 md:grid-cols-3">

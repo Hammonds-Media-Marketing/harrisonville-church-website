@@ -7,6 +7,7 @@ import { Surface } from '@/components/primitives/Surface'
 import { Button } from '@/components/primitives/Button'
 import { Faq } from '@/components/blocks/Faq'
 import { PageHero } from '@/components/blocks/PageHero'
+import { ServiceOrderTabs, type ServiceOrder } from '@/components/blocks/ServiceOrderTabs'
 import { CheckIcon } from '@/components/ui/icons'
 import { visitFaqs } from '@/content/faqs'
 import { site } from '@/lib/site'
@@ -74,35 +75,43 @@ const worshipActs = [
   },
 ]
 
-const serviceOrders = [
+const serviceOrders: ServiceOrder[] = [
   {
-    heading: 'Sunday 10:00 AM',
-    items: [
-      'Opening announcements and prayer',
-      'Song service',
-      'Prayer',
-      'Song',
-      'Communion',
-      'Collection',
-      'Lesson',
-      'Invitation',
-      'Closing announcements',
-      'Closing song',
-      'Dismissal prayer',
+    id: 'sunday-morning',
+    tabLabel: 'Sunday Morning',
+    time: '10:00 AM',
+    phases: [
+      { label: 'Welcome & opening', items: ['Announcements', 'Opening prayer'] },
+      { label: 'Congregational singing', items: ['Song service', 'Prayer', 'Song'] },
+      { label: 'Communion & collection', items: ['Communion', 'Collection'] },
+      { label: 'Teaching & invitation', items: ['Lesson', 'Invitation'] },
+      { label: 'Closing', items: ['Closing announcements', 'Closing song', 'Dismissal prayer'] },
     ],
+    actTitles: ['Prayer', 'Singing', 'Teaching', 'Communion', 'Collection'],
   },
   {
-    heading: 'Sunday 2:00 PM and Wednesday 7:00 PM',
-    items: [
-      'Opening announcements and prayer',
-      'Song service',
-      'Prayer',
-      'Song',
-      'Lesson',
-      'Invitation',
-      'Closing announcements',
-      'Closing prayer',
+    id: 'sunday-afternoon-wednesday',
+    tabLabel: 'Sunday Afternoon & Wednesday',
+    time: '2:00 PM & 7:00 PM',
+    phases: [
+      { label: 'Welcome & opening', items: ['Announcements', 'Opening prayer'] },
+      { label: 'Congregational singing', items: ['Song service', 'Prayer', 'Song'] },
+      { label: 'Teaching & invitation', items: ['Lesson', 'Invitation'] },
+      { label: 'Closing', items: ['Closing announcements', 'Closing prayer'] },
     ],
+    actTitles: ['Prayer', 'Singing', 'Teaching'],
+  },
+  {
+    id: 'third-wednesday',
+    tabLabel: 'Third Wednesday',
+    time: '7:00 PM',
+    note: 'On the third Wednesday of each month, the evening service is devoted to singing and prayer.',
+    phases: [
+      { label: 'Welcome & opening', items: ['Announcements', 'Opening prayer'] },
+      { label: 'Singing & prayer', items: ['Songs and prayers, alternating through the evening'] },
+      { label: 'Closing', items: ['Closing announcements', 'Closing song', 'Dismissal prayer'] },
+    ],
+    actTitles: ['Prayer', 'Singing'],
   },
 ]
 
@@ -221,22 +230,21 @@ export default function WhatToExpectPage() {
         </Container>
       </Section>
 
-      {/* Worship, explained — written by the congregation's evangelist */}
+      {/* Worship, explained — order of service and the meaning of each part,
+          selected by service time (modeled on the Valley Parkway build). All
+          three panels are in the served HTML; tabs only toggle visibility. */}
       <Section tone="light">
         <Container>
           <SectionHeading
-            eyebrow="Worship, explained"
-            title="What does each part of worship mean?"
-            lead="Our worship services are a time for Christians to assemble together to glorify God and encourage one another (1 Corinthians 14:23), with the goal that all may learn and be strengthened in faith (1 Corinthians 14:26, 31). Here is a description of each part of our worship and some supporting scriptures."
+            eyebrow="A walk through worship"
+            title="What happens during a worship service?"
+            lead="Our worship is a time to glorify God and encourage one another. Select a service time to see the order it follows and what each part of worship means."
           />
-          <div className="grid gap-5 md:grid-cols-2">
-            {worshipActs.map((act) => (
-              <Surface key={act.title} tone="card" className="flex flex-col gap-2 md:last:col-span-2">
-                <h3 className="text-xl">{act.title}</h3>
-                <p className="text-ink">{act.body}</p>
-              </Surface>
-            ))}
-          </div>
+          <ServiceOrderTabs
+            orders={serviceOrders}
+            acts={worshipActs}
+            actsIntro="We encourage you to worship with us. If any part is unfamiliar, there is no pressure to participate."
+          />
           <p className="mt-6 max-w-prose text-muted">
             We invite you to join with us and experience the joy of worshiping our Creator in spirit and truth (John
             4:24).
@@ -244,32 +252,10 @@ export default function WhatToExpectPage() {
         </Container>
       </Section>
 
-      {/* Order of service */}
-      <Section tone="surface">
-        <Container>
-          <SectionHeading eyebrow="A walk through worship" title="What order does the service follow?" />
-          <div className="grid gap-5 md:grid-cols-2">
-            {serviceOrders.map((order) => (
-              <Surface key={order.heading} tone="panel" className="flex flex-col gap-3">
-                <h3 className="text-xl">{order.heading}</h3>
-                <ol className="flex list-decimal flex-col gap-1.5 pl-5 text-ink marker:font-semibold marker:text-primary-strong">
-                  {order.items.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ol>
-              </Surface>
-            ))}
-          </div>
-          <p className="mt-6 max-w-prose text-ink">
-            On the third Wednesday of every month, our evening service is a singing and prayer service.
-          </p>
-        </Container>
-      </Section>
-
       {/* FAQ */}
-      <Section tone="light">
+      <Section tone="surface">
         <Container prose>
-          <SectionHeading align="center" eyebrow="Before you visit" title="Frequently asked questions" />
+          <SectionHeading align="center" eyebrow="Before you visit" title="Frequently Asked Questions" />
           <Faq items={visitFaqs} />
         </Container>
       </Section>
