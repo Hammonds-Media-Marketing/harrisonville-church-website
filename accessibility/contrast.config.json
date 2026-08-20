@@ -47,6 +47,7 @@
 
     { "name": "accent btn label", "fg": "var(--color-on-accent)", "bg": "var(--color-accent-strong)" },
     { "name": "accent text / page", "fg": "var(--color-accent-strong)", "bg": "var(--color-bg)" },
+    { "name": "accent icon / surface", "fg": "var(--color-accent-strong)", "bg": "var(--color-surface)", "ui": true },
 
     { "name": "placeholder / input", "fg": "var(--color-placeholder)", "bg": "var(--color-input-bg)" },
     { "name": "input border / page", "fg": "var(--color-border)", "bg": "var(--color-bg)", "ui": true },
