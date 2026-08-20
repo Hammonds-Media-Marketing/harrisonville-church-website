@@ -106,6 +106,7 @@ export const footerNav: { heading: string; items: NavItem[] }[] = [
       { label: 'Contact Us', href: '/contact' },
       { label: 'Prayer Request', href: '/contact#prayer-request' },
       { label: 'Request a Bible Study', href: '/contact#request-bible-study' },
+      { label: 'Member Sign In', href: '/members/login' },
     ],
   },
   {
