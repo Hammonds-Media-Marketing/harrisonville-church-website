@@ -121,7 +121,8 @@ export default function HomePage() {
           <div className="grid gap-5 md:grid-cols-3">
             {reassurances.map((r) => (
               <Surface key={r.title} tone="card" className="flex flex-col gap-3">
-                <span className="grid h-11 w-11 place-items-center rounded-full bg-surface text-primary-strong">
+                {/* Living-water green — the logo's grass color as the color of "yes". */}
+                <span className="grid h-11 w-11 place-items-center rounded-full bg-surface text-accent-strong">
                   <CheckIcon className="h-6 w-6" />
                 </span>
                 <h3 className="text-xl">{r.title}</h3>
