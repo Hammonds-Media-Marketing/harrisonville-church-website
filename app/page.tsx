@@ -12,9 +12,9 @@ import { SampleNotice } from '@/components/blocks/SampleNotice'
 import { LighthouseScene } from '@/components/hero/LighthouseScene'
 import { SermonCard, CardLink } from '@/components/blocks/cards'
 import { BookIcon, CheckIcon, ClockIcon, MapPinIcon } from '@/components/ui/icons'
-import { recentSermons } from '@/content/sermons'
+import { recentSermons } from '@/lib/sermons'
 
-export const dynamic = 'force-static'
+export const revalidate = 3600
 
 export const metadata: Metadata = buildMetadata({
   title: 'Harrisonville Church of Christ | Bible-Based Worship',
@@ -44,8 +44,8 @@ const reassurances = [
   },
 ]
 
-export default function HomePage() {
-  const sermons = recentSermons().slice(0, 3)
+export default async function HomePage() {
+  const sermons = (await recentSermons()).slice(0, 3)
 
   return (
     <>

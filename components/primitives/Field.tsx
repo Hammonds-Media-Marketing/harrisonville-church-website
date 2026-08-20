@@ -59,6 +59,8 @@ export function TextField({
   required,
   autoComplete,
   placeholder,
+  defaultValue,
+  minLength,
 }: {
   id: string
   name: string
@@ -66,6 +68,8 @@ export function TextField({
   required?: boolean
   autoComplete?: string
   placeholder?: string
+  defaultValue?: string
+  minLength?: number
 }) {
   return (
     <input
@@ -76,6 +80,8 @@ export function TextField({
       aria-required={required || undefined}
       autoComplete={autoComplete}
       placeholder={placeholder}
+      defaultValue={defaultValue}
+      minLength={minLength}
       className={fieldBase}
     />
   )
@@ -87,12 +93,14 @@ export function TextArea({
   required,
   rows = 4,
   placeholder,
+  defaultValue,
 }: {
   id: string
   name: string
   required?: boolean
   rows?: number
   placeholder?: string
+  defaultValue?: string
 }) {
   return (
     <textarea
@@ -102,6 +110,7 @@ export function TextArea({
       aria-required={required || undefined}
       rows={rows}
       placeholder={placeholder}
+      defaultValue={defaultValue}
       className={`${fieldBase} resize-y`}
     />
   )
@@ -113,15 +122,24 @@ export function SelectField({
   required,
   options,
   placeholder = 'Select an option',
+  defaultValue = '',
 }: {
   id: string
   name: string
   required?: boolean
   options: string[]
   placeholder?: string
+  defaultValue?: string
 }) {
   return (
-    <select id={id} name={name} required={required} aria-required={required || undefined} defaultValue="" className={fieldBase}>
+    <select
+      id={id}
+      name={name}
+      required={required}
+      aria-required={required || undefined}
+      defaultValue={defaultValue}
+      className={fieldBase}
+    >
       <option value="" disabled>
         {placeholder}
       </option>
@@ -131,5 +149,43 @@ export function SelectField({
         </option>
       ))}
     </select>
+  )
+}
+
+/** Labeled checkbox — used for the directory privacy toggles and admin flags. */
+export function CheckboxField({
+  id,
+  name,
+  label,
+  defaultChecked,
+  helper,
+}: {
+  id: string
+  name: string
+  label: string
+  defaultChecked?: boolean
+  helper?: string
+}) {
+  return (
+    <div className="flex items-start gap-3">
+      <input
+        id={id}
+        name={name}
+        type="checkbox"
+        defaultChecked={defaultChecked}
+        aria-describedby={helper ? `${id}-helper` : undefined}
+        className="mt-1 h-5 w-5 shrink-0 rounded border-border accent-primary-strong"
+      />
+      <span className="flex flex-col gap-0.5">
+        <label htmlFor={id} className="font-semibold text-heading">
+          {label}
+        </label>
+        {helper ? (
+          <span id={`${id}-helper`} className="text-sm text-muted">
+            {helper}
+          </span>
+        ) : null}
+      </span>
+    </div>
   )
 }

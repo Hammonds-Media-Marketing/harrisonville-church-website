@@ -10,9 +10,9 @@ import { Button } from '@/components/primitives/Button'
 import { SampleNotice } from '@/components/blocks/SampleNotice'
 import { SermonCard } from '@/components/blocks/cards'
 import { PlayIcon } from '@/components/ui/icons'
-import { recentSermons } from '@/content/sermons'
+import { recentSermons } from '@/lib/sermons'
 
-export const dynamic = 'force-static'
+export const revalidate = 3600
 
 export const metadata: Metadata = buildMetadata({
   title: 'Sermons & Video Library',
@@ -29,8 +29,8 @@ const breadcrumbs = [
   { name: 'Sermons & Videos', path: '/resources/sermons' },
 ]
 
-export default function SermonsPage() {
-  const sermons = recentSermons()
+export default async function SermonsPage() {
+  const sermons = await recentSermons()
   const featured = sermons[0]
   const rest = sermons.slice(1)
 

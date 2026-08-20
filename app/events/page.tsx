@@ -6,7 +6,7 @@ import { PageHero } from '@/components/blocks/PageHero'
 import { Button } from '@/components/primitives/Button'
 import { SampleNotice } from '@/components/blocks/SampleNotice'
 import { EventCard } from '@/components/blocks/cards'
-import { upcomingEvents } from '@/content/events'
+import { upcomingEvents } from '@/lib/events'
 
 export const revalidate = 3600
 
@@ -24,8 +24,8 @@ const breadcrumbs = [
   { name: 'Events', path: '/events' },
 ]
 
-export default function EventsPage() {
-  const events = upcomingEvents()
+export default async function EventsPage() {
+  const events = await upcomingEvents()
 
   return (
     <>

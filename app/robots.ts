@@ -11,17 +11,19 @@ import { SITE_URL } from '@/lib/site'
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
-      { userAgent: '*', allow: '/' },
+      // /members is the private, session-gated members area — kept out of
+      // crawl for every agent (its pages are also noindex).
+      { userAgent: '*', allow: '/', disallow: '/members' },
 
       // Allow — retrieval and indexing bots.
-      { userAgent: 'Googlebot', allow: '/' },
-      { userAgent: 'Bingbot', allow: '/' },
-      { userAgent: 'Slurp', allow: '/' },
-      { userAgent: 'DuckDuckBot', allow: '/' },
-      { userAgent: 'OAI-SearchBot', allow: '/' },
-      { userAgent: 'PerplexityBot', allow: '/' },
-      { userAgent: 'ClaudeBot', allow: '/' },
-      { userAgent: 'meta-externalagent', allow: '/' },
+      { userAgent: 'Googlebot', allow: '/', disallow: '/members' },
+      { userAgent: 'Bingbot', allow: '/', disallow: '/members' },
+      { userAgent: 'Slurp', allow: '/', disallow: '/members' },
+      { userAgent: 'DuckDuckBot', allow: '/', disallow: '/members' },
+      { userAgent: 'OAI-SearchBot', allow: '/', disallow: '/members' },
+      { userAgent: 'PerplexityBot', allow: '/', disallow: '/members' },
+      { userAgent: 'ClaudeBot', allow: '/', disallow: '/members' },
+      { userAgent: 'meta-externalagent', allow: '/', disallow: '/members' },
 
       // Disallow — training scrapers.
       { userAgent: 'GPTBot', disallow: '/' },
