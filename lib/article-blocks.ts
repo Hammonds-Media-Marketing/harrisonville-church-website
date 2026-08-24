@@ -32,6 +32,51 @@ export function blocksToText(blocks: Block[]): string {
     .join('\n\n')
 }
 
+/**
+ * Parse the block JSON posted by the rich text editor. Returns null when the
+ * payload is not valid block JSON, so callers can fall back to the plain-text
+ * format. Unknown block types and stray fields are dropped.
+ */
+export function parseBlocksJson(raw: string): Block[] | null {
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(raw)
+  } catch {
+    return null
+  }
+  if (!Array.isArray(parsed)) return null
+
+  const blocks: Block[] = []
+  for (const item of parsed) {
+    if (!item || typeof item !== 'object') return null
+    const b = item as Record<string, unknown>
+    switch (b.type) {
+      case 'h2':
+      case 'h3':
+      case 'p':
+        if (typeof b.text === 'string' && b.text.trim()) blocks.push({ type: b.type, text: b.text.trim() })
+        break
+      case 'scripture':
+        if (typeof b.text === 'string' && b.text.trim()) {
+          blocks.push({
+            type: 'scripture',
+            text: b.text.trim(),
+            ...(typeof b.ref === 'string' && b.ref.trim() ? { ref: b.ref.trim() } : {}),
+          })
+        }
+        break
+      case 'list': {
+        const items = Array.isArray(b.items) ? b.items.filter((i): i is string => typeof i === 'string' && !!i.trim()) : []
+        if (items.length) blocks.push({ type: 'list', items: items.map((i) => i.trim()) })
+        break
+      }
+      default:
+        return null
+    }
+  }
+  return blocks
+}
+
 export function textToBlocks(text: string): Block[] {
   const blocks: Block[] = []
   const chunks = text.replace(/\r\n/g, '\n').split(/\n{2,}/)

@@ -264,6 +264,8 @@ export type Database = {
           description: string
           end_date: string | null
           id: string
+          image: string | null
+          image_alt: string | null
           location_name: string | null
           published: boolean
           recurring: string | null
@@ -280,6 +282,8 @@ export type Database = {
           description: string
           end_date?: string | null
           id?: string
+          image?: string | null
+          image_alt?: string | null
           location_name?: string | null
           published?: boolean
           recurring?: string | null
@@ -296,6 +300,8 @@ export type Database = {
           description?: string
           end_date?: string | null
           id?: string
+          image?: string | null
+          image_alt?: string | null
           location_name?: string | null
           published?: boolean
           recurring?: string | null

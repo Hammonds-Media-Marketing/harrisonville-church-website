@@ -5,6 +5,8 @@ const nextConfig = {
   poweredByHeader: false,
   images: {
     formats: ['image/avif', 'image/webp'],
+    // Editor uploads are served from the Supabase Storage "media" bucket.
+    remotePatterns: [{ protocol: 'https', hostname: '*.supabase.co', pathname: '/storage/v1/object/public/**' }],
   },
   // Security headers — applied to every route at the edge.
   async headers() {
