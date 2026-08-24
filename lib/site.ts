@@ -80,6 +80,8 @@ export const primaryNav: NavItem[] = [
     ],
   },
   { label: 'Connect', href: '/contact' },
+  // Signed-out visitors land on the sign-in page via the members middleware.
+  { label: 'Members', href: '/members' },
 ]
 
 export const footerNav: { heading: string; items: NavItem[] }[] = [
