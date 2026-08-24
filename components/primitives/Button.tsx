@@ -9,7 +9,7 @@ import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from 'reac
  * contrast gate.
  */
 
-type Variant = 'primary' | 'secondary' | 'accent' | 'ghost' | 'link'
+type Variant = 'primary' | 'secondary' | 'accent' | 'ghost' | 'ghostOnDeep' | 'link'
 type Size = 'sm' | 'md' | 'lg'
 
 const base =
@@ -30,6 +30,10 @@ const variants: Record<Variant, string> = {
     'bg-accent-strong text-on-accent shadow-sm hover:bg-primary-active hover:text-on-accent active:bg-primary-active active:text-on-accent disabled:bg-primary-disabled disabled:text-on-primary-disabled disabled:shadow-none',
   ghost:
     'bg-transparent text-primary-strong border border-border-strong hover:bg-surface hover:text-primary-strong active:bg-surface-2 active:text-primary-strong disabled:text-muted disabled:border-border',
+  // Ghost for deep-navy sections — the light ghost's teal label fails contrast
+  // on navy, so this variant restates every state against the deep tokens.
+  ghostOnDeep:
+    'bg-transparent text-on-deep border border-on-deep-muted hover:bg-surface-deep-2 hover:text-on-deep active:bg-surface-deep-2 active:text-on-deep disabled:text-on-deep-muted disabled:border-on-deep-muted/50',
   link: 'bg-transparent text-link hover:text-link-hover underline underline-offset-4 rounded-sm px-0',
 }
 

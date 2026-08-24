@@ -27,6 +27,10 @@
     { "name": "on-deep-muted / navy", "fg": "var(--color-on-deep-muted)", "bg": "var(--color-surface-deep)" },
     { "name": "heading on navy", "fg": "var(--color-on-deep)", "bg": "var(--color-surface-deep)", "large": true },
 
+    { "name": "ghost-on-deep btn label / navy", "fg": "var(--color-on-deep)", "bg": "var(--color-surface-deep)" },
+    { "name": "ghost-on-deep btn border / navy", "fg": "var(--color-on-deep-muted)", "bg": "var(--color-surface-deep)", "ui": true },
+    { "name": "ghost-on-deep btn label hover / navy-2", "fg": "var(--color-on-deep)", "bg": "var(--color-surface-deep-2)" },
+
     { "name": "link / page", "fg": "var(--color-link)", "bg": "var(--color-bg)" },
     { "name": "link / surface", "fg": "var(--color-link)", "bg": "var(--color-surface)" },
     { "name": "link :hover / page", "fg": "var(--color-link-hover)", "bg": "var(--color-bg)" },
