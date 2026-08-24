@@ -77,7 +77,16 @@ export function Footer() {
               &copy; {new Date().getFullYear()} {site.name}. No creed but the Bible.
             </p>
             <p>
-              Built with care for the Harrisonville and Cass County community.
+              Built with care for the Harrisonville and Cass County community by{' '}
+              <a
+                href="https://www.hmm.agency/?utm_source=referral&utm_medium=harrisonvillecofc"
+                target="_blank"
+                rel="noopener"
+                className="underline underline-offset-2 hover:text-secondary"
+              >
+                Hammonds Media &amp; Marketing
+              </a>
+              .
             </p>
           </div>
         </div>

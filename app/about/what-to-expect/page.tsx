@@ -154,16 +154,7 @@ export default function WhatToExpectPage() {
           src: '/assets/photos/singing-in-the-pews.jpg',
           alt: 'An older and a younger member of the congregation lean over an open book together across the pews',
         }}
-      >
-        <div className="flex flex-wrap gap-3">
-          <Button href="/contact#contact-form" size="lg">
-            Let us know you are coming
-          </Button>
-          <Button href="/contact#contact-form" variant="ghost" size="lg">
-            Ask a question first
-          </Button>
-        </div>
-      </PageHero>
+      />
 
       {/* Reassurance */}
       <Section tone="light">
