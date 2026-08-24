@@ -46,7 +46,7 @@ export default async function SermonsPage() {
       <PageHero
         eyebrow="Watch and listen"
         title="Sermon and video library"
-        lead="Every lesson is built on a passage of Scripture, named up front, so you can open your Bible and follow along or study further on your own."
+        lead="Every lesson is built on a passage of Scripture, so you can open your Bible and follow along or study further on your own."
       />
 
       <Section tone="light">

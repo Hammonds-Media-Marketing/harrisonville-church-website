@@ -146,7 +146,7 @@ export default async function HomePage() {
                 onDeep
                 eyebrow="Plan your visit"
                 title="When and where we gather"
-                lead="There is parking at the building. Come a few minutes early, and a member near the door will help you find your way."
+                lead="There is parking at the building. Come a few minutes early, and you will be greeted by a member who can help you with anything."
               />
               <Button href={PRIMARY_CTA.href} variant="primary" className="w-fit">
                 {PRIMARY_CTA.label}
