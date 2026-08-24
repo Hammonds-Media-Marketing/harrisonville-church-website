@@ -51,19 +51,25 @@ export default async function EditAnnouncementPage({
             <form action={saveAnnouncementAction} className="flex flex-col gap-5">
               {item ? <input type="hidden" name="id" value={item.id} /> : null}
 
-              <FieldShell id="ann-title" label="Title" required>
+              <FieldShell id="ann-title" label="Title" required tip="A short headline members see on the dashboard, like 'Building closed Friday'.">
                 <TextField id="ann-title" name="title" required defaultValue={item?.title ?? ''} />
               </FieldShell>
 
-              <FieldShell id="ann-body" label="Announcement" required helper="Line breaks are kept as written.">
+              <FieldShell
+                id="ann-body"
+                label="Announcement"
+                required
+                helper="Line breaks are kept as written."
+                tip="The full note. Only signed-in members see it — it never appears on the public site."
+              >
                 <TextArea id="ann-body" name="body" required rows={6} defaultValue={item?.body ?? ''} />
               </FieldShell>
 
               <div className="grid gap-5 sm:grid-cols-2">
-                <FieldShell id="ann-category" label="Category" helper="Optional.">
+                <FieldShell id="ann-category" label="Category" helper="Optional." tip="A label that helps members scan the dashboard, such as Care or Facilities.">
                   <SelectField id="ann-category" name="category" options={CATEGORIES} defaultValue={item?.category ?? ''} />
                 </FieldShell>
-                <FieldShell id="ann-publish" label="Post date" required>
+                <FieldShell id="ann-publish" label="Post date" required tip="The date shown on the announcement. Newest post dates appear first.">
                   <TextField
                     id="ann-publish"
                     name="publish_date"
@@ -74,7 +80,12 @@ export default async function EditAnnouncementPage({
                 </FieldShell>
               </div>
 
-              <FieldShell id="ann-expires" label="Expires" helper="After this date it drops off the dashboard. Optional.">
+              <FieldShell
+                id="ann-expires"
+                label="Expires"
+                helper="After this date it drops off the dashboard. Optional."
+                tip="Set this for time-limited notes, like a sign-up deadline, so they clean themselves up."
+              >
                 <TextField id="ann-expires" name="expires_on" type="date" defaultValue={item?.expires_on ?? ''} />
               </FieldShell>
 

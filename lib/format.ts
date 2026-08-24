@@ -1,9 +1,14 @@
 /** Shared formatting helpers. */
 
+/** The congregation's timezone; event times are entered and shown as local
+ *  church time regardless of where the server runs. */
+const CHURCH_TZ = 'America/Chicago'
+
 export function formatDate(iso: string): string {
   // Parse as a date-only value in a stable way (avoid TZ drift for YYYY-MM-DD).
   const d = iso.length <= 10 ? new Date(`${iso}T12:00:00`) : new Date(iso)
-  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+  const timeZone = iso.length <= 10 ? undefined : CHURCH_TZ
+  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone })
 }
 
 export function formatDateRange(startIso: string, endIso?: string): string {
@@ -12,15 +17,18 @@ export function formatDateRange(startIso: string, endIso?: string): string {
     month: 'long',
     day: 'numeric',
     year: 'numeric',
+    timeZone: CHURCH_TZ,
   })
-  const timeStr = start.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+  const timeStr = start.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: CHURCH_TZ })
   if (!endIso) return `${startStr} at ${timeStr}`
   const end = new Date(endIso)
-  const sameDay = start.toDateString() === end.toDateString()
+  const sameDay =
+    start.toLocaleDateString('en-US', { timeZone: CHURCH_TZ }) ===
+    end.toLocaleDateString('en-US', { timeZone: CHURCH_TZ })
   if (sameDay) {
     return `${startStr} at ${timeStr}`
   }
-  const endStr = end.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+  const endStr = end.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: CHURCH_TZ })
   return `${startStr} – ${endStr}`
 }
 
@@ -28,10 +36,6 @@ export function formatViews(n: number): string {
   if (n >= 1000) return `${(n / 1000).toFixed(1).replace(/\.0$/, '')}k`
   return String(n)
 }
-
-/** The congregation's timezone; event times are entered and shown as local
- *  church time regardless of where the server runs. */
-const CHURCH_TZ = 'America/Chicago'
 
 /** ISO instant -> value for a datetime-local input, in church time. */
 export function isoToLocalInput(iso: string): string {

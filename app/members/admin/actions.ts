@@ -4,8 +4,9 @@ import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { getSupabaseServer, getAuthContext, isEditorRole, isAdminRole } from '@/lib/supabase-server'
 import { pingIndexNow } from '@/lib/indexnow'
-import { textToBlocks } from '@/lib/article-blocks'
+import { parseBlocksJson, textToBlocks } from '@/lib/article-blocks'
 import { localInputToIso, slugify } from '@/lib/format'
+import { isRecurrenceRule } from '@/lib/recurrence'
 import type { Database } from '@/lib/database.types'
 
 /**
@@ -47,9 +48,12 @@ export async function saveEventAction(formData: FormData) {
   const { supabase } = await requireEditor()
   const id = text(formData, 'id')
   const title = text(formData, 'title')
+  const slug = text(formData, 'slug') || slugify(title)
+  const recurring = text(formData, 'recurring')
+  const image = text(formData, 'image')
 
   const values: Database['public']['Tables']['events']['Insert'] = {
-    slug: text(formData, 'slug') || slugify(title),
+    slug,
     title,
     summary: text(formData, 'summary'),
     description: text(formData, 'description'),
@@ -57,7 +61,9 @@ export async function saveEventAction(formData: FormData) {
     end_date: text(formData, 'end_date') ? localInputToIso(text(formData, 'end_date')) : null,
     location_name: text(formData, 'location_name') || null,
     category: text(formData, 'category'),
-    recurring: text(formData, 'recurring') || null,
+    recurring: isRecurrenceRule(recurring) ? recurring : null,
+    image: image || null,
+    image_alt: image ? text(formData, 'image_alt') || title : null,
     published: flag(formData, 'published'),
     sample: false,
   }
@@ -71,19 +77,20 @@ export async function saveEventAction(formData: FormData) {
     redirect(`/members/admin/events/${id || 'new'}?error=save`)
   }
 
-  await publishRefresh(['/events'])
+  await publishRefresh(['/events', `/events/${slug}`])
   revalidatePath('/members/admin/events')
   redirect('/members/admin/events?saved=1')
 }
 
 export async function deleteEventAction(formData: FormData) {
   const { supabase } = await requireEditor()
+  const slug = text(formData, 'slug')
   const { error } = await supabase.from('events').delete().eq('id', text(formData, 'id'))
   if (error) {
     console.warn('[admin] event delete failed:', error.message)
     redirect('/members/admin/events?error=delete')
   }
-  await publishRefresh(['/events'])
+  await publishRefresh(slug ? ['/events', `/events/${slug}`] : ['/events'])
   revalidatePath('/members/admin/events')
   redirect('/members/admin/events?deleted=1')
 }
@@ -167,7 +174,10 @@ export async function saveArticleAction(formData: FormData) {
     feature_image: text(formData, 'feature_image'),
     feature_image_alt: text(formData, 'feature_image_alt'),
     read_minutes: Number(text(formData, 'read_minutes')) || 5,
-    body: textToBlocks(String(formData.get('body') ?? '')),
+    // The rich text editor posts block JSON; the plain-text format remains a
+    // fallback so older clients (or a script) can still submit text.
+    body:
+      parseBlocksJson(String(formData.get('body') ?? '')) ?? textToBlocks(String(formData.get('body') ?? '')),
     related_slugs: text(formData, 'related_slugs')
       .split(',')
       .map((s) => s.trim())

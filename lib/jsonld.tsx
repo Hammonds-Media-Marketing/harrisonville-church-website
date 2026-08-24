@@ -165,6 +165,7 @@ export function eventSchema(e: {
   startDate: string
   endDate?: string
   locationName?: string
+  image?: string
 }): Json {
   return {
     '@context': 'https://schema.org',
@@ -173,9 +174,10 @@ export function eventSchema(e: {
     description: e.description,
     startDate: e.startDate,
     ...(e.endDate ? { endDate: e.endDate } : {}),
+    ...(e.image ? { image: e.image.startsWith('http') ? e.image : `${SITE_URL}${e.image}` } : {}),
     eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
     eventStatus: 'https://schema.org/EventScheduled',
-    url: `${SITE_URL}/events#${e.slug}`,
+    url: `${SITE_URL}/events/${e.slug}`,
     location: {
       '@type': 'Place',
       name: e.locationName || site.name,

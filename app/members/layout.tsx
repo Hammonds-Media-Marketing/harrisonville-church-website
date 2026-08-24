@@ -20,7 +20,9 @@ export default async function MembersLayout({ children }: { children: ReactNode 
     <>
       {user ? (
         <div className="border-b border-border bg-surface">
-          <Container className="flex flex-wrap items-center gap-x-5 gap-y-2 py-3">
+          {/* Extra top padding on desktop keeps the links clear of the header's
+              cloud-puff edge, which overhangs the bar by ~24px. */}
+          <Container className="flex flex-wrap items-center gap-x-5 gap-y-2 pb-3 pt-3 md:pt-9">
             <nav aria-label="Members area" className="flex flex-wrap items-center gap-x-5 gap-y-2">
               <Link href="/members" className="font-semibold text-heading hover:text-link-hover">
                 Announcements

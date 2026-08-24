@@ -69,6 +69,7 @@ export default async function AdminEventsPage({
                       </Button>
                       <form action={deleteEventAction}>
                         <input type="hidden" name="id" value={e.id} />
+                        <input type="hidden" name="slug" value={e.slug} />
                         <Button type="submit" variant="ghost" size="sm">
                           Delete
                         </Button>

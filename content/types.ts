@@ -43,7 +43,12 @@ export type ChurchEvent = {
   endDate?: string
   locationName?: string
   category: 'Worship' | 'Bible Study' | 'Fellowship' | 'Outreach' | 'Youth'
+  /** Human-readable repeat label shown on cards, e.g. "First Sunday monthly". */
   recurring?: string
+  /** Machine recurrence rule; when present the calendar expands repeat dates. */
+  recurrenceRule?: 'weekly' | 'biweekly' | 'monthly-weekday' | 'monthly-date'
+  image?: string
+  imageAlt?: string
   sample: boolean
 }
 

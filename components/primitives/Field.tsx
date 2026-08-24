@@ -11,11 +11,36 @@ import type { ReactNode } from 'react'
 const fieldBase =
   'w-full rounded-md border bg-input-bg px-4 py-3 text-ink placeholder:text-placeholder border-border focus:border-primary-strong'
 
+/** Small "What is this?" affordance next to a field label. Pure CSS show/hide
+ *  (hover and keyboard focus), so it works inside Server Component forms. */
+export function FieldTip({ id, label, tip }: { id: string; label: string; tip: string }) {
+  return (
+    <span className="group relative inline-flex">
+      <button
+        type="button"
+        aria-label={`About the ${label} field`}
+        aria-describedby={`${id}-tip`}
+        className="grid h-5 w-5 place-items-center rounded-full border border-border-strong text-xs font-bold leading-none text-muted transition-colors hover:border-primary-strong hover:text-primary-strong focus-visible:border-primary-strong focus-visible:text-primary-strong"
+      >
+        ?
+      </button>
+      <span
+        role="tooltip"
+        id={`${id}-tip`}
+        className="pointer-events-none invisible absolute left-0 top-full z-20 mt-2 w-64 rounded-md bg-surface-deep px-3 py-2 text-sm font-normal normal-case tracking-normal text-on-deep opacity-0 shadow-lg transition-opacity group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100"
+      >
+        {tip}
+      </span>
+    </span>
+  )
+}
+
 export function FieldShell({
   id,
   label,
   required,
   helper,
+  tip,
   error,
   children,
 }: {
@@ -23,20 +48,25 @@ export function FieldShell({
   label: string
   required?: boolean
   helper?: string
+  /** Plain-language tooltip explaining what the field is for. */
+  tip?: string
   error?: string
   children: ReactNode
 }) {
   const describedBy = [helper ? `${id}-helper` : null, error ? `${id}-error` : null].filter(Boolean).join(' ')
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="font-semibold text-heading">
-        {label}{' '}
-        {required ? (
-          <span className="text-error" aria-hidden="true">
-            *
-          </span>
-        ) : null}
-      </label>
+      <span className="flex items-center gap-2">
+        <label htmlFor={id} className="font-semibold text-heading">
+          {label}{' '}
+          {required ? (
+            <span className="text-error" aria-hidden="true">
+              *
+            </span>
+          ) : null}
+        </label>
+        {tip ? <FieldTip id={id} label={label} tip={tip} /> : null}
+      </span>
       <div data-described-by={describedBy || undefined}>{children}</div>
       {helper ? (
         <p id={`${id}-helper`} className="text-sm text-muted">
@@ -127,10 +157,14 @@ export function SelectField({
   id: string
   name: string
   required?: boolean
-  options: string[]
+  /** Plain strings, or value/label pairs when the stored value differs from
+   *  the wording shown to the editor. */
+  options: Array<string | { value: string; label: string }>
   placeholder?: string
   defaultValue?: string
 }) {
+  const normalized = options.map((o) => (typeof o === 'string' ? { value: o, label: o } : o))
+  const hasEmptyOption = normalized.some((o) => o.value === '')
   return (
     <select
       id={id}
@@ -140,12 +174,14 @@ export function SelectField({
       defaultValue={defaultValue}
       className={fieldBase}
     >
-      <option value="" disabled>
-        {placeholder}
-      </option>
-      {options.map((o) => (
-        <option key={o} value={o}>
-          {o}
+      {hasEmptyOption ? null : (
+        <option value="" disabled>
+          {placeholder}
+        </option>
+      )}
+      {normalized.map((o) => (
+        <option key={o.value} value={o.value}>
+          {o.label}
         </option>
       ))}
     </select>

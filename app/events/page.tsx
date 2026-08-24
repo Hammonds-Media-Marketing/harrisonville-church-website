@@ -40,6 +40,8 @@ export default async function EventsPage() {
               slug: e.slug,
               startDate: e.startDate,
               endDate: e.endDate,
+              locationName: e.locationName,
+              image: e.image,
             })
           ),
         ]}

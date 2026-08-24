@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { SITE_URL } from '@/lib/site'
+import { upcomingEvents } from '@/lib/events'
 
 /**
  * Sitemap generated from routes — never hardcoded. Blog, author, and
@@ -18,6 +19,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: url('/about/what-to-expect'), lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
     { url: url('/about/leadership'), lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
     { url: url('/events'), lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
+    ...(await upcomingEvents()).map((e) => ({
+      url: url(`/events/${e.slug}`),
+      lastModified: now,
+      changeFrequency: 'weekly' as const,
+      priority: 0.6,
+    })),
     { url: url('/resources/sermons'), lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
     { url: url('/resources/bible-study'), lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: url('/contact'), lastModified: now, changeFrequency: 'monthly', priority: 0.8 },

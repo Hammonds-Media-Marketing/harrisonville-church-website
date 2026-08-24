@@ -38,17 +38,37 @@ export function TestimonialCard({ t }: { t: Testimonial }) {
 
 export function EventCard({ event }: { event: ChurchEvent }) {
   return (
-    <Surface id={event.slug} tone="card" interactive className="flex h-full flex-col gap-3">
-      <div className="flex items-center justify-between gap-2">
-        <Badge tone="primary">{event.category}</Badge>
-        {event.recurring ? <span className="text-sm text-muted">{event.recurring}</span> : null}
-      </div>
-      <h3 className="text-xl">{event.title}</h3>
-      <p className="flex items-center gap-2 text-sm text-muted">
-        <CalendarIcon className="h-4 w-4 text-primary-strong" />
-        {formatDateRange(event.startDate, event.endDate)}
-      </p>
-      <p className="flex-1 text-ink">{event.summary}</p>
+    <Surface id={event.slug} tone="card" interactive className="flex h-full flex-col p-0">
+      <Link href={`/events/${event.slug}`} className="group flex h-full flex-col">
+        {event.image ? (
+          <div className="relative aspect-[16/9] overflow-hidden rounded-t-lg bg-surface">
+            <Image
+              src={event.image}
+              alt={event.imageAlt ?? ''}
+              fill
+              loading="lazy"
+              sizes="(max-width: 768px) 100vw, 33vw"
+              className="object-cover transition-transform duration-slow ease-out group-hover:scale-105"
+            />
+          </div>
+        ) : null}
+        <div className="flex flex-1 flex-col gap-3 p-5">
+          <div className="flex items-center justify-between gap-2">
+            <Badge tone="primary">{event.category}</Badge>
+            {event.recurring ? <span className="text-sm text-muted">{event.recurring}</span> : null}
+          </div>
+          <h3 className="text-xl text-heading group-hover:text-link-hover">{event.title}</h3>
+          <p className="flex items-center gap-2 text-sm text-muted">
+            <CalendarIcon className="h-4 w-4 shrink-0 text-primary-strong" />
+            {formatDateRange(event.startDate, event.endDate)}
+          </p>
+          <p className="flex-1 text-ink">{event.summary}</p>
+          <p className="inline-flex items-center gap-1.5 text-sm font-semibold text-link group-hover:text-link-hover">
+            Event details
+            <ArrowRightIcon className="h-4 w-4" />
+          </p>
+        </div>
+      </Link>
     </Surface>
   )
 }
