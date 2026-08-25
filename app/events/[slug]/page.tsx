@@ -195,7 +195,7 @@ export default async function EventDetailPage({ params }: Params) {
             <Button href="/about/what-to-expect" variant="primary" size="lg">
               What to expect
             </Button>
-            <Button href="/contact#contact-form" variant="ghost" size="lg" className="border-on-deep-muted text-on-deep hover:bg-surface-deep-2 hover:text-on-deep active:bg-surface-deep-2 active:text-on-deep">
+            <Button href="/contact#contact-form" variant="ghostOnDeep" size="lg">
               Ask a question
             </Button>
           </div>

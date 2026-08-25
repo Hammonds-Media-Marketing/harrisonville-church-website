@@ -178,6 +178,12 @@ export default function StyleGuidePage() {
                 <Button loading>Loading</Button>
                 <Button variant="secondary" disabled>Disabled</Button>
               </div>
+              <div className="flex flex-wrap items-center gap-3 rounded-md bg-surface-deep p-4">
+                <Button variant="ghostOnDeep">Ghost on deep</Button>
+                <Button variant="ghostOnDeep" disabled>
+                  Disabled
+                </Button>
+              </div>
             </div>
           </GalleryBlock>
 

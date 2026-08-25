@@ -253,7 +253,7 @@ export default async function HomePage() {
             <Button href={PRIMARY_CTA.href} variant="primary" size="lg">
               {PRIMARY_CTA.label}
             </Button>
-            <Button href="/contact" variant="ghost" size="lg" className="border-on-deep-muted/50 text-on-deep hover:bg-surface-deep-2">
+            <Button href="/contact" variant="ghostOnDeep" size="lg">
               Contact us
             </Button>
           </div>
