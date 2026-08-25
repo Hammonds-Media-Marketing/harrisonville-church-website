@@ -56,10 +56,10 @@ export type NavItem = {
   children?: NavItem[]
 }
 
-/** Primary navigation. Dropdowns group the About and Resources sections.
- *  The blog and member-stories pages are hidden from all navigation for now,
- *  at the congregation's direction; the routes remain so they can be made
- *  visible again later. */
+/** Primary navigation. A dropdown groups the About section.
+ *  The blog, member-stories, and sermon-library pages are hidden from all
+ *  navigation for now, at the congregation's direction; the routes remain so
+ *  they can be made visible again later. */
 export const primaryNav: NavItem[] = [
   {
     label: 'About',
@@ -71,15 +71,8 @@ export const primaryNav: NavItem[] = [
     ],
   },
   { label: 'Events', href: '/events' },
-  {
-    label: 'Resources',
-    href: '/resources',
-    children: [
-      { label: 'Sermons & Videos', href: '/resources/sermons', description: 'Watch and listen to recent lessons' },
-      { label: 'Bible Study Course', href: '/resources/bible-study', description: 'A free, self-paced study of the Gospel' },
-    ],
-  },
-  { label: 'Connect', href: '/contact' },
+  { label: 'Bible Study Course', href: '/resources/bible-study' },
+  { label: 'Contact Us', href: '/contact' },
 ]
 
 export const footerNav: { heading: string; items: NavItem[] }[] = [
@@ -94,7 +87,6 @@ export const footerNav: { heading: string; items: NavItem[] }[] = [
   {
     heading: 'Resources',
     items: [
-      { label: 'Sermons & Videos', href: '/resources/sermons' },
       { label: 'Bible Study Course', href: '/resources/bible-study' },
       { label: 'Events', href: '/events' },
     ],

@@ -5,17 +5,20 @@ import { Container, Eyebrow, Section } from '@/components/primitives/Layout'
 import { PageHero } from '@/components/blocks/PageHero'
 import { Surface } from '@/components/primitives/Surface'
 import { CardLink } from '@/components/blocks/cards'
-import { BookIcon, PlayIcon } from '@/components/ui/icons'
+import { BookIcon } from '@/components/ui/icons'
 
 export const dynamic = 'force-static'
 
 export const metadata: Metadata = buildMetadata({
   title: 'Resources for Studying the Bible',
   description:
-    'Free resources from the Harrisonville Church of Christ: a self-paced Bible study course and a library of sermons and videos drawn straight from Scripture.',
+    'Free resources from the Harrisonville Church of Christ: a self-paced Bible study course drawn straight from Scripture.',
   path: '/resources',
   ogTitle: 'Study the Bible at Your Own Pace',
-  ogDescription: 'Sermons, a free Bible study course, and articles that answer honest questions from the New Testament.',
+  ogDescription: 'A free, self-paced Bible study course that answers honest questions from the New Testament.',
+  // The hub is unlinked while the sermon library is hidden; the Bible study
+  // course is reached directly from the primary navigation instead.
+  noindex: true,
 })
 
 const breadcrumbs = [
@@ -24,7 +27,6 @@ const breadcrumbs = [
 ]
 
 const resources = [
-  { icon: PlayIcon, title: 'Sermons & Videos', body: 'Watch and listen to recent lessons drawn straight from Scripture.', href: '/resources/sermons', cta: 'Browse sermons' },
   { icon: BookIcon, title: 'Bible Study Course', body: 'A free, self-paced study of the Gospel from the beginning. No cost, no obligation.', href: '/resources/bible-study', cta: 'Begin the course' },
 ]
 

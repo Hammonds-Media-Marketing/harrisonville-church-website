@@ -3,11 +3,11 @@ import { SITE_URL } from '@/lib/site'
 import { upcomingEvents } from '@/lib/events'
 
 /**
- * Sitemap generated from routes — never hardcoded. Blog, author, and
- * member-stories routes are intentionally omitted while those sections are
- * hidden at the congregation's direction; restore them here when the pages
- * are made visible again. changefreq and priority are set per route type per
- * the full-website mode doc.
+ * Sitemap generated from routes — never hardcoded. Blog, author,
+ * member-stories, and sermon-library routes are intentionally omitted while
+ * those sections are hidden at the congregation's direction; restore them here
+ * when the pages are made visible again. changefreq and priority are set per
+ * route type per the full-website mode doc.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date()
@@ -25,7 +25,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly' as const,
       priority: 0.6,
     })),
-    { url: url('/resources/sermons'), lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
     { url: url('/resources/bible-study'), lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: url('/contact'), lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: url('/style-guide'), lastModified: now, changeFrequency: 'yearly', priority: 0.2 },
