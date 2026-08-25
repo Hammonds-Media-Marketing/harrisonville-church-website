@@ -8,13 +8,9 @@ import { Container, Eyebrow, Section, SectionHeading } from '@/components/primit
 import { Button } from '@/components/primitives/Button'
 import { Surface } from '@/components/primitives/Surface'
 import { Wave } from '@/components/decor/Wave'
-import { SampleNotice } from '@/components/blocks/SampleNotice'
 import { LighthouseScene } from '@/components/hero/LighthouseScene'
-import { SermonCard, CardLink } from '@/components/blocks/cards'
+import { CardLink } from '@/components/blocks/cards'
 import { BookIcon, CheckIcon, ClockIcon, MapPinIcon } from '@/components/ui/icons'
-import { recentSermons } from '@/lib/sermons'
-
-export const revalidate = 3600
 
 export const metadata: Metadata = buildMetadata({
   title: 'Harrisonville Church of Christ | Bible-Based Worship',
@@ -44,9 +40,7 @@ const reassurances = [
   },
 ]
 
-export default async function HomePage() {
-  const sermons = (await recentSermons()).slice(0, 3)
-
+export default function HomePage() {
   return (
     <>
       <JsonLd data={[webPageSchema({ name: site.name, description: site.description, path: '/' })]} />
@@ -222,22 +216,6 @@ export default async function HomePage() {
               Begin the course
             </Button>
           </Surface>
-        </Container>
-      </Section>
-
-      {/* ----------------------------------------------------------- Sermons */}
-      <Section tone="surface" ariaLabelledby="sermons-heading">
-        <Container>
-          <div className="mb-6 flex items-end justify-between gap-4">
-            <SectionHeading id="sermons-heading" eyebrow="Watch and listen" title="Recent lessons" />
-            <CardLink href="/resources/sermons">All sermons</CardLink>
-          </div>
-          <SampleNotice label="These sermons are placeholders." />
-          <div className="grid gap-5 md:grid-cols-3">
-            {sermons.map((s) => (
-              <SermonCard key={s.slug} sermon={s} />
-            ))}
-          </div>
         </Container>
       </Section>
 

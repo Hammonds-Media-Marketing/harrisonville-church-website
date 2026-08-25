@@ -21,6 +21,8 @@ export const metadata: Metadata = buildMetadata({
   path: '/resources/sermons',
   ogTitle: 'Recent Lessons From the Harrisonville Church of Christ',
   ogDescription: 'A growing library of sermons and videos, each grounded in a passage you can read for yourself.',
+  // Hidden from navigation and search at the congregation's direction.
+  noindex: true,
 })
 
 const breadcrumbs = [
