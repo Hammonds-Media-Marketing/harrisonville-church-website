@@ -5,6 +5,7 @@ import { site } from '@/lib/site'
 import { Container, Section } from '@/components/primitives/Layout'
 import { Surface } from '@/components/primitives/Surface'
 import { PageHero } from '@/components/blocks/PageHero'
+import { ParkingAerial } from '@/components/blocks/ParkingAerial'
 import { LeadForm, type FormField } from '@/components/forms/LeadForm'
 import { ClockIcon, MailIcon, MapPinIcon, PhoneIcon } from '@/components/ui/icons'
 
@@ -147,6 +148,12 @@ export default function ContactPage() {
                   <MailIcon className="h-5 w-5 shrink-0 text-primary-strong" />
                   <span className="whitespace-nowrap">{site.email}</span>
                 </a>
+                <figure className="border-t border-border/50 pt-4">
+                  <ParkingAerial sizes="(max-width: 1024px) 100vw, 320px" />
+                  <figcaption className="mt-2 text-sm text-muted">
+                    Enter the parking lot from 2 Highway, near the corner of 2 Highway and Outlook Drive.
+                  </figcaption>
+                </figure>
                 <div className="flex items-start gap-3 border-t border-border/50 pt-4 text-ink">
                   <ClockIcon className="mt-0.5 h-5 w-5 shrink-0 text-primary-strong" />
                   <div className="flex-1">

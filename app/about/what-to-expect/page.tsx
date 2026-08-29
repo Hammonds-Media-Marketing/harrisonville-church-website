@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import { buildMetadata } from '@/lib/seo'
 import { JsonLd, breadcrumbSchema, faqSchema, webPageSchema } from '@/lib/jsonld'
 import { Container, Section, SectionHeading } from '@/components/primitives/Layout'
@@ -7,6 +6,7 @@ import { Surface } from '@/components/primitives/Surface'
 import { Button } from '@/components/primitives/Button'
 import { Faq } from '@/components/blocks/Faq'
 import { PageHero } from '@/components/blocks/PageHero'
+import { ParkingAerial } from '@/components/blocks/ParkingAerial'
 import { ServiceOrderTabs, type ServiceOrder } from '@/components/blocks/ServiceOrderTabs'
 import { CheckIcon } from '@/components/ui/icons'
 import { visitFaqs } from '@/content/faqs'
@@ -35,7 +35,7 @@ const breadcrumbs = [
 const steps = [
   {
     title: 'Arriving and parking',
-    body: 'Parking is accessed from 2 Highway, at the corner of 2 Highway and Outlook Drive. Come a few minutes early if you can. Someone near the entrance will greet you when you arrive.',
+    body: 'Enter the parking lot from 2 Highway, near the corner of 2 Highway and Outlook Drive. The overhead photo beside these steps marks the entrance with an arrow. Come a few minutes early if you can, and someone near the door will greet you when you arrive.',
   },
   {
     title: 'Finding a seat',
@@ -202,17 +202,9 @@ export default function WhatToExpectPage() {
           <SectionHeading eyebrow="Step by step" title="Walking through a Sunday morning" />
           <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
             <figure className="lg:sticky lg:top-24">
-              <Image
-                src="/assets/photos/welcome-handshake.jpg"
-                alt="A member welcomes a visitor with a handshake just inside the front door of the building"
-                width={1000}
-                height={1500}
-                loading="lazy"
-                sizes="(max-width: 1024px) 100vw, 38vw"
-                className="photo-grade h-auto w-full rounded-xl"
-              />
+              <ParkingAerial />
               <figcaption className="mt-2 text-sm text-muted">
-                A welcome at the door is as formal as it gets.
+                The parking lot from above. Enter from 2 Highway, near the corner of 2 Highway and Outlook Drive, and the front door is a short walk from the lot.
               </figcaption>
             </figure>
             <ol className="flex flex-col gap-4">
