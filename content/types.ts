@@ -9,7 +9,10 @@ export type Leader = {
   slug: string
   name: string
   role: string
-  bio: string
+  /** One- or two-sentence third-person summary for leader cards and meta descriptions. */
+  shortBio: string
+  /** Full third-person biography for the profile page, one string per paragraph. */
+  bioParagraphs: string[]
   photo: string
   photoAlt: string
   sample: boolean

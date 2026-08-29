@@ -140,7 +140,7 @@ export default function HomePage() {
                 onDeep
                 eyebrow="Plan your visit"
                 title="When and where we gather"
-                lead="There is parking at the building. Come a few minutes early, and you will be greeted by a member who can help you with anything."
+                lead="There is parking at the building. Enter the lot from 2 Highway, near the corner of 2 Highway and Outlook Drive, and a member will greet you when you arrive."
               />
               <Button href={PRIMARY_CTA.href} variant="primary" className="w-fit">
                 {PRIMARY_CTA.label}

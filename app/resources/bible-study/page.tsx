@@ -31,7 +31,7 @@ const breadcrumbs = [
 ]
 
 export default function BibleStudyPage() {
-  const evangelist = getLeader('issac-moreno')
+  const evangelist = getLeader('isaac-moreno')
   return (
     <>
       <JsonLd
