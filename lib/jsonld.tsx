@@ -132,6 +132,38 @@ export function personSchema(p: {
   }
 }
 
+/** ProfilePage for a leadership profile — the Person is the page's mainEntity,
+ *  tied to the church organization node. */
+export function profilePageSchema(p: {
+  name: string
+  role: string
+  description: string
+  path: string
+  image?: string
+}): Json {
+  const url = `${SITE_URL}${p.path}`
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ProfilePage',
+    '@id': `${url}#webpage`,
+    url,
+    name: `${p.name}, ${p.role} of the ${site.name}`,
+    isPartOf: { '@id': WEBSITE_ID },
+    inLanguage: 'en-US',
+    mainEntity: {
+      '@type': 'Person',
+      '@id': `${url}#person`,
+      name: p.name,
+      jobTitle: p.role,
+      description: p.description,
+      url,
+      ...(p.image ? { image: `${SITE_URL}${p.image}` } : {}),
+      worksFor: { '@id': ORG_ID },
+      memberOf: { '@id': ORG_ID },
+    },
+  }
+}
+
 export function articleSchema(a: {
   title: string
   description: string

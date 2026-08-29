@@ -170,7 +170,10 @@ export function LeaderCard({ leader }: { leader: Leader }) {
         <h3 className="text-xl">{leader.name}</h3>
         <p className="text-sm font-semibold uppercase tracking-wide text-primary-strong">{leader.role}</p>
       </div>
-      <p className="text-ink">{leader.bio}</p>
+      <p className="flex-1 text-ink">{leader.shortBio}</p>
+      <p className="mx-auto">
+        <CardLink href={`/about/leadership/${leader.slug}`}>Read about {leader.name.split(' ')[0]}</CardLink>
+      </p>
     </Surface>
   )
 }
