@@ -1,9 +1,9 @@
 import type { Leader } from './types'
 
 /** Leadership records. Photos and names are the real congregation leadership.
- *  Isaac's role and biography were supplied by the congregation; biographies
- *  for Jim and Larry are pending, so their role labels stay general and their
- *  profile text says plainly that the full account is on its way.
+ *  Isaac's and Larry's roles and biographies were supplied by the
+ *  congregation; Jim's biography is pending, so his role label stays general
+ *  and his profile text says plainly that the full account is on its way.
  *  Structure matches the future Supabase table. */
 export const leaders: Leader[] = [
   {
@@ -39,12 +39,13 @@ export const leaders: Leader[] = [
   {
     slug: 'larry-bradford',
     name: 'Larry Bradford',
-    role: 'Leadership',
+    role: 'Elder',
     shortBio:
-      'Larry serves in the leadership of the congregation. His full biography is on its way, and he would be glad to meet you at any service in the meantime.',
+      'Larry serves as an elder of the congregation. Baptized in 1973, he has shared in the work of the church in Harrisonville since 1993 and was ordained in 2023.',
     bioParagraphs: [
-      'Larry Bradford serves in the leadership of the Harrisonville church of Christ. His full biography is being prepared with the congregation and will be added here soon.',
-      'Until it is ready, the best introduction is a simple one: say hello after any service. Larry would be glad to meet you.',
+      'Larry Bradford grew up in Belton, Missouri. He obeyed the gospel and was baptized into the church in the spring of 1973. He earned a bachelor’s degree in Network and Communications Management from DeVry University and spent 37 years working in telecommunications and biomedical engineering at Truman Medical Center/University Health, until his retirement in December 2025.',
+      'Larry married Barbara Middick in 1985. Together, they have three daughters and six grandchildren. Larry and Barb have been actively involved in the work of the church in Harrisonville since 1993.',
+      'In August of 2023, Larry was ordained as an elder of the Harrisonville Church of Christ. He continues to have a deep love for God’s Word, the Lord’s church, and serving others through teaching, encouragement, and ministry.',
     ],
     photo: '/assets/photos/larry-bradford.jpg',
     photoAlt: 'Larry Bradford wearing glasses and a green tie in front of a bookshelf',

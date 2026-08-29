@@ -46,8 +46,7 @@ export default function LeadershipPage() {
       <Section tone="light">
         <Container>
           <p role="note" className="mb-6 text-sm text-muted">
-            Full biographies for Jim and Larry are being finalized with the congregation and will be added to their
-            profiles soon.
+            A full biography for Jim is being finalized with the congregation and will be added to his profile soon.
           </p>
           <div className="grid gap-5 md:grid-cols-3">
             {leaders.map((leader) => (
