@@ -1,15 +1,16 @@
 import type { BibleLesson } from './types'
 
-/** The free, self-paced Bible study course. Lesson titles, summaries, and
- *  cover art come from the published course at thetruthfrees.com — the same
+/** The free, self-paced Bible study course. Branding, lesson titles,
+ *  summaries, and cover art come from the published course at
+ *  thetruthfrees.com — used with the author's permission. It is the same
  *  study the congregation mails as a printed booklet. */
 export const bibleCourse = {
-  title: 'The Gospel, From the Beginning',
+  title: 'The Truth Frees Correspondence Course',
   subtitle: 'A free, self-paced study of the New Testament',
   description:
-    'A short series of studies that walks through the Gospel as the New Testament tells it: who Jesus is, what He did, and how a person responds. The course is free, self-paced, and carries no obligation. Work through it on your own, or ask for someone to study alongside you in person or online.',
+    'A six-lesson study that walks through the Gospel as the New Testament tells it: who Jesus is, what He did, and how a person responds. The course is free, self-paced, and carries no obligation. Work through it on your own, or ask for someone to study alongside you in person or online.',
   lessonCount: 6,
-  sample: true,
+  sample: false,
 }
 
 const coverPath = '/assets/images/bible-study-course-photos'

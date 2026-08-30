@@ -18,9 +18,9 @@ export const dynamic = 'force-static'
 export const metadata: Metadata = buildMetadata({
   title: 'Free Bible Study Course',
   description:
-    'A free, self-paced Bible study from the Harrisonville Church of Christ. Six lessons walk through the Gospel from the beginning. No cost and no obligation.',
+    'The Truth Frees Correspondence Course, offered free through the Harrisonville Church of Christ. Six self-paced lessons walk through the Gospel. No cost and no obligation.',
   path: '/resources/bible-study',
-  ogTitle: 'The Gospel, From the Beginning: A Free Study',
+  ogTitle: 'The Truth Frees Correspondence Course: A Free Bible Study',
   ogDescription: 'Six self-paced lessons through the New Testament. Study on your own, or ask someone to study with you.',
 })
 
@@ -107,7 +107,7 @@ export default function BibleStudyPage() {
 
       <Section tone="light" id="lessons">
         <Container>
-          <SectionHeading eyebrow={`${bibleCourse.lessonCount} lessons`} title="What the course covers" />
+          <SectionHeading eyebrow="The 6-lesson journey" title="What the course covers" />
           <ol className="flex flex-col gap-4">
             {bibleLessons.map((lesson) => (
               <li key={lesson.slug}>
