@@ -49,7 +49,7 @@ export default function BibleStudyPage() {
 
       <PageHero
         eyebrow="Free, self-paced study"
-        title={bibleCourse.title}
+        title="Study The Bible With Us"
         lead={bibleCourse.description}
         waveFill="var(--color-surface)"
       >
