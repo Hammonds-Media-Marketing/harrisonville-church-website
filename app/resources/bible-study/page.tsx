@@ -111,24 +111,22 @@ export default function BibleStudyPage() {
           <ol className="flex flex-col gap-4">
             {bibleLessons.map((lesson) => (
               <li key={lesson.slug}>
-                <Surface tone="card" className="flex flex-col gap-3 md:flex-row md:items-start md:gap-5">
-                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-primary-strong font-display text-xl text-on-primary">
-                    {lesson.number}
-                  </span>
+                <Surface tone="card" className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+                  <Image
+                    src={lesson.photo}
+                    alt={lesson.photoAlt}
+                    width={221}
+                    height={307}
+                    loading="lazy"
+                    sizes="(max-width: 640px) 40vw, 8rem"
+                    className="w-28 shrink-0 self-start rounded-lg shadow-md sm:w-32"
+                  />
                   <div className="flex-1">
-                    <div className="flex flex-wrap items-baseline justify-between gap-2">
-                      <h2 className="text-xl">{lesson.title}</h2>
-                      <span className="text-sm font-semibold text-primary-strong">{lesson.scripture}</span>
-                    </div>
+                    <span className="text-sm font-semibold uppercase tracking-wider text-primary-strong">
+                      Lesson {lesson.number}
+                    </span>
+                    <h2 className="mt-1 text-xl">{lesson.title}</h2>
                     <p className="mt-1 text-ink">{lesson.summary}</p>
-                    <ul className="mt-3 flex flex-col gap-1 text-muted">
-                      {lesson.objectives.map((o) => (
-                        <li key={o} className="flex items-start gap-2">
-                          <span aria-hidden="true" className="mt-2 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-secondary-active" />
-                          <span>{o}</span>
-                        </li>
-                      ))}
-                    </ul>
                   </div>
                 </Surface>
               </li>

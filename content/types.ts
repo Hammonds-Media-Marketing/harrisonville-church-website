@@ -110,8 +110,9 @@ export type BibleLesson = {
   number: number
   slug: string
   title: string
-  scripture: string
   summary: string
-  objectives: string[]
+  /** Booklet cover for the lesson, under /assets/images/bible-study-course-photos/. */
+  photo: string
+  photoAlt: string
   sample: boolean
 }
