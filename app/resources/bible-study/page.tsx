@@ -55,7 +55,7 @@ export default function BibleStudyPage() {
       >
         <div className="flex flex-wrap gap-3">
           <Button href="/contact#request-bible-study" size="lg">
-            Study In-Person
+            Study With Evangelist
           </Button>
           <Button href={ONLINE_COURSE_URL || '#lessons'} variant="ghost" size="lg">
             Study Online
