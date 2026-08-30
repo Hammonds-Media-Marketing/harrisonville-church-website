@@ -8,7 +8,7 @@ export const bibleCourse = {
   title: 'The Truth Frees Correspondence Course',
   subtitle: 'A free, self-paced study of the New Testament',
   description:
-    'A six-lesson study that walks through the Gospel as the New Testament tells it: who Jesus is, what He did, and how a person responds. The course is free, self-paced, and carries no obligation. Work through it on your own, or ask for someone to study alongside you in person or online.',
+    'The Truth Frees Correspondence Course is a six-lesson study that walks through the Gospel as the New Testament tells it: who Jesus is, what He did, and how a person responds. The course is free, self-paced, and carries no obligation. Work through it on your own, or ask for someone to study alongside you in person or online.',
   lessonCount: 6,
   sample: false,
 }
