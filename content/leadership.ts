@@ -1,9 +1,8 @@
 import type { Leader } from './types'
 
-/** Leadership records. Photos and names are the real congregation leadership.
- *  Isaac's and Larry's roles and biographies were supplied by the
- *  congregation; Jim's biography is pending, so his role label stays general
- *  and his profile text says plainly that the full account is on its way.
+/** Leadership records. Photos, names, roles, and biographies are the real
+ *  congregation leadership, supplied by the church; the profile-page
+ *  biographies are lightly edited from those submissions.
  *  Structure matches the future Supabase table. */
 export const leaders: Leader[] = [
   {
@@ -25,12 +24,13 @@ export const leaders: Leader[] = [
   {
     slug: 'jim-bradford',
     name: 'Jim Bradford',
-    role: 'Leadership',
+    role: 'Elder',
     shortBio:
-      'Jim serves in the leadership of the congregation. His full biography will be added soon, and visitors are always welcome to meet him in person on a Sunday.',
+      'Jim serves as an elder of the congregation. Baptized in 1968, he and his family made Harrisonville their church home in 2003, and he was ordained in 2024.',
     bioParagraphs: [
-      'Jim Bradford serves in the leadership of the Harrisonville church of Christ. His full biography is being prepared with the congregation and will be added here soon.',
-      'Until it is ready, the best introduction is a simple one: say hello after any service. Jim would be glad to meet you.',
+      'Jim Bradford was baptized for the remission of his sins in 1968. He grew up in Belton, Missouri, and graduated from the University of Kansas with a degree in Civil Engineering. During his college years, he married his wife, Patty, in 1978, and they have been blessed with four daughters.',
+      'Jim’s career took the family to the West Coast, where they lived and worshipped in the Seattle, Washington, area for six years and in Northern California for eleven. In 2003, they chose to return to Missouri and make the Harrisonville congregation their church home. In August 2024, Jim was honored to be ordained as an elder of the congregation.',
+      'One of Jim’s greatest passions is teaching and training others, and he especially enjoys helping his brothers become the most effective teachers they can be. On behalf of the church he has traveled to Ghana, Benin, Zimbabwe, and, especially, Togo, where the congregation has helped teach and train preachers for more than 25 years. Jim has also written many songs used in worship by congregations of the Lord’s church, believing music can touch the heart in ways words alone sometimes cannot.',
     ],
     photo: '/assets/photos/jim-bradford.jpg',
     photoAlt: 'Jim Bradford smiling in a blue jacket in front of a bookshelf',
