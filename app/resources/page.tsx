@@ -27,7 +27,7 @@ const breadcrumbs = [
 ]
 
 const resources = [
-  { icon: BookIcon, title: 'Bible Study Course', body: 'A free, self-paced study of the Gospel from the beginning. No cost, no obligation.', href: '/resources/bible-study', cta: 'Begin the course' },
+  { icon: BookIcon, title: 'Bible Study Course', body: 'The Truth Frees Correspondence Course: six free, self-paced lessons through the New Testament. No cost, no obligation.', href: '/resources/bible-study', cta: 'Begin the course' },
 ]
 
 export default function ResourcesPage() {
