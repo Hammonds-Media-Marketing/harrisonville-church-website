@@ -26,10 +26,10 @@ export const leaders: Leader[] = [
     name: 'Jim Bradford',
     role: 'Elder',
     shortBio:
-      'Jim serves as an elder of the congregation. Baptized in 1968, he and his family made Harrisonville their church home in 2003, and he was ordained in 2024.',
+      'Jim serves as an elder of the congregation. Baptized in 1968, he and his family made Harrisonville their church home in 2003, and he was ordained in 2023.',
     bioParagraphs: [
       'Jim Bradford was baptized for the remission of his sins in 1968. He grew up in Belton, Missouri, and graduated from the University of Kansas with a degree in Civil Engineering. During his college years, he married his wife, Patty, in 1978, and they have been blessed with four daughters.',
-      'Jim’s career took the family to the West Coast, where they lived and worshipped in the Seattle, Washington, area for six years and in Northern California for eleven. In 2003, they chose to return to Missouri and make the Harrisonville congregation their church home. In August 2024, Jim was honored to be ordained as an elder of the congregation.',
+      'Jim’s career took the family to the West Coast, where they lived and worshipped in the Seattle, Washington, area for six years and in Northern California for ten. In 2003, they chose to return to Missouri and make the Harrisonville congregation their church home. In August 2023, Jim was honored to be ordained as an elder of the congregation.',
       'One of Jim’s greatest passions is teaching and training others, and he especially enjoys helping his brothers become the most effective teachers they can be. On behalf of the church he has traveled to Ghana, Benin, Zimbabwe, and, especially, Togo, where the congregation has helped teach and train preachers for more than 25 years. Jim has also written many songs used in worship by congregations of the Lord’s church, believing music can touch the heart in ways words alone sometimes cannot.',
     ],
     photo: '/assets/photos/jim-bradford.jpg',
