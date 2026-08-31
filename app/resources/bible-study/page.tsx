@@ -22,6 +22,8 @@ export const metadata: Metadata = buildMetadata({
   path: '/resources/bible-study',
   ogTitle: 'The Truth Frees Correspondence Course: A Free Bible Study',
   ogDescription: 'Six self-paced lessons through the New Testament. Study on your own, or ask someone to study with you.',
+  ogImage: '/assets/og/og-bible-study.jpg',
+  ogImageAlt: 'Two men studying an open Bible together in the pews at the Harrisonville Church of Christ',
 })
 
 const breadcrumbs = [

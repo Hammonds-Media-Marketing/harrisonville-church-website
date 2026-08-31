@@ -35,7 +35,7 @@ export function churchSchema(): Json {
     telephone: site.phone,
     email: site.email,
     logo: `${SITE_URL}/assets/logos/logo-structured-data.png`,
-    image: `${SITE_URL}/assets/og/og-default.svg`,
+    image: `${SITE_URL}/assets/og/og-default.jpg`,
     address: {
       '@type': 'PostalAddress',
       streetAddress: site.address.street,
@@ -180,7 +180,7 @@ export function articleSchema(a: {
     '@id': `${SITE_URL}${a.path}#article`,
     headline: a.title,
     description: a.description,
-    image: a.image ? `${SITE_URL}${a.image}` : `${SITE_URL}/assets/og/og-default.svg`,
+    image: a.image ? `${SITE_URL}${a.image}` : `${SITE_URL}/assets/og/og-default.jpg`,
     datePublished: a.datePublished,
     dateModified: a.dateModified || a.datePublished,
     author: { '@type': 'Person', name: a.authorName, url: `${SITE_URL}/blog/author/${a.authorSlug}` },

@@ -1,11 +1,13 @@
 import type { Metadata } from 'next'
 import { SITE_URL, site } from './site'
 
+// JPG, never SVG: iMessage, Facebook, and Twitter link previews do not
+// render SVG og:image sources.
 const DEFAULT_OG_IMAGE = {
-  url: `${SITE_URL}/assets/og/og-default.svg`,
+  url: `${SITE_URL}/assets/og/og-default.jpg`,
   width: 1200,
   height: 630,
-  alt: 'Harrisonville Church of Christ — a lighthouse beacon on Outlook Drive',
+  alt: 'Aerial view of the Harrisonville Church of Christ building and parking lot on Outlook Drive',
 }
 
 type SeoInput = {
