@@ -163,6 +163,16 @@ export default function HomePage() {
               </p>
             </Surface>
           </div>
+          <div className="mt-8 overflow-hidden rounded-xl border border-on-deep-muted/20">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1413829.9972563125!2d-96.8577587831071!3d37.13297595480021!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x87c12be6025a3b87%3A0x4505932af4760b7b!2sHarrisonville%20Church%20of%20Christ!5e0!3m2!1sen!2sus!4v1788190560791!5m2!1sen!2sus"
+              title="Map to Harrisonville Church of Christ at 1203 Outlook Drive, Harrisonville, Missouri"
+              className="block h-80 w-full border-0 md:h-96"
+              loading="lazy"
+              allowFullScreen
+              referrerPolicy="strict-origin-when-cross-origin"
+            />
+          </div>
         </Container>
       </Section>
 
