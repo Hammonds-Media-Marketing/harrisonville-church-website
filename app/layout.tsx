@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import { Montserrat, Mulish, Dancing_Script } from 'next/font/google'
 import './globals.css'
 import { SkipLink } from '@/components/layout/SkipLink'
@@ -58,6 +59,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${montserrat.variable} ${mulish.variable} ${dancingScript.variable}`}>
       <head>
+        {/* CookieYes consent banner — beforeInteractive so it runs ahead of the
+            afterInteractive analytics scripts and can gate their cookies on consent. */}
+        <Script
+          id="cookieyes"
+          src="https://cdn-cookieyes.com/client_data/bedb021d9bdff7fce2ddba3b7da164d3/script.js"
+          strategy="beforeInteractive"
+        />
         {/* Site-wide structured data — server-rendered into the served HTML. */}
         <JsonLd data={[churchSchema(), websiteSchema()]} />
       </head>
