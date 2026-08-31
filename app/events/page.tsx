@@ -17,6 +17,8 @@ export const metadata: Metadata = buildMetadata({
   path: '/events',
   ogTitle: 'What Is Happening at the Church',
   ogDescription: 'Gospel meetings, shared meals, and community outreach. Visitors are welcome at every gathering.',
+  ogImage: '/assets/og/og-events.jpg',
+  ogImageAlt: 'The Harrisonville Church of Christ congregation gathered at the front of the auditorium',
 })
 
 const breadcrumbs = [

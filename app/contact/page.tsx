@@ -19,6 +19,8 @@ export const metadata: Metadata = buildMetadata({
   ogTitle: 'Connect With the Harrisonville Church of Christ',
   ogDescription:
     'Questions, prayer requests, and free Bible study requests all reach a real member who will respond personally.',
+  ogImage: '/assets/og/og-contact.jpg',
+  ogImageAlt: 'Two members of the Harrisonville Church of Christ shaking hands inside the building entrance',
 })
 
 const generalFields: FormField[] = [
