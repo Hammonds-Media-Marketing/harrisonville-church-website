@@ -104,7 +104,6 @@ export const footerNav: { heading: string; items: NavItem[] }[] = [
   {
     heading: 'Site',
     items: [
-      { label: 'Style Guide', href: '/style-guide' },
       { label: 'Privacy Policy', href: '/privacy-policy' },
       { label: 'Cookie Policy', href: '/cookie-policy' },
       { label: 'Sitemap', href: '/sitemap.xml' },
