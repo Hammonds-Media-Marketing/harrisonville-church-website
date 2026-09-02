@@ -51,7 +51,10 @@ Deno.serve(async () => {
   const resendKey = Deno.env.get('RESEND_API_KEY')
   if (!resendKey) return json({ error: 'RESEND_API_KEY is not configured' }, 500)
 
-  const to = Deno.env.get('NOTIFY_TO_EMAIL') ?? 'gospel@harrisonvillecoc.com'
+  // Interim recipient while HMM manages approvals; hand back to the church
+  // office (gospel@harrisonvillecoc.com) by changing this default or setting
+  // the NOTIFY_TO_EMAIL function secret.
+  const to = Deno.env.get('NOTIFY_TO_EMAIL') ?? 'garrett@hmm.agency'
   // The Resend<->Supabase integration verifies the send. subdomain, so the
   // from address must live on it.
   const from = Deno.env.get('NOTIFY_FROM_EMAIL') ?? 'Harrisonville Church of Christ <no-reply@send.harrisonvillecoc.com>'
