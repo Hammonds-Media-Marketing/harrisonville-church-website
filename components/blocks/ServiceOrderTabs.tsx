@@ -1,10 +1,15 @@
 'use client'
 
-import { useId, useRef, useState } from 'react'
+import { useId, useRef, useState, type ReactNode } from 'react'
 import { Surface } from '@/components/primitives/Surface'
 import { ClockIcon } from '@/components/ui/icons'
 
-export type WorshipAct = { title: string; body: string }
+export type WorshipAct = {
+  title: string
+  body: string
+  /** Copy keys this act was rendered from, for the visual editor. */
+  copyKeys?: { title: string; body: string }
+}
 export type ServicePhase = { label: string; items: string[] }
 export type ServiceOrder = {
   id: string
@@ -33,7 +38,7 @@ export function ServiceOrderTabs({
 }: {
   orders: ServiceOrder[]
   acts: WorshipAct[]
-  actsIntro: string
+  actsIntro: ReactNode
 }) {
   const [active, setActive] = useState(0)
   const baseId = useId()
@@ -138,8 +143,16 @@ export function ServiceOrderTabs({
                 <div className="flex flex-col">
                   {orderActs.map((act) => (
                     <div key={act.title} className="border-t border-border/50 py-4 last:pb-0">
-                      <h4 className="font-display text-lg text-heading">{act.title}</h4>
-                      <p className="m-0 mt-1 text-ink">{act.body}</p>
+                      <h4 className="font-display text-lg text-heading">
+                        <span data-copy={act.copyKeys?.title} data-copy-kind={act.copyKeys ? 'text' : undefined}>
+                          {act.title}
+                        </span>
+                      </h4>
+                      <p className="m-0 mt-1 text-ink">
+                        <span data-copy={act.copyKeys?.body} data-copy-kind={act.copyKeys ? 'longText' : undefined}>
+                          {act.body}
+                        </span>
+                      </p>
                     </div>
                   ))}
                 </div>

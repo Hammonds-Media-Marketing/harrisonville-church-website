@@ -1,45 +1,39 @@
 import type { Metadata } from 'next'
-import { buildMetadata } from '@/lib/seo'
+import { copyMetadata, pageCopy } from '@/lib/page-copy'
 import { JsonLd, breadcrumbSchema, webPageSchema } from '@/lib/jsonld'
 import { Container, Section } from '@/components/primitives/Layout'
 import { LeaderCard } from '@/components/blocks/cards'
 import { PageHero } from '@/components/blocks/PageHero'
 import { leaders } from '@/content/leadership'
 
-export const dynamic = 'force-static'
+const PATH = '/about/leadership'
 
-export const metadata: Metadata = buildMetadata({
-  title: 'Leadership',
-  description:
-    'Meet the elders, evangelist, and deacons who teach, shepherd, and serve the Harrisonville Church of Christ according to the qualifications Scripture describes.',
-  path: '/about/leadership',
-  ogTitle: 'The Men Who Serve and Shepherd the Congregation',
-  ogDescription:
-    'Each congregation governs itself under its own elders. Meet the people who carry that responsibility here.',
-  ogImage: '/assets/og/og-leadership.jpg',
-  ogImageAlt: 'Portraits of Isaac Moreno, Jim Bradford, and Larry Bradford of the Harrisonville Church of Christ',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  return copyMetadata(PATH)
+}
 
 const breadcrumbs = [
   { name: 'Home', path: '/' },
   { name: 'About', path: '/about' },
-  { name: 'Leadership', path: '/about/leadership' },
+  { name: 'Leadership', path: PATH },
 ]
 
-export default function LeadershipPage() {
+export default async function LeadershipPage() {
+  const copy = await pageCopy(PATH)
+
   return (
     <>
       <JsonLd
         data={[
-          webPageSchema({ name: 'Leadership', description: metadata.description as string, path: '/about/leadership' }),
+          webPageSchema({ name: 'Leadership', description: copy.s('seo.description'), path: PATH }),
           breadcrumbSchema(breadcrumbs),
         ]}
       />
 
       <PageHero
-        eyebrow="The people who serve"
-        title="Leadership at the Harrisonville Church of Christ"
-        lead="A Church of Christ is overseen by its own elders, taught by an evangelist, and served by deacons. There is no outside hierarchy. These are the members who serve here."
+        eyebrow={copy.t('hero.eyebrow')}
+        title={copy.t('hero.title')}
+        lead={copy.t('hero.lead')}
         portraits={leaders.map((l) => ({ src: l.photo, alt: l.photoAlt }))}
       />
 
@@ -55,14 +49,8 @@ export default function LeadershipPage() {
 
       <Section tone="surface">
         <Container prose>
-          <h2 className="text-2xl">How is a Church of Christ organized?</h2>
-          <p>
-            Each congregation is independent and self-governing. Qualified men called elders, also described in
-            Scripture as shepherds or overseers, watch over the spiritual welfare of the group. Deacons attend to
-            practical needs, from benevolence to the care of the building. An evangelist, sometimes called the
-            preacher, teaches publicly and studies with people one-on-one. This is the simple structure the New
-            Testament describes, with no office above the local congregation.
-          </p>
+          <h2 className="text-2xl">{copy.t('structure.title')}</h2>
+          <p>{copy.t('structure.body')}</p>
         </Container>
       </Section>
     </>

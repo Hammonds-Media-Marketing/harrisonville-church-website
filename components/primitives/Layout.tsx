@@ -123,7 +123,7 @@ export function SectionHeading({
   align = 'left',
   onDeep = false,
 }: {
-  eyebrow?: string
+  eyebrow?: ReactNode
   title: ReactNode
   lead?: ReactNode
   id?: string

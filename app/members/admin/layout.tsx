@@ -16,7 +16,8 @@ export default async function AdminLayout({ children }: { children: ReactNode })
 
   const links = [
     { href: '/members/admin', label: 'Overview' },
-    { href: '/members/admin/pages', label: 'Pages' },
+    { href: '/members/admin/editor', label: 'Edit Pages' },
+    { href: '/members/admin/pages', label: 'Page Builder' },
     { href: '/members/admin/events', label: 'Events' },
     { href: '/members/admin/sermons', label: 'Sermons' },
     { href: '/members/admin/articles', label: 'Articles' },

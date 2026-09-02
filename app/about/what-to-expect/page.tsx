@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { buildMetadata } from '@/lib/seo'
+import { copyMetadata, pageCopy } from '@/lib/page-copy'
 import { JsonLd, breadcrumbSchema, faqSchema, webPageSchema } from '@/lib/jsonld'
 import { Container, Section, SectionHeading } from '@/components/primitives/Layout'
 import { Surface } from '@/components/primitives/Surface'
@@ -9,73 +9,29 @@ import { PageHero } from '@/components/blocks/PageHero'
 import { ParkingAerial } from '@/components/blocks/ParkingAerial'
 import { ServiceOrderTabs, type ServiceOrder } from '@/components/blocks/ServiceOrderTabs'
 import { CheckIcon } from '@/components/ui/icons'
-import { visitFaqs } from '@/content/faqs'
 import { site } from '@/lib/site'
 
-export const dynamic = 'force-static'
+const PATH = '/about/what-to-expect'
 
-export const metadata: Metadata = buildMetadata({
-  title: 'What to Expect on a Visit',
-  description:
-    'A plain walkthrough of a Sunday at the Harrisonville Church of Christ: where to park, what worship includes, and why you are never put on the spot.',
-  path: '/about/what-to-expect',
-  ogTitle: 'Your First Visit, With No Surprises',
-  ogDescription:
-    'Parking, timing, what a service includes, and what will never happen to you as a guest. Everything you need to walk in at ease.',
-  ogImage: '/assets/og/og-what-to-expect.jpg',
-  ogImageAlt: 'Two members shake hands by the front door of the church building',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  return copyMetadata(PATH)
+}
 
 const breadcrumbs = [
   { name: 'Home', path: '/' },
   { name: 'About', path: '/about' },
-  { name: 'What to Expect', path: '/about/what-to-expect' },
+  { name: 'What to Expect', path: PATH },
 ]
 
-const steps = [
-  {
-    title: 'Arriving and parking',
-    body: 'Enter the parking lot from 2 Highway, near the corner of 2 Highway and Outlook Drive. The overhead photo beside these steps marks the entrance with an arrow. Come a few minutes early if you can, and someone near the door will greet you when you arrive.',
-  },
-  {
-    title: 'Finding a seat',
-    body: 'Sit anywhere. There are no reserved sections and no expectation about where guests sit.',
-  },
-  {
-    title: 'The worship itself',
-    body: 'Sunday morning worship lasts about 75 to 90 minutes. It includes congregational singing, prayers, the Lord’s Supper, a sermon from the Bible, and a collection that is for members. As a guest, you simply observe.',
-  },
-  {
-    title: 'After the service',
-    body: 'When the assembly ends, members are glad to visit with one another. We encourage you to stay, visit with us, and ask any question on your mind.',
-  },
-]
+/**
+ * The shape of a Sunday: which acts of worship each service includes, and the
+ * running order of each one. This is structure rather than copy — the words
+ * describing each act live in the page's copy spec, and both sides look them
+ * up by the same key, so renaming an act in the editor keeps the tabs correct.
+ */
+const ACT_KEYS = ['prayer', 'singing', 'teaching', 'communion', 'collection'] as const
 
-/* Worship explanations written by the congregation's evangelist. */
-const worshipActs = [
-  {
-    title: 'Prayer',
-    body: 'Prayer is God’s appointed means of praising Him, giving thanks, interceding for others, and seeking His guidance (Philippians 4:6; Matthew 6:9–13; 1 Timothy 2:8).',
-  },
-  {
-    title: 'Singing',
-    body: 'We are instructed to “sing and make melody in your heart to the Lord” (Ephesians 5:19; Colossians 3:16). In our assemblies, the whole congregation joins together in vocal praise to God.',
-  },
-  {
-    title: 'Teaching',
-    body: 'Each service includes “the public reading of Scripture, exhortation, and teaching” (1 Timothy 4:13). This is done in an orderly manner (1 Corinthians 14:40), with the goal of instruction, encouragement, and spiritual growth.',
-  },
-  {
-    title: 'Communion',
-    body: 'Each Sunday morning the members of the congregation partake of the Lord’s Supper, following the pattern Christ gave on the night He was betrayed (1 Corinthians 11:23–26; Matthew 26:26–29). As a visitor, you are not obligated to participate.',
-  },
-  {
-    title: 'Collection',
-    body: 'The New Testament church is supported by the free-will offerings of its members. On the first day of every week, each member lays by in store as they have been prospered (1 Corinthians 16:1–2). This act of giving is for members of the congregation and is not a solicitation of visitors.',
-  },
-]
-
-const serviceOrders: ServiceOrder[] = [
+const SERVICE_ORDERS: (Omit<ServiceOrder, 'actTitles'> & { acts: (typeof ACT_KEYS)[number][] })[] = [
   {
     id: 'sunday-morning',
     tabLabel: 'Sunday Morning',
@@ -87,7 +43,7 @@ const serviceOrders: ServiceOrder[] = [
       { label: 'Teaching & invitation', items: ['Lesson', 'Invitation'] },
       { label: 'Closing', items: ['Closing announcements', 'Closing song', 'Dismissal prayer'] },
     ],
-    actTitles: ['Prayer', 'Singing', 'Teaching', 'Communion', 'Collection'],
+    acts: ['prayer', 'singing', 'teaching', 'communion', 'collection'],
   },
   {
     id: 'sunday-afternoon',
@@ -99,7 +55,7 @@ const serviceOrders: ServiceOrder[] = [
       { label: 'Teaching & invitation', items: ['Lesson', 'Invitation'] },
       { label: 'Closing', items: ['Closing announcements', 'Closing prayer'] },
     ],
-    actTitles: ['Prayer', 'Singing', 'Teaching'],
+    acts: ['prayer', 'singing', 'teaching'],
   },
   {
     id: 'wednesday-evening',
@@ -112,7 +68,7 @@ const serviceOrders: ServiceOrder[] = [
       { label: 'Teaching & invitation', items: ['Lesson', 'Invitation'] },
       { label: 'Closing', items: ['Closing announcements', 'Closing prayer'] },
     ],
-    actTitles: ['Prayer', 'Singing', 'Teaching'],
+    acts: ['prayer', 'singing', 'teaching'],
   },
   {
     id: 'third-wednesday',
@@ -124,36 +80,48 @@ const serviceOrders: ServiceOrder[] = [
       { label: 'Singing & prayer', items: ['Songs and prayers, alternating through the evening'] },
       { label: 'Closing', items: ['Closing announcements', 'Closing song', 'Dismissal prayer'] },
     ],
-    actTitles: ['Prayer', 'Singing'],
+    acts: ['prayer', 'singing'],
   },
 ]
 
-const wontHappen = [
-  'You will not be asked to stand up or introduce yourself.',
-  'You will not be singled out as a visitor in front of the room.',
-  'You will not be expected to give.',
-  'You will not be put on the spot.',
-]
+const PROMISES = [1, 2, 3, 4] as const
+const STEPS = [1, 2, 3, 4] as const
+const FAQ_ITEMS = [1, 2, 3, 4] as const
 
-export default function WhatToExpectPage() {
+export default async function WhatToExpectPage() {
+  const copy = await pageCopy(PATH)
+
+  const actTitle = (key: string) => copy.s(`worship.act.${key}.title`)
+  const worshipActs = ACT_KEYS.map((key) => ({
+    title: actTitle(key),
+    body: copy.s(`worship.act.${key}.body`),
+    copyKeys: { title: `worship.act.${key}.title`, body: `worship.act.${key}.body` },
+  }))
+  const serviceOrders: ServiceOrder[] = SERVICE_ORDERS.map(({ acts, ...order }) => ({
+    ...order,
+    actTitles: acts.map(actTitle),
+  }))
+  const faqs = FAQ_ITEMS.map((n) => ({
+    question: copy.s(`faq.${n}.question`),
+    answer: copy.s(`faq.${n}.answer`),
+    copyKeys: { question: `faq.${n}.question`, answer: `faq.${n}.answer` },
+  }))
+
   return (
     <>
       <JsonLd
         data={[
-          webPageSchema({ name: 'What to Expect', description: metadata.description as string, path: '/about/what-to-expect' }),
+          webPageSchema({ name: 'What to Expect', description: copy.s('seo.description'), path: PATH }),
           breadcrumbSchema(breadcrumbs),
-          faqSchema(visitFaqs),
+          faqSchema(faqs),
         ]}
       />
 
       <PageHero
-        eyebrow="Planning your visit"
-        title="What a first visit actually looks like"
-        lead="The fear of the unknown keeps a lot of good people standing at the door. Here is exactly what happens on a Sunday, so you can walk in already knowing what to expect."
-        photo={{
-          src: '/assets/photos/singing-in-the-pews.jpg',
-          alt: 'An older and a younger member of the congregation lean over an open book together across the pews',
-        }}
+        eyebrow={copy.t('hero.eyebrow')}
+        title={copy.t('hero.title')}
+        lead={copy.t('hero.lead')}
+        photo={{ src: copy.s('hero.photo'), alt: copy.s('hero.photoAlt') }}
       />
 
       {/* Reassurance */}
@@ -161,23 +129,21 @@ export default function WhatToExpectPage() {
         <Container>
           <div className="grid gap-8 lg:grid-cols-2 lg:items-start">
             <div>
-              <h2 className="text-2xl">What will never happen to you here</h2>
-              <p className="mt-2 text-muted">
-                For many people, the real worry is being embarrassed. We take that seriously, so here is our promise.
-              </p>
+              <h2 className="text-2xl">{copy.t('promise.title')}</h2>
+              <p className="mt-2 text-muted">{copy.t('promise.lead')}</p>
               <ul className="mt-5 flex flex-col gap-3">
-                {wontHappen.map((item) => (
-                  <li key={item} className="flex items-start gap-3">
+                {PROMISES.map((n) => (
+                  <li key={n} className="flex items-start gap-3">
                     <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-success text-on-status">
                       <CheckIcon className="h-4 w-4" />
                     </span>
-                    <span className="text-ink">{item}</span>
+                    <span className="text-ink">{copy.t(`promise.${n}`)}</span>
                   </li>
                 ))}
               </ul>
             </div>
             <Surface tone="panel" className="flex flex-col gap-3">
-              <h2 className="text-2xl">When to come</h2>
+              <h2 className="text-2xl">{copy.t('times.title')}</h2>
               <ul className="flex flex-col gap-3">
                 {site.services.map((s) => (
                   <li key={s.id} className="flex items-baseline justify-between gap-4 border-b border-border/50 pb-3 last:border-0 last:pb-0">
@@ -199,23 +165,21 @@ export default function WhatToExpectPage() {
           peeking out above. Pure CSS sticky; no scripting needed. */}
       <Section tone="surface">
         <Container>
-          <SectionHeading eyebrow="Step by step" title="Walking through a Sunday morning" />
+          <SectionHeading eyebrow={copy.t('steps.eyebrow')} title={copy.t('steps.title')} />
           <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
             <figure className="lg:sticky lg:top-24">
               <ParkingAerial />
-              <figcaption className="mt-2 text-sm text-muted">
-                The parking lot from above. Enter from 2 Highway, near the corner of 2 Highway and Outlook Drive, and the front door is a short walk from the lot.
-              </figcaption>
+              <figcaption className="mt-2 text-sm text-muted">{copy.t('steps.caption')}</figcaption>
             </figure>
             <ol className="flex flex-col gap-4">
-              {steps.map((step, i) => (
-                <li key={step.title} className="sticky" style={{ top: `calc(6rem + ${i * 0.75}rem)` }}>
+              {STEPS.map((n, i) => (
+                <li key={n} className="sticky" style={{ top: `calc(6rem + ${i * 0.75}rem)` }}>
                   <Surface tone="card" className="flex flex-col gap-2">
                     <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary-strong">
-                      Step {i + 1} of {steps.length}
+                      Step {n} of {STEPS.length}
                     </p>
-                    <h3 className="text-xl">{step.title}</h3>
-                    <p className="text-ink">{step.body}</p>
+                    <h3 className="text-xl">{copy.t(`steps.${n}.title`)}</h3>
+                    <p className="text-ink">{copy.t(`steps.${n}.body`)}</p>
                   </Surface>
                 </li>
               ))}
@@ -225,43 +189,34 @@ export default function WhatToExpectPage() {
       </Section>
 
       {/* Worship, explained — order of service and the meaning of each part,
-          selected by service time (modeled on the Valley Parkway build). All
-          three panels are in the served HTML; tabs only toggle visibility. */}
+          selected by service time. All panels are in the served HTML; tabs
+          only toggle visibility. */}
       <Section tone="light">
         <Container>
           <SectionHeading
-            eyebrow="A walk through worship"
-            title="What happens during a worship service?"
-            lead="Our worship is a time to glorify God and encourage one another. Select a service time to see the order it follows and what each part of worship means."
+            eyebrow={copy.t('worship.eyebrow')}
+            title={copy.t('worship.title')}
+            lead={copy.t('worship.lead')}
           />
-          <ServiceOrderTabs
-            orders={serviceOrders}
-            acts={worshipActs}
-            actsIntro="We encourage you to worship with us. If any part is unfamiliar, there is no pressure to participate."
-          />
-          <p className="mt-6 max-w-prose text-muted">
-            We invite you to join with us and experience the joy of worshiping our Creator in spirit and truth (John
-            4:24).
-          </p>
+          <ServiceOrderTabs orders={serviceOrders} acts={worshipActs} actsIntro={copy.t('worship.actsIntro')} />
+          <p className="mt-6 max-w-prose text-muted">{copy.t('worship.closing')}</p>
         </Container>
       </Section>
 
       {/* FAQ */}
       <Section tone="surface">
         <Container prose>
-          <SectionHeading align="center" eyebrow="Before you visit" title="Frequently Asked Questions" />
-          <Faq items={visitFaqs} />
+          <SectionHeading align="center" eyebrow={copy.t('faq.eyebrow')} title={copy.t('faq.title')} />
+          <Faq items={faqs} />
         </Container>
       </Section>
 
       <Section tone="deep">
         <Container className="flex flex-col items-center gap-5 text-center">
-          <h2 className="text-3xl text-on-deep">Now that you know what to expect</h2>
-          <p className="max-w-xl text-lg text-on-deep-muted">
-            There is nothing left to be nervous about. We would love to save you a seat this Sunday.
-          </p>
-          <Button href="/contact#contact-form" variant="primary" size="lg">
-            Let us know you are coming
+          <h2 className="text-3xl text-on-deep">{copy.t('cta.title')}</h2>
+          <p className="max-w-xl text-lg text-on-deep-muted">{copy.t('cta.body')}</p>
+          <Button href={copy.s('cta.href')} variant="primary" size="lg">
+            {copy.t('cta.label')}
           </Button>
         </Container>
       </Section>

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
-import { buildMetadata } from '@/lib/seo'
+import { copyMetadata, pageCopy } from '@/lib/page-copy'
 import { JsonLd, breadcrumbSchema, webPageSchema } from '@/lib/jsonld'
 import { Container, Section } from '@/components/primitives/Layout'
 import { PageHero } from '@/components/blocks/PageHero'
@@ -14,25 +14,21 @@ import { recentSermons } from '@/lib/sermons'
 
 export const revalidate = 3600
 
-export const metadata: Metadata = buildMetadata({
-  title: 'Sermons & Video Library',
-  description:
-    'Watch and listen to recent sermons from the Harrisonville Church of Christ. Plain lessons from the New Testament on salvation, worship, and Christian living.',
-  path: '/resources/sermons',
-  ogTitle: 'Recent Lessons From the Harrisonville Church of Christ',
-  ogDescription: 'A growing library of sermons and videos, each grounded in a passage you can read for yourself.',
+const PATH = '/resources/sermons'
+
+export async function generateMetadata(): Promise<Metadata> {
   // Hidden from navigation and search at the congregation's direction.
-  noindex: true,
-})
+  return copyMetadata(PATH, { noindex: true })
+}
 
 const breadcrumbs = [
   { name: 'Home', path: '/' },
   { name: 'Resources', path: '/resources' },
-  { name: 'Sermons & Videos', path: '/resources/sermons' },
+  { name: 'Sermons & Videos', path: PATH },
 ]
 
 export default async function SermonsPage() {
-  const sermons = await recentSermons()
+  const [sermons, copy] = await Promise.all([recentSermons(), pageCopy(PATH)])
   const featured = sermons[0]
   const rest = sermons.slice(1)
 
@@ -40,20 +36,16 @@ export default async function SermonsPage() {
     <>
       <JsonLd
         data={[
-          webPageSchema({ name: 'Sermons & Videos', description: metadata.description as string, path: '/resources/sermons' }),
+          webPageSchema({ name: 'Sermons & Videos', description: copy.s('seo.description'), path: PATH }),
           breadcrumbSchema(breadcrumbs),
         ]}
       />
 
-      <PageHero
-        eyebrow="Watch and listen"
-        title="Sermon and video library"
-        lead="Every lesson is built on a passage of Scripture, so you can open your Bible and follow along or study further on your own."
-      />
+      <PageHero eyebrow={copy.t('hero.eyebrow')} title={copy.t('hero.title')} lead={copy.t('hero.lead')} />
 
       <Section tone="light">
         <Container>
-          <SampleNotice label="These recordings are placeholders; real video will be connected later." />
+          {copy.blank('library.notice') ? null : <SampleNotice label={copy.t('library.notice')} />}
 
           {/* Featured player */}
           {featured ? (
@@ -74,7 +66,7 @@ export default async function SermonsPage() {
                 </span>
               </div>
               <div className="flex flex-col gap-3 p-6">
-                <Badge tone="gold" className="w-fit">Latest lesson</Badge>
+                <Badge tone="gold" className="w-fit">{copy.t('library.featuredBadge')}</Badge>
                 <h2 className="text-2xl">{featured.title}</h2>
                 <p className="font-semibold text-primary-strong">{featured.scripture}</p>
                 <p className="text-ink">{featured.summary}</p>
@@ -92,8 +84,8 @@ export default async function SermonsPage() {
           </div>
 
           <div className="mt-8 flex flex-col items-center gap-3 text-center">
-            <p className="text-muted">Prefer to study a topic with someone directly?</p>
-            <Button href="/contact#request-bible-study">Request a Bible study</Button>
+            <p className="text-muted">{copy.t('library.footerPrompt')}</p>
+            <Button href={copy.s('library.footerHref')}>{copy.t('library.footerLabel')}</Button>
           </div>
         </Container>
       </Section>

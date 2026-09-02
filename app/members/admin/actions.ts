@@ -1,11 +1,13 @@
 'use server'
 
 import { redirect } from 'next/navigation'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, updateTag } from 'next/cache'
 import { getSupabaseServer, getAuthContext, isEditorRole, isAdminRole } from '@/lib/supabase-server'
 import { pingIndexNow } from '@/lib/indexnow'
 import { parseBlocksJson, textToBlocks } from '@/lib/article-blocks'
 import { parsePageSections } from '@/lib/page-sections'
+import { PAGE_CONTENT_TAG, pruneOverrides } from '@/lib/site-copy'
+import { getCopySpec } from '@/content/site-copy'
 import { normalizePageSlug } from '@/lib/pages'
 import { localInputToIso, slugify } from '@/lib/format'
 import { isRecurrenceRule } from '@/lib/recurrence'
@@ -398,4 +400,58 @@ export async function removeMemberAction(formData: FormData) {
   }
   revalidatePath('/members/admin/members')
   redirect('/members/admin/members?deleted=1')
+}
+
+// ---------------------------------------------------------------------------
+// Page copy (the visual editor for the hand-built pages)
+// ---------------------------------------------------------------------------
+
+/**
+ * Save an editor's rewrite of a hand-built page. The editor posts every field
+ * it knows about; pruneOverrides keeps only the ones that actually differ from
+ * the wording in the code, so the stored row stays a small diff rather than a
+ * frozen copy of the page. Publishing revalidates the copy tag (every page
+ * reads its words through it), the page's own path, and IndexNow.
+ */
+export async function savePageCopyAction(
+  path: string,
+  values: Record<string, string>
+): Promise<{ ok: boolean; error?: string }> {
+  const { supabase, ctx } = await requireEditor()
+  const spec = getCopySpec(path)
+  if (!spec) return { ok: false, error: 'That page is not editable.' }
+
+  const overrides = pruneOverrides(spec, values)
+  const { error } = await supabase
+    .from('page_content')
+    .upsert({ path, values: overrides as Json, updated_by: ctx.user?.id ?? null }, { onConflict: 'path' })
+
+  if (error) {
+    console.warn('[admin] page copy save failed:', error.message)
+    return { ok: false, error: 'That did not save. Check your connection and try again.' }
+  }
+
+  // updateTag (not revalidateTag) so the editor's next read sees its own write.
+  updateTag(PAGE_CONTENT_TAG)
+  await publishRefresh([path])
+  revalidatePath('/members/admin/editor')
+  return { ok: true }
+}
+
+/** Drop every override on a page, returning it to the wording in the code. */
+export async function resetPageCopyAction(path: string): Promise<{ ok: boolean; error?: string }> {
+  const { supabase } = await requireEditor()
+  if (!getCopySpec(path)) return { ok: false, error: 'That page is not editable.' }
+
+  const { error } = await supabase.from('page_content').delete().eq('path', path)
+  if (error) {
+    console.warn('[admin] page copy reset failed:', error.message)
+    return { ok: false, error: 'That did not reset. Check your connection and try again.' }
+  }
+
+  // updateTag (not revalidateTag) so the editor's next read sees its own write.
+  updateTag(PAGE_CONTENT_TAG)
+  await publishRefresh([path])
+  revalidatePath('/members/admin/editor')
+  return { ok: true }
 }

@@ -5,6 +5,7 @@ import { PageHero } from '@/components/blocks/PageHero'
 import { Surface } from '@/components/primitives/Surface'
 import { Button } from '@/components/primitives/Button'
 import { getSupabaseServer, getAuthContext, isAdminRole } from '@/lib/supabase-server'
+import { SITE_COPY } from '@/content/site-copy'
 
 export const metadata: Metadata = buildMetadata({
   title: 'Site Admin',
@@ -45,7 +46,13 @@ export default async function AdminOverviewPage() {
   }
 
   const tiles = [
-    { label: 'Pages', value: pages, href: '/members/admin/pages', cta: 'Build and manage pages' },
+    {
+      label: 'Core pages',
+      value: SITE_COPY.length,
+      href: '/members/admin/editor',
+      cta: 'Edit pages visually',
+    },
+    { label: 'Pages you built', value: pages, href: '/members/admin/pages', cta: 'Build and manage pages' },
     { label: 'Events', value: events, href: '/members/admin/events', cta: 'Manage events' },
     { label: 'Sermons', value: sermons, href: '/members/admin/sermons', cta: 'Manage sermons' },
     { label: 'Articles', value: articles, href: '/members/admin/articles', cta: 'Manage articles' },
