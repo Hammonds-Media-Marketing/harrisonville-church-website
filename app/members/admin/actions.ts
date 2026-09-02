@@ -399,37 +399,3 @@ export async function removeMemberAction(formData: FormData) {
   revalidatePath('/members/admin/members')
   redirect('/members/admin/members?deleted=1')
 }
-
-// ---------------------------------------------------------------------------
-// Comment moderation
-// ---------------------------------------------------------------------------
-
-export async function setCommentApprovedAction(formData: FormData) {
-  const { supabase } = await requireEditor()
-  const postSlug = text(formData, 'post_slug')
-  const { error } = await supabase
-    .from('blog_comments')
-    .update({ approved: flag(formData, 'approve') })
-    .eq('id', text(formData, 'id'))
-
-  if (error) {
-    console.warn('[admin] comment moderation failed:', error.message)
-    redirect('/members/admin/comments?error=save')
-  }
-  revalidatePath(`/blog/${postSlug}`)
-  revalidatePath('/members/admin/comments')
-  redirect('/members/admin/comments?saved=1')
-}
-
-export async function deleteCommentAction(formData: FormData) {
-  const { supabase } = await requireEditor()
-  const postSlug = text(formData, 'post_slug')
-  const { error } = await supabase.from('blog_comments').delete().eq('id', text(formData, 'id'))
-  if (error) {
-    console.warn('[admin] comment delete failed:', error.message)
-    redirect('/members/admin/comments?error=delete')
-  }
-  revalidatePath(`/blog/${postSlug}`)
-  revalidatePath('/members/admin/comments')
-  redirect('/members/admin/comments?deleted=1')
-}

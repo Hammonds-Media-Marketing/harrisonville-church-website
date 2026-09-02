@@ -48,7 +48,6 @@ Every blog article page must include all of the following:
   - Button linking to the full author bio page
 - **Related articles section** — visible only when related articles exist; hidden completely when none are available
 - **Page view count** displayed in a fairly prominent location for social proof
-- **Comment section** at the bottom of the page
 - **Read time estimate**
 - **Publish date** — replaced by Updated date if the article has been revised
 - **Blog category tags**

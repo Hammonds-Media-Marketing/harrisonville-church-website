@@ -2,8 +2,7 @@
 
 Supabase powers two things:
 
-1. **The CMS** — blog posts, authors, categories, comments, events, and
-   sermons. Public pages read published rows through the anon/publishable key;
+1. **The CMS** — blog posts, authors, categories, events, and sermons. Public pages read published rows through the anon/publishable key;
    editors manage everything from the on-site admin at `/members/admin`.
 2. **The members backend** — Supabase Auth accounts, member profiles with
    roles and approval, members-only announcements, and a privacy-aware member
@@ -21,7 +20,6 @@ are load-bearing.
 | `blog_categories` | Category names + `sort_order`; drives the `/blog` filter chips. |
 | `authors` | Article authorship (E-E-A-T): name, role, bio, long bio, photo, LinkedIn. |
 | `blog_posts` | Articles. `body` is a JSONB array of blocks (`h2`/`h3`/`p`/`scripture`/`list`) matching `BlogPost['body']`. `published` gates visibility. |
-| `blog_comments` | Visitor comments, held for moderation (`approved` defaults to `false`). |
 | `events` | Public calendar (`/events`). `published` gates visibility; times are timestamptz. |
 | `sermons` | Sermon/video library (`/resources/sermons` + homepage). `published` gates visibility. |
 | `announcements` | Members-only news for the `/members` dashboard. Never publicly readable. |
@@ -36,7 +34,7 @@ in `lib/blog.ts`, `lib/events.ts`, `lib/sermons.ts`, and `lib/members.ts`.
 
 - **member** — approved members read announcements and the directory.
 - **editor** — member, plus full content management (events, sermons,
-  articles, authors, categories, announcements, comment moderation).
+  articles, authors, categories, announcements).
 - **admin** — editor, plus member management (approval, roles, removal).
 
 Signup flow: a visitor requests access at `/members/login` → Supabase Auth
@@ -69,11 +67,6 @@ Every later approval happens in the on-site admin.
   editors read and write everything (drafts included).
 - **Announcements** — readable only by approved members; editor write. No
   anon path exists at all.
-- **Comments** — public *insert* only, forced to `approved = false`. The
-  public column grant exposes only `id, post_slug, author_name, body,
-  created_at`, so submitter **emails are never readable** through the public
-  key. Editors moderate through the `moderation_comments()` definer function
-  (which does include the email) and update/delete policies.
 - **Member profiles** — own-row read/update; admins read/update/delete all.
   The directory is read through `directory_profiles()`, which returns only
   approved, listed members and nulls out any field the member chose to hide

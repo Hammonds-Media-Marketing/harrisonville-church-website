@@ -1,5 +1,5 @@
 // Generated from the Supabase schema (authors, blog_categories, blog_posts,
-// blog_comments, events, sermons, announcements, member_profiles).
+// events, sermons, announcements, member_profiles).
 // Regenerate after a migration with the Supabase CLI:
 //   supabase gen types typescript --project-id <ref> > lib/database.types.ts
 export type Json =
@@ -128,44 +128,6 @@ export type Database = {
           sort_order?: number
         }
         Relationships: []
-      }
-      blog_comments: {
-        Row: {
-          approved: boolean
-          author_email: string
-          author_name: string
-          body: string
-          created_at: string
-          id: string
-          post_slug: string
-        }
-        Insert: {
-          approved?: boolean
-          author_email: string
-          author_name: string
-          body: string
-          created_at?: string
-          id?: string
-          post_slug: string
-        }
-        Update: {
-          approved?: boolean
-          author_email?: string
-          author_name?: string
-          body?: string
-          created_at?: string
-          id?: string
-          post_slug?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: 'blog_comments_post_slug_fkey'
-            columns: ['post_slug']
-            isOneToOne: false
-            referencedRelation: 'blog_posts'
-            referencedColumns: ['slug']
-          },
-        ]
       }
       blog_posts: {
         Row: {
@@ -510,18 +472,6 @@ export type Database = {
       is_editor: {
         Args: Record<PropertyKey, never>
         Returns: boolean
-      }
-      moderation_comments: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          id: string
-          post_slug: string
-          author_name: string
-          author_email: string
-          body: string
-          approved: boolean
-          created_at: string
-        }[]
       }
     }
     Enums: {
