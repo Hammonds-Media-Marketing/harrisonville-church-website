@@ -35,15 +35,6 @@ export default async function AdminOverviewPage() {
     count('announcements'),
   ])
 
-  let pendingComments = 0
-  if (supabase) {
-    const { count: n } = await supabase
-      .from('blog_comments')
-      .select('id', { count: 'exact', head: true })
-      .eq('approved', false)
-    pendingComments = n ?? 0
-  }
-
   let pendingMembers = 0
   if (supabase && isAdminRole(profile)) {
     const { count: n } = await supabase
@@ -59,7 +50,6 @@ export default async function AdminOverviewPage() {
     { label: 'Sermons', value: sermons, href: '/members/admin/sermons', cta: 'Manage sermons' },
     { label: 'Articles', value: articles, href: '/members/admin/articles', cta: 'Manage articles' },
     { label: 'Announcements', value: announcements, href: '/members/admin/announcements', cta: 'Manage announcements' },
-    { label: 'Comments awaiting review', value: pendingComments, href: '/members/admin/comments', cta: 'Moderate comments' },
     ...(isAdminRole(profile)
       ? [{ label: 'Members awaiting approval', value: pendingMembers, href: '/members/admin/members', cta: 'Manage members' }]
       : []),

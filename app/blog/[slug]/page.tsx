@@ -161,8 +161,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 ))}
               </div>
 
-              {/* Author block bottom. The comment section is removed at the
-                  congregation's direction: the blog is publish-only. */}
+              {/* Author block bottom */}
               <div className="mt-8">
                 <AuthorBlock author={author!} variant="full" />
               </div>

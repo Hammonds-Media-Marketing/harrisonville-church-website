@@ -3,9 +3,8 @@ import type { Database } from '@/lib/database.types'
 
 /**
  * Supabase access for the blog. Reads run through the public anon/publishable
- * key and are protected by Row Level Security: only published posts, all
- * authors and categories, and approved comments are exposed; comment inserts
- * always land unapproved for moderation.
+ * key and are protected by Row Level Security: only published posts and all
+ * authors and categories are exposed.
  *
  * The client is created lazily and cached. When the Supabase environment is not
  * configured, `getSupabase()` returns null so callers fall back to local seed

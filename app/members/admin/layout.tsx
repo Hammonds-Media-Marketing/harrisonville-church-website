@@ -21,7 +21,6 @@ export default async function AdminLayout({ children }: { children: ReactNode })
     { href: '/members/admin/sermons', label: 'Sermons' },
     { href: '/members/admin/articles', label: 'Articles' },
     { href: '/members/admin/announcements', label: 'Announcements' },
-    { href: '/members/admin/comments', label: 'Comments' },
     ...(profile?.role === 'admin' ? [{ href: '/members/admin/members', label: 'Members' }] : []),
   ]
 

@@ -10,9 +10,9 @@ import {
 
 /**
  * Blog data-access layer. Reads come from Supabase (Row Level Security limits
- * the public anon key to published posts, all authors and categories, and
- * approved comments). When Supabase is not configured, or a query fails, the
- * same shapes are served from the local seed content so the site never breaks.
+ * the public anon key to published posts, all authors and categories). When
+ * Supabase is not configured, or a query fails, the same shapes are served
+ * from the local seed content so the site never breaks.
  *
  * DB rows are snake_case; the app types are camelCase. Mapping happens here so
  * every page and component keeps consuming the existing BlogPost/Author types.
@@ -151,37 +151,4 @@ export async function getAuthor(slug: string): Promise<Author | undefined> {
 
 export function getBlogCategories(): Promise<string[]> {
   return fetchCategories()
-}
-
-// ---------------------------------------------------------------------------
-// Comments — approved reads (email-free by column grant), moderated inserts.
-// ---------------------------------------------------------------------------
-
-export type PublicComment = {
-  id: string
-  authorName: string
-  body: string
-  createdAt: string
-}
-
-export async function getApprovedComments(postSlug: string): Promise<PublicComment[]> {
-  const supabase = getSupabase()
-  if (!supabase) return []
-
-  const { data, error } = await supabase
-    .from('blog_comments')
-    .select('id, author_name, body, created_at')
-    .eq('post_slug', postSlug)
-    .order('created_at', { ascending: true })
-
-  if (error || !data) {
-    if (error) console.warn('[blog] comments read failed:', error.message)
-    return []
-  }
-  return data.map((c) => ({
-    id: c.id,
-    authorName: c.author_name,
-    body: c.body,
-    createdAt: c.created_at,
-  }))
 }
