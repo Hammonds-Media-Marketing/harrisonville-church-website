@@ -16,7 +16,7 @@ export const metadata: Metadata = buildMetadata({
   noindex: true,
 })
 
-async function count(table: 'events' | 'sermons' | 'blog_posts' | 'announcements'): Promise<number> {
+async function count(table: 'pages' | 'events' | 'sermons' | 'blog_posts' | 'announcements'): Promise<number> {
   const supabase = await getSupabaseServer()
   if (!supabase) return 0
   const { count: n } = await supabase.from(table).select('id', { count: 'exact', head: true })
@@ -27,7 +27,8 @@ export default async function AdminOverviewPage() {
   const { profile } = await getAuthContext()
   const supabase = await getSupabaseServer()
 
-  const [events, sermons, articles, announcements] = await Promise.all([
+  const [pages, events, sermons, articles, announcements] = await Promise.all([
+    count('pages'),
     count('events'),
     count('sermons'),
     count('blog_posts'),
@@ -53,6 +54,7 @@ export default async function AdminOverviewPage() {
   }
 
   const tiles = [
+    { label: 'Pages', value: pages, href: '/members/admin/pages', cta: 'Build and manage pages' },
     { label: 'Events', value: events, href: '/members/admin/events', cta: 'Manage events' },
     { label: 'Sermons', value: sermons, href: '/members/admin/sermons', cta: 'Manage sermons' },
     { label: 'Articles', value: articles, href: '/members/admin/articles', cta: 'Manage articles' },

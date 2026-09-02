@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { SITE_URL } from '@/lib/site'
 import { upcomingEvents } from '@/lib/events'
+import { getPublishedPages } from '@/lib/pages'
 import { leaders } from '@/content/leadership'
 
 /**
@@ -30,6 +31,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: url(`/events/${e.slug}`),
       lastModified: now,
       changeFrequency: 'weekly' as const,
+      priority: 0.6,
+    })),
+    ...(await getPublishedPages()).map((p) => ({
+      url: url(`/${p.slug}`),
+      lastModified: new Date(p.updatedAt),
+      changeFrequency: 'monthly' as const,
       priority: 0.6,
     })),
     { url: url('/resources/bible-study'), lastModified: now, changeFrequency: 'monthly', priority: 0.8 },

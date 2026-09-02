@@ -5,9 +5,11 @@ import { revalidatePath } from 'next/cache'
 import { getSupabaseServer, getAuthContext, isEditorRole, isAdminRole } from '@/lib/supabase-server'
 import { pingIndexNow } from '@/lib/indexnow'
 import { parseBlocksJson, textToBlocks } from '@/lib/article-blocks'
+import { parsePageSections } from '@/lib/page-sections'
+import { normalizePageSlug } from '@/lib/pages'
 import { localInputToIso, slugify } from '@/lib/format'
 import { isRecurrenceRule } from '@/lib/recurrence'
-import type { Database } from '@/lib/database.types'
+import type { Database, Json } from '@/lib/database.types'
 
 /**
  * Admin server actions. Row Level Security is the real enforcement layer —
@@ -211,6 +213,101 @@ export async function deleteArticleAction(formData: FormData) {
   await publishRefresh(['/blog', `/blog/${slug}`, '/feed.xml'])
   revalidatePath('/members/admin/articles')
   redirect('/members/admin/articles?deleted=1')
+}
+
+// ---------------------------------------------------------------------------
+// Pages (the drag-and-drop page builder)
+// ---------------------------------------------------------------------------
+
+export async function savePageAction(formData: FormData) {
+  const { supabase } = await requireEditor()
+  const id = text(formData, 'id')
+  const backTo = `/members/admin/pages/${id || 'new'}`
+
+  const title = text(formData, 'title')
+  if (!title) redirect(`${backTo}?error=save`)
+
+  const slug = normalizePageSlug(text(formData, 'slug') || slugify(title))
+  if (!slug) redirect(`${backTo}?error=slug`)
+
+  // Save-time SEO checks mirror what the build gates enforce for hand-built
+  // pages, since editor content never passes through those gates.
+  const metaTitle = text(formData, 'meta_title') || title
+  const metaDescription = text(formData, 'meta_description')
+  if (metaDescription.length < 50 || metaDescription.length > 160) redirect(`${backTo}?error=meta`)
+
+  const ogTitle = text(formData, 'og_title')
+  const ogDescription = text(formData, 'og_description')
+  if (!ogTitle || !ogDescription || ogTitle === metaTitle || ogDescription === metaDescription) {
+    redirect(`${backTo}?error=og`)
+  }
+
+  const ogImage = text(formData, 'og_image')
+
+  // The stored list is the builder's own payload, so a half-finished section
+  // survives a draft save; the validating parser gates every render, and a
+  // page cannot publish until at least one section parses clean.
+  const rawSections = String(formData.get('sections') ?? '[]')
+  let sectionsPayload: unknown = []
+  try {
+    sectionsPayload = JSON.parse(rawSections)
+  } catch {
+    redirect(`${backTo}?error=save`)
+  }
+  if (!Array.isArray(sectionsPayload) || rawSections.length > 200_000) redirect(`${backTo}?error=save`)
+  const published = flag(formData, 'published')
+  if (published && !parsePageSections(sectionsPayload).length) redirect(`${backTo}?error=sections`)
+
+  const values: Database['public']['Tables']['pages']['Insert'] = {
+    slug,
+    title,
+    hero_eyebrow: text(formData, 'hero_eyebrow'),
+    hero_lead: text(formData, 'hero_lead') || null,
+    meta_title: metaTitle,
+    meta_description: metaDescription,
+    og_title: ogTitle,
+    og_description: ogDescription,
+    og_image: ogImage || null,
+    og_image_alt: ogImage ? text(formData, 'og_image_alt') || ogTitle : null,
+    sections: sectionsPayload as Json,
+    published,
+    sample: false,
+  }
+
+  // A renamed page must also refresh its old address, so the previous URL
+  // stops serving stale content.
+  let previousSlug = ''
+  if (id) {
+    const { data: existing } = await supabase.from('pages').select('slug').eq('id', id).maybeSingle()
+    previousSlug = existing?.slug ?? ''
+  }
+
+  const { error } = id
+    ? await supabase.from('pages').update(values).eq('id', id)
+    : await supabase.from('pages').insert(values)
+
+  if (error) {
+    console.warn('[admin] page save failed:', error.message)
+    redirect(`${backTo}?error=${error.message.includes('pages_slug_key') ? 'slug' : 'save'}`)
+  }
+
+  const paths = [`/${slug}`, ...(previousSlug && previousSlug !== slug ? [`/${previousSlug}`] : [])]
+  await publishRefresh(paths)
+  revalidatePath('/members/admin/pages')
+  redirect('/members/admin/pages?saved=1')
+}
+
+export async function deletePageAction(formData: FormData) {
+  const { supabase } = await requireEditor()
+  const slug = text(formData, 'slug')
+  const { error } = await supabase.from('pages').delete().eq('id', text(formData, 'id'))
+  if (error) {
+    console.warn('[admin] page delete failed:', error.message)
+    redirect('/members/admin/pages?error=delete')
+  }
+  if (slug) await publishRefresh([`/${slug}`])
+  revalidatePath('/members/admin/pages')
+  redirect('/members/admin/pages?deleted=1')
 }
 
 // ---------------------------------------------------------------------------

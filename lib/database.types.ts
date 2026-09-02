@@ -368,6 +368,63 @@ export type Database = {
         }
         Relationships: []
       }
+      pages: {
+        Row: {
+          created_at: string
+          hero_eyebrow: string
+          hero_lead: string | null
+          id: string
+          meta_description: string
+          meta_title: string
+          og_description: string
+          og_image: string | null
+          og_image_alt: string | null
+          og_title: string
+          published: boolean
+          sample: boolean
+          sections: Json
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          hero_eyebrow?: string
+          hero_lead?: string | null
+          id?: string
+          meta_description?: string
+          meta_title?: string
+          og_description?: string
+          og_image?: string | null
+          og_image_alt?: string | null
+          og_title?: string
+          published?: boolean
+          sample?: boolean
+          sections?: Json
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          hero_eyebrow?: string
+          hero_lead?: string | null
+          id?: string
+          meta_description?: string
+          meta_title?: string
+          og_description?: string
+          og_image?: string | null
+          og_image_alt?: string | null
+          og_title?: string
+          published?: boolean
+          sample?: boolean
+          sections?: Json
+          slug?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       sermons: {
         Row: {
           created_at: string
