@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, type FormEvent } from 'react'
+import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/primitives/Button'
 import { FieldShell, TextField } from '@/components/primitives/Field'
@@ -134,6 +135,11 @@ export function LoginForm() {
       <Button type="submit" variant="primary" loading={busy}>
         {mode === 'sign-in' ? 'Sign in to the members area' : 'Request member access'}
       </Button>
+      {mode === 'sign-in' ? (
+        <p className="m-0 text-center text-sm">
+          <Link href="/members/forgot-password">Forgot your password?</Link>
+        </p>
+      ) : null}
     </form>
   )
 }

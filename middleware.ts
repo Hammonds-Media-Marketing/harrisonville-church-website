@@ -8,7 +8,7 @@ import { createServerClient } from '@supabase/ssr'
  * Security and re-checked in the page layouts; this only handles the session.
  */
 
-const PUBLIC_MEMBER_PATHS = new Set(['/members/login', '/members/auth/confirm'])
+const PUBLIC_MEMBER_PATHS = new Set(['/members/login', '/members/auth/confirm', '/members/forgot-password'])
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request })
