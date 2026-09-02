@@ -19,6 +19,25 @@ export const metadata: Metadata = buildMetadata({
   noindex: true,
 })
 
+/**
+ * The site's hand-built pages. These are designed in code with bespoke
+ * components (the lighthouse hero, the map, the portrait clusters), so they
+ * are listed here for a complete picture of the site but edited through a
+ * code change by HMM rather than the section builder.
+ */
+const BUILT_IN_PAGES = [
+  { title: 'Home', path: '/' },
+  { title: 'About — Who We Are', path: '/about' },
+  { title: 'What to Expect', path: '/about/what-to-expect' },
+  { title: 'Leadership', path: '/about/leadership' },
+  { title: 'Events Calendar', path: '/events' },
+  { title: 'Resources', path: '/resources' },
+  { title: 'Bible Study Course', path: '/resources/bible-study' },
+  { title: 'Contact Us', path: '/contact' },
+  { title: 'Privacy Policy', path: '/privacy-policy' },
+  { title: 'Cookie Policy', path: '/cookie-policy' },
+]
+
 export default async function AdminPagesPage({
   searchParams,
 }: {
@@ -41,7 +60,10 @@ export default async function AdminPagesPage({
         <Container className="max-w-4xl">
           <AdminNotices params={params} />
           <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-            <SectionHeading eyebrow="Site pages" title={`${pages.length} page${pages.length === 1 ? '' : 's'}`} />
+            <SectionHeading
+              eyebrow="Page builder"
+              title={`${pages.length} custom page${pages.length === 1 ? '' : 's'}`}
+            />
             <Button href="/members/admin/pages/new" variant="primary" size="sm">
               Build a page
             </Button>
@@ -90,10 +112,36 @@ export default async function AdminPagesPage({
           ) : (
             <Surface tone="panel">
               <p className="text-muted">
-                No pages yet. Build the first one from sections — it stays a private draft until you publish it.
+                No custom pages yet. Build the first one from sections — it stays a private draft until you
+                publish it. The site&apos;s core pages are listed below and keep working either way.
               </p>
             </Surface>
           )}
+        </Container>
+      </Section>
+
+      <Section tone="surface">
+        <Container className="max-w-4xl">
+          <SectionHeading
+            eyebrow="Designed in code"
+            title="Built-in pages"
+            lead="The site's core pages, designed and maintained in code with their custom visuals. To change their content, send the wording to HMM — the builder above is for new pages."
+          />
+          <ul className="grid list-none gap-4 p-0 sm:grid-cols-2">
+            {BUILT_IN_PAGES.map((p) => (
+              <li key={p.path}>
+                <Surface tone="card" className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <h3 className="text-lg">{p.title}</h3>
+                    <p className="m-0 text-sm text-muted">{p.path}</p>
+                  </div>
+                  <Button href={p.path} variant="link" size="sm">
+                    View
+                  </Button>
+                </Surface>
+              </li>
+            ))}
+          </ul>
         </Container>
       </Section>
     </>
