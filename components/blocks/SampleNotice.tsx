@@ -1,10 +1,12 @@
+import type { ReactNode } from 'react'
+
 /**
  * A visible, honest banner shown above any section rendered from placeholder
  * content. It keeps the build truthful: nothing sample is dressed up as final.
  * Remove (or let it disappear automatically) once real content replaces the
  * seed data.
  */
-export function SampleNotice({ label }: { label: string }) {
+export function SampleNotice({ label }: { label: ReactNode }) {
   return (
     <div
       role="note"

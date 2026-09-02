@@ -1080,6 +1080,27 @@ export type Database = {
         }
         Relationships: []
       }
+      page_content: {
+        Row: {
+          path: string
+          updated_at: string
+          updated_by: string | null
+          values: Json
+        }
+        Insert: {
+          path: string
+          updated_at?: string
+          updated_by?: string | null
+          values?: Json
+        }
+        Update: {
+          path?: string
+          updated_at?: string
+          updated_by?: string | null
+          values?: Json
+        }
+        Relationships: []
+      }
       pages: {
         Row: {
           created_at: string

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
-import { buildMetadata } from '@/lib/seo'
+import { copyMetadata, pageCopy } from '@/lib/page-copy'
 import { JsonLd, breadcrumbSchema, courseSchema, webPageSchema } from '@/lib/jsonld'
 import { Container, Section, SectionHeading } from '@/components/primitives/Layout'
 import { PageHero } from '@/components/blocks/PageHero'
@@ -9,58 +9,52 @@ import { Button } from '@/components/primitives/Button'
 import { bibleCourse, bibleLessons } from '@/content/bible-study'
 import { getLeader } from '@/content/leadership'
 
-/** External home of the online, self-paced course (the study the congregation
- *  also mails as a booklet). Opens in a new tab via the Button primitive. */
-const ONLINE_COURSE_URL = 'https://thetruthfrees.com/'
+const PATH = '/resources/bible-study'
 
-export const dynamic = 'force-static'
-
-export const metadata: Metadata = buildMetadata({
-  title: 'Free Bible Study Course',
-  description:
-    'The Truth Frees Correspondence Course, offered free through the Harrisonville Church of Christ. Six self-paced lessons walk through the Gospel. No cost and no obligation.',
-  path: '/resources/bible-study',
-  ogTitle: 'The Truth Frees Correspondence Course: A Free Bible Study',
-  ogDescription: 'Six self-paced lessons through the New Testament. Study on your own, or ask someone to study with you.',
-  ogImage: '/assets/og/og-bible-study.jpg',
-  ogImageAlt: 'Two men studying an open Bible together in the pews at the Harrisonville Church of Christ',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  return copyMetadata(PATH)
+}
 
 const breadcrumbs = [
   { name: 'Home', path: '/' },
   { name: 'Resources', path: '/resources' },
-  { name: 'Bible Study Course', path: '/resources/bible-study' },
+  { name: 'Bible Study Course', path: PATH },
 ]
 
-export default function BibleStudyPage() {
+export default async function BibleStudyPage() {
+  const copy = await pageCopy(PATH)
   const evangelist = getLeader('isaac-moreno')
+  // The online course lives on its own site; while that link is unset the
+  // buttons fall back to the lesson list further down this page.
+  const onlineHref = copy.s('hero.secondaryHref') || '#lessons'
+
   return (
     <>
       <JsonLd
         data={[
-          webPageSchema({ name: 'Bible Study Course', description: metadata.description as string, path: '/resources/bible-study' }),
+          webPageSchema({ name: 'Bible Study Course', description: copy.s('seo.description'), path: PATH }),
           breadcrumbSchema(breadcrumbs),
           courseSchema({
             name: bibleCourse.title,
-            description: bibleCourse.description,
-            path: '/resources/bible-study',
+            description: copy.s('hero.lead'),
+            path: PATH,
             lessons: bibleCourse.lessonCount,
           }),
         ]}
       />
 
       <PageHero
-        eyebrow="Free, self-paced study"
-        title="Study The Bible With Us"
-        lead={bibleCourse.description}
+        eyebrow={copy.t('hero.eyebrow')}
+        title={copy.t('hero.title')}
+        lead={copy.t('hero.lead')}
         waveFill="var(--color-surface)"
       >
         <div className="flex flex-wrap gap-3">
-          <Button href="/contact#request-bible-study" size="lg">
-            Study With Evangelist
+          <Button href={copy.s('hero.primaryHref')} size="lg">
+            {copy.t('hero.primaryLabel')}
           </Button>
-          <Button href={ONLINE_COURSE_URL || '#lessons'} variant="ghost" size="lg">
-            Study Online
+          <Button href={onlineHref} variant="ghost" size="lg">
+            {copy.t('hero.secondaryLabel')}
           </Button>
         </div>
       </PageHero>
@@ -68,16 +62,13 @@ export default function BibleStudyPage() {
       {/* Two ways to take the course */}
       <Section tone="surface">
         <Container>
-          <SectionHeading eyebrow="Two ways to study" title="How would you like to take the course?" />
+          <SectionHeading eyebrow={copy.t('ways.eyebrow')} title={copy.t('ways.title')} />
           <div className="grid gap-5 md:grid-cols-2">
             <Surface tone="card" className="flex flex-col gap-3">
-              <h3 className="text-xl">Online, at your own pace</h3>
-              <p className="text-ink">
-                The full course is available online, the same study the congregation mails as a printed booklet. Work
-                through the lessons whenever it suits you, save your place, and return anytime.
-              </p>
-              <Button href={ONLINE_COURSE_URL || '#lessons'} className="mt-auto w-fit">
-                Start the online course
+              <h3 className="text-xl">{copy.t('ways.online.title')}</h3>
+              <p className="text-ink">{copy.t('ways.online.body')}</p>
+              <Button href={onlineHref} className="mt-auto w-fit">
+                {copy.t('ways.online.label')}
               </Button>
             </Surface>
             <Surface tone="card" className="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-5">
@@ -93,13 +84,10 @@ export default function BibleStudyPage() {
                 />
               ) : null}
               <div className="flex flex-1 flex-col gap-3">
-                <h3 className="text-xl">In person, with our evangelist</h3>
-                <p className="text-ink">
-                  We invite you to study with our evangelist in person. He will walk through the same lessons with
-                  you, answer questions from the Bible as they come up, and go at whatever pace suits you.
-                </p>
-                <Button href="/contact#request-bible-study" variant="secondary" className="mt-auto w-fit">
-                  Request an in-person study
+                <h3 className="text-xl">{copy.t('ways.person.title')}</h3>
+                <p className="text-ink">{copy.t('ways.person.body')}</p>
+                <Button href={copy.s('ways.person.href')} variant="secondary" className="mt-auto w-fit">
+                  {copy.t('ways.person.label')}
                 </Button>
               </div>
             </Surface>
@@ -109,7 +97,7 @@ export default function BibleStudyPage() {
 
       <Section tone="light" id="lessons">
         <Container>
-          <SectionHeading eyebrow="The 6-lesson journey" title="What the course covers" />
+          <SectionHeading eyebrow={copy.t('lessons.eyebrow')} title={copy.t('lessons.title')} />
           <ol className="flex flex-col gap-4">
             {bibleLessons.map((lesson) => (
               <li key={lesson.slug}>
@@ -139,13 +127,10 @@ export default function BibleStudyPage() {
 
       <Section tone="deep">
         <Container className="flex flex-col items-center gap-5 text-center">
-          <h2 className="text-3xl text-on-deep">Would you rather not study alone?</h2>
-          <p className="max-w-xl text-lg text-on-deep-muted">
-            Request a study and a member will walk through the lessons with you, in person or over video, at whatever
-            pace suits you.
-          </p>
-          <Button href="/contact#request-bible-study" variant="primary" size="lg">
-            Request a Bible study
+          <h2 className="text-3xl text-on-deep">{copy.t('cta.title')}</h2>
+          <p className="max-w-xl text-lg text-on-deep-muted">{copy.t('cta.body')}</p>
+          <Button href={copy.s('cta.href')} variant="primary" size="lg">
+            {copy.t('cta.label')}
           </Button>
         </Container>
       </Section>

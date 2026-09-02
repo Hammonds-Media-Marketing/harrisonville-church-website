@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
-import Link from 'next/link'
-import { buildMetadata } from '@/lib/seo'
+import { copyMetadata, pageCopy } from '@/lib/page-copy'
 import { JsonLd, webPageSchema } from '@/lib/jsonld'
 import { PRIMARY_CTA, site } from '@/lib/site'
 import { Container, Eyebrow, Section, SectionHeading } from '@/components/primitives/Layout'
@@ -12,38 +11,21 @@ import { LighthouseScene } from '@/components/hero/LighthouseScene'
 import { CardLink } from '@/components/blocks/cards'
 import { BookIcon, CheckIcon, ClockIcon, MapPinIcon } from '@/components/ui/icons'
 
-export const metadata: Metadata = buildMetadata({
-  title: 'Harrisonville Church of Christ | Bible-Based Worship',
-  rawTitle: true,
-  description:
-    'Harrisonville Church of Christ welcomes Cass County to simple, Scripture-based worship and open Bible study. Visit with no pressure. No creed but the Bible.',
-  path: '/',
-  ogTitle: 'A Welcoming Church Home on Outlook Drive',
-  ogDescription:
-    'Come as you are, sit, and observe. Worship rooted in the New Testament, with plain answers to honest questions about faith.',
-  ogImage: '/assets/og/og-home.jpg',
-  ogImageAlt: 'The Harrisonville Church of Christ congregation gathered at the front of the auditorium',
-})
+const PATH = '/'
 
-const reassurances = [
-  {
-    title: 'Bible-based worship services',
-    body: 'Singing, prayer, the Lord’s Supper, and a sermon from the Bible, in the pattern the New Testament describes.',
-  },
-  {
-    title: 'Visitors are honored guests',
-    body: 'Visitors are guests. No one will ask you to stand, speak, raise a hand, or give. Come and simply observe.',
-  },
-  {
-    title: 'Questions are welcome here',
-    body: 'Ask anything. We will open the New Testament and show you the reasoning, rather than hand you an opinion.',
-  },
-]
+export async function generateMetadata(): Promise<Metadata> {
+  return copyMetadata(PATH, { rawTitle: true })
+}
 
-export default function HomePage() {
+export default async function HomePage() {
+  const copy = await pageCopy(PATH)
+  const reassurances = [1, 2, 3] as const
+
   return (
     <>
-      <JsonLd data={[webPageSchema({ name: site.name, description: site.description, path: '/' })]} />
+      <JsonLd
+        data={[webPageSchema({ name: site.name, description: copy.s('seo.description'), path: PATH })]}
+      />
 
       {/* ---------------------------------------------------------------- Hero
           Pulled up behind the sticky header (with matching padding) so the sky
@@ -56,26 +38,23 @@ export default function HomePage() {
       >
         <div className="mx-auto grid max-w-container items-center gap-6 px-5 pb-9 pt-8 md:pb-10 md:pt-9 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="flex flex-col gap-5">
-            <Eyebrow marks={false}>Harrisonville Church of Christ &middot; On Outlook Drive</Eyebrow>
+            <Eyebrow marks={false}>{copy.t('hero.eyebrow')}</Eyebrow>
             <h1 id="hero-heading" className="text-4xl md:text-5xl">
-              A steady light for people seeking something real.
+              {copy.t('hero.title')}
             </h1>
-            <p className="max-w-xl text-lg text-muted">
-              We are New Testament Christians in Harrisonville, Missouri, gathered around simple worship and an open Bible. If
-              you are tired of noise and unsure who to trust, you are welcome here. Come, sit, and see for yourself.
-            </p>
+            <p className="max-w-xl text-lg text-muted">{copy.t('hero.lead')}</p>
             <div className="flex flex-wrap gap-3">
               <Button href={PRIMARY_CTA.href} size="lg">
                 {PRIMARY_CTA.label}
               </Button>
-              <Button href="/resources/bible-study" variant="secondary" size="lg">
-                Start a Free Bible Study
+              <Button href={copy.s('hero.secondaryHref')} variant="secondary" size="lg">
+                {copy.t('hero.secondaryLabel')}
               </Button>
             </div>
             <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-ink">
               <span className="inline-flex items-center gap-2">
                 <ClockIcon className="h-5 w-5 text-primary-strong" />
-                Sundays 10:00 AM &amp; 2:00 PM, Wednesdays 7:00 PM
+                {copy.t('hero.times')}
               </span>
             </p>
           </div>
@@ -94,38 +73,37 @@ export default function HomePage() {
         <Container>
           <SectionHeading
             id="welcome-heading"
-            eyebrow="You are welcome here"
-            title="Walking into a new church should not feel like a risk"
-            lead="Many people who visit have questions they were never allowed to ask. Here, every question is welcome, and every visitor is treated as a guest."
+            eyebrow={copy.t('welcome.eyebrow')}
+            title={copy.t('welcome.title')}
+            lead={copy.t('welcome.lead')}
           />
           <figure className="mb-7">
             <Image
-              src="/assets/photos/congregation-outlook-drive.jpg"
-              alt="The Harrisonville Church of Christ congregation, several generations together at the front of the auditorium beneath the wooden cross"
+              src={copy.s('welcome.photo')}
+              alt={copy.s('welcome.photoAlt')}
               width={1600}
               height={900}
               loading="lazy"
               sizes="(max-width: 1160px) 100vw, 1100px"
               className="photo-grade h-auto w-full rounded-xl object-cover"
+              {...copy.mark('welcome.photo')}
             />
-            <figcaption className="mt-2 text-sm text-muted">
-              The congregation, gathered in the auditorium on Outlook Drive.
-            </figcaption>
+            <figcaption className="mt-2 text-sm text-muted">{copy.t('welcome.caption')}</figcaption>
           </figure>
           <div className="grid gap-5 md:grid-cols-3">
-            {reassurances.map((r) => (
-              <Surface key={r.title} tone="card" className="flex flex-col gap-3">
+            {reassurances.map((n) => (
+              <Surface key={n} tone="card" className="flex flex-col gap-3">
                 {/* Living-water green — the logo's grass color as the color of "yes". */}
                 <span className="grid h-11 w-11 place-items-center rounded-full bg-surface text-accent-strong">
                   <CheckIcon className="h-6 w-6" />
                 </span>
-                <h3 className="text-xl">{r.title}</h3>
-                <p className="text-ink">{r.body}</p>
+                <h3 className="text-xl">{copy.t(`welcome.card${n}.title`)}</h3>
+                <p className="text-ink">{copy.t(`welcome.card${n}.body`)}</p>
               </Surface>
             ))}
           </div>
           <p className="mt-6">
-            <CardLink href="/about/what-to-expect">See exactly what a first visit looks like</CardLink>
+            <CardLink href={copy.s('welcome.linkHref')}>{copy.t('welcome.linkLabel')}</CardLink>
           </p>
         </Container>
       </Section>
@@ -138,9 +116,9 @@ export default function HomePage() {
               <SectionHeading
                 id="visit-heading"
                 onDeep
-                eyebrow="Plan your visit"
-                title="When and where we gather"
-                lead="There is parking at the building. Enter the lot from 2 Highway, near the corner of 2 Highway and Outlook Drive, and a member will greet you when you arrive."
+                eyebrow={copy.t('visit.eyebrow')}
+                title={copy.t('visit.title')}
+                lead={copy.t('visit.lead')}
               />
               <Button href={PRIMARY_CTA.href} variant="primary" className="w-fit">
                 {PRIMARY_CTA.label}
@@ -166,7 +144,7 @@ export default function HomePage() {
           <div className="mt-8 overflow-hidden rounded-xl border border-on-deep-muted/20">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1413829.9972563125!2d-96.8577587831071!3d37.13297595480021!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x87c12be6025a3b87%3A0x4505932af4760b7b!2sHarrisonville%20Church%20of%20Christ!5e0!3m2!1sen!2sus!4v1788190560791!5m2!1sen!2sus"
-              title="Map to Harrisonville Church of Christ at 1203 Outlook Drive, Harrisonville, Missouri"
+              title={copy.s('visit.mapTitle')}
               className="block h-80 w-full border-0 md:h-96"
               loading="lazy"
               allowFullScreen
@@ -182,26 +160,16 @@ export default function HomePage() {
           <SectionHeading
             id="beliefs-heading"
             align="center"
-            eyebrow="Simply Christians"
-            title="A church family with open hearts and open doors"
+            eyebrow={copy.t('beliefs.eyebrow')}
+            title={copy.t('beliefs.title')}
           />
           <div className="mx-auto flex max-w-2xl flex-col gap-4 text-center text-lg text-ink">
-            <p>
-              We are a Christ-centered church family in Harrisonville, Missouri. If you have been thinking, praying,
-              searching, or hoping for a place to belong, there is a home awaiting you here in God&rsquo;s family.
-            </p>
-            <p>
-              Every person, whatever their background or walk of life, has been created in the image of God and
-              possesses an everlasting soul. It is our desire to share the joy of living a life in service to the
-              Lord Jesus Christ with anyone who is willing.
-            </p>
-            <p>
-              Our spiritual family has open hearts and open hands. You are always welcome to visit during any of our
-              public worship services. <Link href="/about/what-to-expect">Come and see</Link> for yourself.
-            </p>
+            <p>{copy.t('beliefs.p1')}</p>
+            <p>{copy.t('beliefs.p2')}</p>
+            <p>{copy.t('beliefs.p3')}</p>
           </div>
           <p className="mt-6 text-center">
-            <CardLink href="/about">Learn who we are</CardLink>
+            <CardLink href={copy.s('beliefs.linkHref')}>{copy.t('beliefs.linkLabel')}</CardLink>
           </p>
         </Container>
       </Section>
@@ -215,15 +183,12 @@ export default function HomePage() {
                 <BookIcon className="h-6 w-6" />
               </span>
               <div>
-                <h2 id="course-heading" className="text-2xl">Study the Gospel at your own pace</h2>
-                <p className="mt-1 max-w-2xl text-ink">
-                  A free, self-paced course that walks through the New Testament from the beginning. No cost, no
-                  obligation, and no need to attend anything to start.
-                </p>
+                <h2 id="course-heading" className="text-2xl">{copy.t('course.title')}</h2>
+                <p className="mt-1 max-w-2xl text-ink">{copy.t('course.body')}</p>
               </div>
             </div>
-            <Button href="/resources/bible-study" className="shrink-0">
-              Begin the course
+            <Button href={copy.s('course.ctaHref')} className="shrink-0">
+              {copy.t('course.ctaLabel')}
             </Button>
           </Surface>
         </Container>
@@ -232,17 +197,14 @@ export default function HomePage() {
       {/* ----------------------------------------------------------- Final CTA */}
       <Section tone="deep">
         <Container className="flex flex-col items-center gap-5 text-center">
-          <h2 className="text-3xl text-on-deep">There is a seat for you this Sunday</h2>
-          <p className="max-w-xl text-lg text-on-deep-muted">
-            Bring your questions and your doubts. You will find a congregation that takes the Bible seriously and
-            takes you seriously too.
-          </p>
+          <h2 className="text-3xl text-on-deep">{copy.t('cta.title')}</h2>
+          <p className="max-w-xl text-lg text-on-deep-muted">{copy.t('cta.body')}</p>
           <div className="flex flex-wrap justify-center gap-3">
             <Button href={PRIMARY_CTA.href} variant="primary" size="lg">
               {PRIMARY_CTA.label}
             </Button>
-            <Button href="/contact" variant="ghostOnDeep" size="lg">
-              Contact us
+            <Button href={copy.s('cta.secondaryHref')} variant="ghostOnDeep" size="lg">
+              {copy.t('cta.secondaryLabel')}
             </Button>
           </div>
         </Container>

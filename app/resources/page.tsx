@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { buildMetadata } from '@/lib/seo'
+import { copyMetadata, pageCopy } from '@/lib/page-copy'
 import { JsonLd, breadcrumbSchema, webPageSchema } from '@/lib/jsonld'
 import { Container, Eyebrow, Section } from '@/components/primitives/Layout'
 import { PageHero } from '@/components/blocks/PageHero'
@@ -7,57 +7,43 @@ import { Surface } from '@/components/primitives/Surface'
 import { CardLink } from '@/components/blocks/cards'
 import { BookIcon } from '@/components/ui/icons'
 
-export const dynamic = 'force-static'
+const PATH = '/resources'
 
-export const metadata: Metadata = buildMetadata({
-  title: 'Resources for Studying the Bible',
-  description:
-    'Free resources from the Harrisonville Church of Christ: a self-paced Bible study course drawn straight from Scripture.',
-  path: '/resources',
-  ogTitle: 'Study the Bible at Your Own Pace',
-  ogDescription: 'A free, self-paced Bible study course that answers honest questions from the New Testament.',
+export async function generateMetadata(): Promise<Metadata> {
   // The hub is unlinked while the sermon library is hidden; the Bible study
   // course is reached directly from the primary navigation instead.
-  noindex: true,
-})
+  return copyMetadata(PATH, { noindex: true })
+}
 
 const breadcrumbs = [
   { name: 'Home', path: '/' },
-  { name: 'Resources', path: '/resources' },
+  { name: 'Resources', path: PATH },
 ]
 
-const resources = [
-  { icon: BookIcon, title: 'Bible Study Course', body: 'The Truth Frees Correspondence Course: six free, self-paced lessons through the New Testament. No cost, no obligation.', href: '/resources/bible-study', cta: 'Begin the course' },
-]
+export default async function ResourcesPage() {
+  const copy = await pageCopy(PATH)
 
-export default function ResourcesPage() {
   return (
     <>
       <JsonLd
         data={[
-          webPageSchema({ name: 'Resources', description: metadata.description as string, path: '/resources' }),
+          webPageSchema({ name: 'Resources', description: copy.s('seo.description'), path: PATH }),
           breadcrumbSchema(breadcrumbs),
         ]}
       />
-      <PageHero
-        eyebrow="Free resources"
-        title="Study the Bible on your own terms"
-        lead="Everything here is free, and none of it requires you to attend or join anything. Start wherever your questions are."
-      />
+      <PageHero eyebrow={copy.t('hero.eyebrow')} title={copy.t('hero.title')} lead={copy.t('hero.lead')} />
       <Section tone="light">
         <Container>
           <div className="grid gap-5 md:grid-cols-2">
-            {resources.map((r) => (
-              <Surface key={r.title} tone="card" interactive className="flex flex-col gap-3">
-                <span className="grid h-12 w-12 place-items-center rounded-full bg-primary-strong text-on-primary">
-                  <r.icon className="h-6 w-6" />
-                </span>
-                <Eyebrow>Resource</Eyebrow>
-                <h2 className="text-xl">{r.title}</h2>
-                <p className="flex-1 text-ink">{r.body}</p>
-                <CardLink href={r.href}>{r.cta}</CardLink>
-              </Surface>
-            ))}
+            <Surface tone="card" interactive className="flex flex-col gap-3">
+              <span className="grid h-12 w-12 place-items-center rounded-full bg-primary-strong text-on-primary">
+                <BookIcon className="h-6 w-6" />
+              </span>
+              <Eyebrow>{copy.t('card.eyebrow')}</Eyebrow>
+              <h2 className="text-xl">{copy.t('card.title')}</h2>
+              <p className="flex-1 text-ink">{copy.t('card.body')}</p>
+              <CardLink href={copy.s('card.linkHref')}>{copy.t('card.linkLabel')}</CardLink>
+            </Surface>
           </div>
         </Container>
       </Section>

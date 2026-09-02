@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { buildMetadata } from '@/lib/seo'
+import { copyMetadata, pageCopy } from '@/lib/page-copy'
 import { JsonLd, breadcrumbSchema, webPageSchema } from '@/lib/jsonld'
 import { Container, Section, SectionHeading } from '@/components/primitives/Layout'
 import { SampleNotice } from '@/components/blocks/SampleNotice'
@@ -9,25 +9,26 @@ import { getAllAuthors, getBlogCategories, recentPosts } from '@/lib/blog'
 
 export const revalidate = 3600
 
-export const metadata: Metadata = buildMetadata({
-  title: 'Blog: Answers From Scripture',
-  description:
-    'Articles from the Harrisonville Church of Christ on salvation, worship, the church, and Christian living, each answered plainly from the New Testament.',
-  path: '/blog',
-  ogTitle: 'Honest Questions, Answered From the Bible',
-  ogDescription: 'Short, Scripture-first articles that take real questions seriously, without denominational spin.',
+const PATH = '/blog'
+
+export async function generateMetadata(): Promise<Metadata> {
   // Hidden from navigation and search at the congregation's direction.
-  noindex: true,
-})
+  return copyMetadata(PATH, { noindex: true })
+}
 
 const breadcrumbs = [
   { name: 'Home', path: '/' },
-  { name: 'Blog', path: '/blog' },
+  { name: 'Blog', path: PATH },
 ]
 
 export default async function BlogPage({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
   const { category } = await searchParams
-  const [all, categories, authors] = await Promise.all([recentPosts(), getBlogCategories(), getAllAuthors()])
+  const [all, categories, authors, copy] = await Promise.all([
+    recentPosts(),
+    getBlogCategories(),
+    getAllAuthors(),
+    pageCopy(PATH),
+  ])
   const active = category && categories.includes(category) ? category : null
   const posts = active ? all.filter((p) => p.category === active) : all
   const authorBySlug = new Map(authors.map((a) => [a.slug, a]))
@@ -51,7 +52,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
     <>
       <JsonLd
         data={[
-          webPageSchema({ name: 'Blog', description: metadata.description as string, path: '/blog' }),
+          webPageSchema({ name: 'Blog', description: copy.s('seo.description'), path: PATH }),
           breadcrumbSchema(breadcrumbs),
         ]}
       />
@@ -60,9 +61,9 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
         <Container>
           <SectionHeading
             as="h1"
-            eyebrow="From the congregation"
-            title="Plain answers from Scripture"
-            lead="No spin and no jargon. Each article takes a real question and walks through what the New Testament actually says, so you can weigh it yourself."
+            eyebrow={copy.t('intro.eyebrow')}
+            title={copy.t('intro.title')}
+            lead={copy.t('intro.lead')}
           />
         </Container>
       </Section>
@@ -71,11 +72,11 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
         <Container>
           {/* Category filter */}
           <nav aria-label="Filter by category" className="mb-6 flex flex-wrap gap-2">
-            {chip('All', '/blog', !active)}
-            {categories.map((c) => chip(c, `/blog?category=${encodeURIComponent(c)}`, active === c))}
+            {chip(copy.s('list.allLabel'), PATH, !active)}
+            {categories.map((c) => chip(c, `${PATH}?category=${encodeURIComponent(c)}`, active === c))}
           </nav>
 
-          <SampleNotice label="These articles are sample drafts written to demonstrate the layout." />
+          {copy.blank('list.notice') ? null : <SampleNotice label={copy.t('list.notice')} />}
 
           {posts.length ? (
             <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
@@ -84,9 +85,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
               ))}
             </div>
           ) : (
-            <p className="rounded-lg border border-border/60 bg-surface p-6 text-muted">
-              No articles in this category yet. <Link href="/blog" className="text-link hover:text-link-hover">View all articles</Link>.
-            </p>
+            <p className="rounded-lg border border-border/60 bg-surface p-6 text-muted">{copy.t('list.empty')}</p>
           )}
         </Container>
       </Section>

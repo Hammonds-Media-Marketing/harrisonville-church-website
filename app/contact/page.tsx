@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { buildMetadata } from '@/lib/seo'
+import { copyMetadata, pageCopy } from '@/lib/page-copy'
 import { JsonLd, breadcrumbSchema, webPageSchema } from '@/lib/jsonld'
 import { site } from '@/lib/site'
 import { Container, Section } from '@/components/primitives/Layout'
@@ -11,17 +11,11 @@ import { ClockIcon, MailIcon, MapPinIcon, PhoneIcon } from '@/components/ui/icon
 
 export const dynamic = 'force-dynamic'
 
-export const metadata: Metadata = buildMetadata({
-  title: 'Contact, Prayer and Bible Study',
-  description:
-    'Reach the Harrisonville Church of Christ. Ask a question, send a prayer request, or request a free Bible study in person or online. A real person will reply.',
-  path: '/contact',
-  ogTitle: 'Connect With the Harrisonville Church of Christ',
-  ogDescription:
-    'Questions, prayer requests, and free Bible study requests all reach a real member who will respond personally.',
-  ogImage: '/assets/og/og-contact.jpg',
-  ogImageAlt: 'Two members of the Harrisonville Church of Christ shaking hands inside the building entrance',
-})
+const PATH = '/contact'
+
+export async function generateMetadata(): Promise<Metadata> {
+  return copyMetadata(PATH)
+}
 
 const generalFields: FormField[] = [
   { kind: 'text', name: 'firstName', label: 'First name', required: true, autoComplete: 'given-name' },
@@ -52,28 +46,27 @@ const bibleStudyFields: FormField[] = [
 
 const breadcrumbs = [
   { name: 'Home', path: '/' },
-  { name: 'Connect', path: '/contact' },
+  { name: 'Connect', path: PATH },
 ]
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const copy = await pageCopy(PATH)
+
   return (
     <>
       <JsonLd
         data={[
-          webPageSchema({ name: 'Contact', description: metadata.description as string, path: '/contact' }),
+          webPageSchema({ name: 'Contact', description: copy.s('seo.description'), path: PATH }),
           breadcrumbSchema(breadcrumbs),
         ]}
       />
 
       <PageHero
         id="contact-heading"
-        eyebrow="Connect with us"
-        title="We would be glad to hear from you"
-        lead="Whether you are planning a first visit, carrying something heavy, or want to open a Bible together, there is a way to reach us below. A real member reads every message and replies personally."
-        photo={{
-          src: '/assets/photos/welcome-handshake.jpg',
-          alt: 'A member welcomes a visitor with a handshake just inside the front door of the building',
-        }}
+        eyebrow={copy.t('hero.eyebrow')}
+        title={copy.t('hero.title')}
+        lead={copy.t('hero.lead')}
+        photo={{ src: copy.s('hero.photo'), alt: copy.s('hero.photoAlt') }}
       />
 
       <Section tone="light">
@@ -82,45 +75,43 @@ export default function ContactPage() {
             <div className="flex flex-col gap-10">
               {/* General contact */}
               <section id="contact-form" aria-labelledby="general-heading" className="scroll-mt-32">
-                <h2 id="general-heading" className="text-2xl">Send a general message</h2>
-                <p className="mb-5 mt-1 text-muted">Questions about visiting, the church, or anything else.</p>
+                <h2 id="general-heading" className="text-2xl">{copy.t('general.title')}</h2>
+                <p className="mb-5 mt-1 text-muted">{copy.t('general.lead')}</p>
                 <LeadForm
                   formType="general-contact"
                   ariaLabel="General contact form"
                   fields={generalFields}
-                  submitLabel="Send message"
-                  successHeading="Message received"
-                  successBody="Thank you for reaching out. A member of the congregation will reply to you personally, usually within a day or two."
+                  submitLabel={copy.s('general.submit')}
+                  successHeading={copy.s('general.successHeading')}
+                  successBody={copy.s('general.successBody')}
                 />
               </section>
 
               {/* Prayer request */}
               <section id="prayer-request" aria-labelledby="prayer-heading" className="scroll-mt-32 border-t border-border/50 pt-10">
-                <h2 id="prayer-heading" className="text-2xl">Send a prayer request</h2>
-                <p className="mb-5 mt-1 text-muted">
-                  You do not need to be a member to ask for prayer. Your request is treated with care.
-                </p>
+                <h2 id="prayer-heading" className="text-2xl">{copy.t('prayer.title')}</h2>
+                <p className="mb-5 mt-1 text-muted">{copy.t('prayer.lead')}</p>
                 <LeadForm
                   formType="prayer-request"
                   ariaLabel="Prayer request form"
                   fields={prayerFields}
-                  submitLabel="Send prayer request"
-                  successHeading="Your request is received"
-                  successBody="Thank you for trusting us with this. The congregation will be praying, and we will honor how you asked us to handle it."
+                  submitLabel={copy.s('prayer.submit')}
+                  successHeading={copy.s('prayer.successHeading')}
+                  successBody={copy.s('prayer.successBody')}
                 />
               </section>
 
               {/* Bible study request */}
               <section id="request-bible-study" aria-labelledby="study-heading" className="scroll-mt-32 border-t border-border/50 pt-10">
-                <h2 id="study-heading" className="text-2xl">Request a Bible study</h2>
-                <p className="mb-5 mt-1 text-muted">A free Bible study, in person or online.</p>
+                <h2 id="study-heading" className="text-2xl">{copy.t('study.title')}</h2>
+                <p className="mb-5 mt-1 text-muted">{copy.t('study.lead')}</p>
                 <LeadForm
                   formType="bible-study-request"
                   ariaLabel="Bible study request form"
                   fields={bibleStudyFields}
-                  submitLabel="Request a study"
-                  successHeading="We will be in touch"
-                  successBody="Thank you for your interest in studying the Bible. Someone will reach out to arrange a time that works for you."
+                  submitLabel={copy.s('study.submit')}
+                  successHeading={copy.s('study.successHeading')}
+                  successBody={copy.s('study.successBody')}
                 />
               </section>
             </div>
@@ -128,7 +119,7 @@ export default function ContactPage() {
             {/* Contact details sidebar */}
             <aside aria-label="Visit and contact details">
               <Surface tone="panel" className="sticky top-32 flex flex-col gap-5">
-                <h2 className="text-xl">Visit or reach us</h2>
+                <h2 className="text-xl">{copy.t('sidebar.title')}</h2>
                 <a
                   href={`https://maps.google.com/?q=${encodeURIComponent(`${site.address.street}, ${site.address.city}, ${site.address.region} ${site.address.postalCode}`)}`}
                   target="_blank"
@@ -152,14 +143,12 @@ export default function ContactPage() {
                 </a>
                 <figure className="border-t border-border/50 pt-4">
                   <ParkingAerial sizes="(max-width: 1024px) 100vw, 320px" />
-                  <figcaption className="mt-2 text-sm text-muted">
-                    Enter the parking lot from 2 Highway, near the corner of 2 Highway and Outlook Drive.
-                  </figcaption>
+                  <figcaption className="mt-2 text-sm text-muted">{copy.t('sidebar.parkingCaption')}</figcaption>
                 </figure>
                 <div className="flex items-start gap-3 border-t border-border/50 pt-4 text-ink">
                   <ClockIcon className="mt-0.5 h-5 w-5 shrink-0 text-primary-strong" />
                   <div className="flex-1">
-                    <p className="font-semibold text-heading">Assembly times</p>
+                    <p className="font-semibold text-heading">{copy.t('sidebar.timesLabel')}</p>
                     <ul className="mt-2 flex flex-col gap-1.5 text-sm">
                       {site.services.map((s) => (
                         <li key={s.id} className="flex items-baseline justify-between gap-3">

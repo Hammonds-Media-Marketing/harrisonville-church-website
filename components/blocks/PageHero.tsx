@@ -31,7 +31,7 @@ export function PageHero({
   waveFill = 'var(--color-bg)',
   children,
 }: {
-  eyebrow: string
+  eyebrow: ReactNode
   title: ReactNode
   lead?: ReactNode
   id?: string
