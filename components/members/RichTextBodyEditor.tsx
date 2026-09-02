@@ -180,11 +180,18 @@ export function RichTextBodyEditor({
   name,
   defaultBlocks,
   describedBy,
+  label = 'Article body',
+  minHeightClass = 'min-h-[22rem]',
+  onBlocksChange,
 }: {
   id: string
-  name: string
+  /** Omit when a parent (the page builder) owns serialization via onBlocksChange. */
+  name?: string
   defaultBlocks: Block[]
   describedBy?: string
+  label?: string
+  minHeightClass?: string
+  onBlocksChange?: (blocks: Block[]) => void
 }) {
   const initialDoc = useMemo(() => blocksToDoc(defaultBlocks), [defaultBlocks])
   const [serialized, setSerialized] = useState(() => JSON.stringify(defaultBlocks))
@@ -213,10 +220,10 @@ export function RichTextBodyEditor({
         id,
         role: 'textbox',
         'aria-multiline': 'true',
-        'aria-label': 'Article body',
+        'aria-label': label,
         ...(describedBy ? { 'aria-describedby': describedBy } : {}),
         class:
-          'tiptap-body min-h-[22rem] px-4 py-3 text-ink focus:outline-none ' +
+          `tiptap-body ${minHeightClass} px-4 py-3 text-ink focus:outline-none ` +
           '[&_h2]:font-display [&_h2]:text-2xl [&_h2]:text-heading [&_h2]:mt-5 [&_h2]:mb-2 ' +
           '[&_h3]:font-display [&_h3]:text-xl [&_h3]:text-heading [&_h3]:mt-4 [&_h3]:mb-2 ' +
           '[&_p]:my-2 [&_ul]:my-2 [&_ul]:list-disc [&_ul]:pl-6 [&_li]:my-1 ' +
@@ -224,13 +231,15 @@ export function RichTextBodyEditor({
       },
     },
     onUpdate: ({ editor: e }) => {
-      setSerialized(JSON.stringify(docToBlocks(e.getJSON() as PMNode)))
+      const blocks = docToBlocks(e.getJSON() as PMNode)
+      setSerialized(JSON.stringify(blocks))
+      onBlocksChange?.(blocks)
     },
   })
 
   return (
     <div className="overflow-hidden rounded-md border border-border bg-input-bg focus-within:border-primary-strong">
-      <input type="hidden" name={name} value={serialized} />
+      {name ? <input type="hidden" name={name} value={serialized} /> : null}
       {editor ? <Toolbar editor={editor} /> : null}
       <EditorContent editor={editor} />
     </div>

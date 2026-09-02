@@ -24,9 +24,11 @@ export function ImageUploadField({
   required,
   helper,
   tip,
+  onChange,
 }: {
   id: string
-  name: string
+  /** Omit when a parent (the page builder) owns the value via onChange. */
+  name?: string
   label: string
   /** Bucket sub-folder that keeps uploads organized: events, articles, sermons. */
   folder: string
@@ -34,8 +36,13 @@ export function ImageUploadField({
   required?: boolean
   helper?: string
   tip?: string
+  onChange?: (url: string) => void
 }) {
-  const [url, setUrl] = useState(defaultValue)
+  const [url, setUrlState] = useState(defaultValue)
+  const setUrl = (value: string) => {
+    setUrlState(value)
+    onChange?.(value)
+  }
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
   const fileRef = useRef<HTMLInputElement>(null)
@@ -91,7 +98,7 @@ export function ImageUploadField({
         {tip ? <FieldTip id={id} label={label} tip={tip} /> : null}
       </span>
 
-      <input type="hidden" name={name} value={url} />
+      {name ? <input type="hidden" name={name} value={url} /> : null}
 
       {supabase ? (
         <div className="flex flex-wrap items-center gap-4 rounded-md border border-border bg-input-bg p-4">
