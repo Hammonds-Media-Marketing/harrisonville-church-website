@@ -9,6 +9,11 @@ import { FieldShell, SelectField, TextArea, TextField } from '@/components/primi
 import { SampleNotice } from '@/components/blocks/SampleNotice'
 import { Logo, Wordmark } from '@/components/brand/Logo'
 import { SearchIcon } from '@/components/ui/icons'
+import { Avatar, AvatarStack } from '@/components/primitives/Avatar'
+import { RadioCards, Switch } from '@/components/primitives/Controls'
+import { CountBadge, EmptyState, Notice, Skeleton, StatTile } from '@/components/primitives/Feedback'
+import { DialogDemo, SegmentedDemo } from '@/components/portal/StyleGuideDemos'
+import { BellIcon, MessageIcon } from '@/components/ui/icons'
 
 export const dynamic = 'force-static'
 
@@ -299,6 +304,103 @@ export default function StyleGuidePage() {
               <span className="rounded-full border border-primary-strong bg-primary-strong px-4 py-1.5 text-sm font-semibold text-on-primary">All</span>
               <span className="rounded-full border border-border px-4 py-1.5 text-sm font-semibold text-ink">Salvation</span>
               <span className="rounded-full border border-border px-4 py-1.5 text-sm font-semibold text-ink">Worship</span>
+            </div>
+          </GalleryBlock>
+
+          {/* Member portal primitives */}
+          <GalleryBlock id="avatars" category="Brand" title="Avatars — initials fallback, sizes, stack">
+            <div className="flex flex-wrap items-end gap-4">
+              <Avatar name="Ada Member" size="xs" />
+              <Avatar name="Ada Member" size="sm" />
+              <Avatar name="Ada Member" size="md" />
+              <Avatar name="Ada Member" size="lg" />
+              <Avatar name="The Smith family" size="lg" shape="square" />
+              <AvatarStack people={[{ id: '1', name: 'Ada Member', photo: null, photoPosition: '50% 50%' }, { id: '2', name: 'Ben Member', photo: null, photoPosition: '50% 50%' }, { id: '3', name: 'Cy Member', photo: null, photoPosition: '50% 50%' }, { id: '4', name: 'Di Member', photo: null, photoPosition: '50% 50%' }, { id: '5', name: 'Ed Member', photo: null, photoPosition: '50% 50%' }]} />
+            </div>
+            <p className="mt-3 text-sm text-muted">Initials paint underneath the photo, so a slow or missing image never leaves a blank circle. Square avatars are families.</p>
+          </GalleryBlock>
+
+          <GalleryBlock id="segmented" category="Selections" title="Segmented control, switch, radio cards">
+            <div className="flex flex-col gap-6">
+              <SegmentedDemo />
+              <div className="max-w-md divide-y divide-border/40">
+                <Switch id="sg-switch-1" name="sg1" label="Direct messages" helper="Someone sends you a message." defaultChecked />
+                <Switch id="sg-switch-2" name="sg2" label="Announcements" helper="News from the elders." />
+                <Switch id="sg-switch-3" name="sg3" label="Disabled" defaultChecked disabled />
+              </div>
+              <div className="max-w-md">
+                <RadioCards
+                  name="sg-rsvp"
+                  legend="Your response"
+                  defaultValue="yes"
+                  options={[
+                    { value: 'yes', label: 'Yes, I will be there', helper: 'Count me in.' },
+                    { value: 'maybe', label: 'Maybe', helper: 'I hope to make it.' },
+                    { value: 'no', label: 'No, I cannot make it' },
+                  ]}
+                />
+              </div>
+            </div>
+          </GalleryBlock>
+
+          <GalleryBlock id="counts" category="Badges" title="Count badges and notification dot">
+            <div className="flex flex-wrap items-center gap-6">
+              <span className="relative inline-grid h-11 w-11 place-items-center rounded-full bg-surface text-heading">
+                <BellIcon className="h-6 w-6" />
+                <CountBadge count={3} label="3 unread notifications" className="absolute -right-0.5 -top-0.5 ring-2 ring-bg" />
+              </span>
+              <span className="relative inline-grid h-11 w-11 place-items-center rounded-full bg-surface text-heading">
+                <MessageIcon className="h-6 w-6" />
+                <CountBadge count={120} label="120 unread messages" className="absolute -right-1 -top-1 ring-2 ring-bg" />
+              </span>
+              <span className="inline-flex items-center gap-2 text-sm text-muted">
+                Unread dot <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-secondary" />
+              </span>
+            </div>
+          </GalleryBlock>
+
+          <GalleryBlock id="dialogs" category="Surfaces" title="Dialog and chat bubbles">
+            <div className="flex flex-col gap-6">
+              <DialogDemo />
+              <div className="flex max-w-md flex-col gap-1">
+                <div className="flex items-end gap-2">
+                  <Avatar name="Ben Member" size="sm" />
+                  <span className="chat-bubble rounded-2xl rounded-bl-md bg-surface-2 px-4 py-2.5 text-md text-ink shadow-sm">Incoming message with a tail on the last bubble in a run.</span>
+                </div>
+                <div className="flex justify-end">
+                  <span className="chat-bubble rounded-2xl rounded-br-md bg-primary-strong px-4 py-2.5 text-md text-on-primary shadow-sm">Outgoing message.</span>
+                </div>
+                <div className="flex justify-end">
+                  <span className="chat-bubble rounded-2xl border border-dashed border-border px-4 py-2.5 text-md italic text-muted">Message deleted</span>
+                </div>
+              </div>
+            </div>
+          </GalleryBlock>
+
+          <GalleryBlock id="portal-feedback" category="Feedback" title="Notices, empty state, stat tiles, skeleton">
+            <div className="flex flex-col gap-4">
+              <Notice tone="info" title="Informational">
+                <p>Gender decides which group chats and event invitations reach you.</p>
+              </Notice>
+              <Notice tone="success">Your profile has been saved.</Notice>
+              <Notice tone="warning" title="Email delivery is not configured">
+                <p>Approvals still work; no email goes out.</p>
+              </Notice>
+              <Notice tone="error">That did not save. Check the form and try again.</Notice>
+              <EmptyState icon={<MessageIcon className="h-6 w-6" />} title="No messages yet">
+                <p>Start the conversation below.</p>
+              </EmptyState>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                <StatTile label="Invited" value={42} />
+                <StatTile label="Going" value={18} tone="primary" helper="+6 guests" />
+                <StatTile label="Maybe" value={5} tone="gold" />
+                <StatTile label="No answer" value={19} />
+              </div>
+              <div className="flex max-w-md flex-col gap-2">
+                <Skeleton className="h-4 w-2/3" />
+                <Skeleton className="h-4 w-1/2" />
+                <Skeleton className="h-12" />
+              </div>
             </div>
           </GalleryBlock>
         </Container>

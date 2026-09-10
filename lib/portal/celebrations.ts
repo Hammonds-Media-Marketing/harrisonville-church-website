@@ -42,6 +42,12 @@ export function findInWeek(stored: string | null | undefined, keys: DateKey[]): 
   return keys.find((k) => k.slice(5) === monthDay) ?? null
 }
 
+/** "The Smith family" stays as written; "Smith" becomes "The Smith family". */
+export function familyLabel(name: string): string {
+  const trimmed = name.trim()
+  return /family/i.test(trimmed) ? (/^the /i.test(trimmed) ? trimmed : `The ${trimmed}`) : `The ${trimmed} family`
+}
+
 function compare(a: Celebration, b: Celebration): number {
   return compareKeys(a.dateKey, b.dateKey) || a.displayName.localeCompare(b.displayName)
 }
@@ -84,7 +90,7 @@ export function buildAnniversaries(people: CelebrationPerson[], weekStart: DateK
       key: `anniversary-${dedupe}`,
       personId: p.id,
       dateKey,
-      displayName: p.familyId && p.familyName ? `The ${p.familyName} family` : p.displayName,
+      displayName: p.familyId && p.familyName ? familyLabel(p.familyName) : p.displayName,
       photo: p.familyId ? p.familyPhoto ?? p.photo : p.photo,
       photoPosition: p.photoPosition,
       familyName: null,

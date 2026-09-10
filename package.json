@@ -2,14 +2,15 @@
   "name": "harrisonville-church-website",
   "version": "1.0.0",
   "private": true,
-  "description": "Harrisonville Church of Christ — official website",
+  "description": "Harrisonville Church of Christ \u2014 official website",
   "scripts": {
-    "prebuild": "node .claude/scripts/audit/verify-build.mjs",
+    "prebuild": "node scripts/audit/verify-build.mjs",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "audit": "node .claude/scripts/audit/verify-build.mjs",
-    "contrast": "node .claude/skills/web-accessibility/assets/contrast-check.mjs accessibility/contrast.config.json"
+    "audit": "node scripts/audit/verify-build.mjs",
+    "contrast": "node scripts/contrast/contrast-check.mjs accessibility/contrast.config.json",
+    "test": "node --experimental-strip-types --import ./tests/_register.mjs --test 'tests/*.test.mjs'"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",

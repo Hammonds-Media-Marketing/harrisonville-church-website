@@ -21,4 +21,4 @@ jobs:
           node-version: 20
 
       - name: Build audit (hard gates block, soft gates report)
-        run: node .claude/scripts/audit/verify-build.mjs
+        run: node scripts/audit/verify-build.mjs

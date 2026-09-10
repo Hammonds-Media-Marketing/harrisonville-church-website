@@ -22,7 +22,15 @@ export default async function AdminLayout({ children }: { children: ReactNode })
     { href: '/members/admin/sermons', label: 'Sermons' },
     { href: '/members/admin/articles', label: 'Articles' },
     { href: '/members/admin/announcements', label: 'Announcements' },
-    ...(profile?.role === 'admin' ? [{ href: '/members/admin/members', label: 'Members' }] : []),
+    { href: '/members/admin/schedule', label: 'Service schedule' },
+    ...(profile?.role === 'admin'
+      ? [
+          { href: '/members/admin/members', label: 'Members' },
+          { href: '/members/admin/groups', label: 'Groups' },
+          { href: '/members/admin/app-readiness', label: 'App readiness' },
+          { href: '/members/admin/welcome-email', label: 'Welcome email' },
+        ]
+      : []),
   ]
 
   return (

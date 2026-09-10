@@ -4,7 +4,7 @@ import { SITE_URL } from './site'
  * IndexNow ping — a discovery accelerator (not a ranking signal). Submits
  * changed, canonical URLs to IndexNow so Bing (and engines it shares with) pick
  * them up immediately instead of waiting for passive crawl. Per
- * .claude/references/indexnow.md: key lives in an env var (rotatable), and only
+ * the IndexNow guidance: key lives in an env var (rotatable), and only
  * canonical, indexable URLs are submitted. No-ops cleanly when no key is set.
  *
  * Host the key verification file at /<key>.txt — when INDEXNOW_KEY is issued,

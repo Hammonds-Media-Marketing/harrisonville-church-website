@@ -42,23 +42,24 @@ export default async function AdminOverviewPage() {
       .from('member_profiles')
       .select('id', { count: 'exact', head: true })
       .eq('approved', false)
+      .is('rejected_at', null)
     pendingMembers = n ?? 0
   }
 
-  const tiles = [
-    {
-      label: 'Core pages',
-      value: SITE_COPY.length,
-      href: '/members/admin/editor',
-      cta: 'Edit pages visually',
-    },
-    { label: 'Pages you built', value: pages, href: '/members/admin/pages', cta: 'Build and manage pages' },
+  const tiles: Array<{ label: string; value: number | string; href: string; cta: string }> = [
+    { label: 'Pages', value: pages, href: '/members/admin/pages', cta: 'Build and manage pages' },
     { label: 'Events', value: events, href: '/members/admin/events', cta: 'Manage events' },
     { label: 'Sermons', value: sermons, href: '/members/admin/sermons', cta: 'Manage sermons' },
     { label: 'Articles', value: articles, href: '/members/admin/articles', cta: 'Manage articles' },
     { label: 'Announcements', value: announcements, href: '/members/admin/announcements', cta: 'Manage announcements' },
+    { label: 'Service schedule', value: 'Monthly', href: '/members/admin/schedule', cta: 'Enter assignments' },
     ...(isAdminRole(profile)
-      ? [{ label: 'Members awaiting approval', value: pendingMembers, href: '/members/admin/members', cta: 'Manage members' }]
+      ? [
+          { label: 'Members awaiting approval', value: pendingMembers, href: '/members/admin/members', cta: 'Manage members' },
+          { label: 'Group chats', value: 'Chat', href: '/members/admin/groups', cta: 'Manage groups' },
+          { label: 'App readiness', value: 'Adoption', href: '/members/admin/app-readiness', cta: 'See who is set up' },
+          { label: 'Welcome email', value: 'Preview', href: '/members/admin/welcome-email', cta: 'Preview and test' },
+        ]
       : []),
   ]
 
