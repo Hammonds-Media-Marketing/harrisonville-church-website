@@ -66,6 +66,15 @@
     { "name": "success label", "fg": "var(--color-on-status)", "bg": "var(--color-success)" },
     { "name": "error text / surface", "fg": "var(--color-error)", "bg": "var(--color-error-surface)" },
     { "name": "error label", "fg": "var(--color-on-status)", "bg": "var(--color-error)" },
-    { "name": "warning text / page", "fg": "var(--color-warning)", "bg": "var(--color-bg)" }
+    { "name": "warning text / page", "fg": "var(--color-warning)", "bg": "var(--color-bg)" },
+
+    { "name": "portal muted / surface-2", "fg": "var(--color-muted)", "bg": "var(--color-surface-2)" },
+    { "name": "portal primary-strong text / surface", "fg": "var(--color-primary-strong)", "bg": "var(--color-surface)" },
+    { "name": "portal primary-strong text / surface-2", "fg": "var(--color-primary-strong)", "bg": "var(--color-surface-2)" },
+    { "name": "portal chip ink / surface-2", "fg": "var(--color-ink)", "bg": "var(--color-surface-2)" },
+    { "name": "portal outgoing bubble", "fg": "var(--color-on-primary)", "bg": "var(--color-primary-strong)" },
+    { "name": "portal gold pill / page", "fg": "var(--color-on-secondary)", "bg": "var(--color-secondary)" },
+    { "name": "portal focus ring / surface", "fg": "var(--color-focus)", "bg": "var(--color-surface)", "ui": true },
+    { "name": "portal switch track / page", "fg": "var(--color-border-strong)", "bg": "var(--color-bg)", "ui": true }
   ]
 }

@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
-import { requireApprovedMember, requireEditor } from '@/lib/portal/data'
+import { getMembers, requireApprovedMember, requireEditor } from '@/lib/portal/data'
 import { CALENDAR_CATEGORIES } from '@/lib/portal/calendar'
 import { chicagoToIso, getTodayKey, isValidDateKey } from '@/lib/portal/time'
 import { isRecurrenceRule } from '@/lib/recurrence'
@@ -162,6 +162,8 @@ export async function saveServiceMonthAction(formData: FormData) {
   const upserts: Array<{ service_date: string; service_slot: string; duty: string; member_id: string | null; assignee_name: string | null; created_by: string }> = []
   const removals: Array<{ service_date: string; service_slot: string; duty: string }> = []
   const validDates = new Set(assemblyDates(year, month).map((d) => d.dateKey))
+  const members = await getMembers()
+  const byName = new Map(members.map((m) => [m.fullName.trim().toLowerCase(), m.id]))
 
   for (const [key, raw] of formData.entries()) {
     if (!key.startsWith('a:')) continue
@@ -172,7 +174,7 @@ export async function saveServiceMonthAction(formData: FormData) {
       removals.push({ service_date: date, service_slot: slot, duty })
       continue
     }
-    const memberId = value.startsWith('m:') ? value.slice(2) : null
+    const memberId = value.startsWith('m:') ? value.slice(2) : byName.get(value.toLowerCase()) ?? null
     upserts.push({
       service_date: date,
       service_slot: slot,

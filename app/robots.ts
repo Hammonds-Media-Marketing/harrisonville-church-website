@@ -6,7 +6,7 @@ import { SITE_URL } from '@/lib/site'
  * collection is restricted. Retrieval/indexing bots are explicitly allowed so
  * the site stays in Search and AI-Search retrieval; documented training
  * scrapers are disallowed. Lists mirror the single source of truth in
- * .claude/references/bot-policy.md (validated by robots-policy-lint.mjs).
+ * scripts/audit/bot-policy.md (validated by scripts/audit/robots-policy-lint.mjs).
  */
 export default function robots(): MetadataRoute.Robots {
   return {
