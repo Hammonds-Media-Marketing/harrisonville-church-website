@@ -4,6 +4,7 @@ import { Montserrat, Mulish, Dancing_Script } from 'next/font/google'
 import './globals.css'
 import { SkipLink } from '@/components/layout/SkipLink'
 import { Header } from '@/components/layout/Header'
+import { HideInAdmin } from '@/components/layout/HideInAdmin'
 import { Footer } from '@/components/layout/Footer'
 import { AttributionTracker } from '@/components/layout/AttributionTracker'
 import { Analytics } from '@/components/layout/Analytics'
@@ -71,7 +72,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <SkipLink />
-        <Header />
+        <HideInAdmin>
+          <Header />
+        </HideInAdmin>
         <main id="main-content">{children}</main>
         <Footer />
         <AttributionTracker />
