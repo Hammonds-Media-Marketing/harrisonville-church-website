@@ -40,6 +40,9 @@ async function requireAdmin() {
 const text = (form: FormData, key: string) => String(form.get(key) ?? '').trim()
 const flag = (form: FormData, key: string) => form.get(key) === 'on'
 
+/** A media link an editor may attach: an https address or a site path. Anything else is dropped. */
+const safeMediaUrl = (value: string) => (/^(https:\/\/|\/(?!\/))/i.test(value) ? value : '')
+
 async function publishRefresh(paths: string[]) {
   for (const p of paths) revalidatePath(p)
   await pingIndexNow(paths)
@@ -118,6 +121,7 @@ export async function saveSermonAction(formData: FormData) {
     series: text(formData, 'series') || null,
     summary: text(formData, 'summary'),
     video_url: text(formData, 'video_url'),
+    audio_url: safeMediaUrl(text(formData, 'audio_url')),
     duration_minutes: Number(text(formData, 'duration_minutes')) || 30,
     thumbnail: text(formData, 'thumbnail') || '/assets/images/video-placeholder.png',
     thumbnail_alt: text(formData, 'thumbnail_alt') || `Sermon thumbnail for ${title}`,
@@ -125,16 +129,23 @@ export async function saveSermonAction(formData: FormData) {
     sample: false,
   }
 
-  const { error } = id
-    ? await supabase.from('sermons').update(values).eq('id', id)
-    : await supabase.from('sermons').insert(values)
+  const write = (row: typeof values) =>
+    id ? supabase.from('sermons').update(row).eq('id', id) : supabase.from('sermons').insert(row)
+  let { error } = await write(values)
+
+  // A database without the audio column yet still takes a video-only save;
+  // an uploaded recording needs the migration first.
+  if (error && /audio_url/.test(error.message) && !values.audio_url) {
+    const { audio_url: _unused, ...rest } = values
+    ;({ error } = await write(rest))
+  }
 
   if (error) {
     console.warn('[admin] sermon save failed:', error.message)
     redirect(`/members/admin/sermons/${id || 'new'}?error=save`)
   }
 
-  await publishRefresh(['/resources/sermons', '/'])
+  await publishRefresh(['/resources/sermons', `/resources/sermons/${values.slug}`, '/'])
   revalidatePath('/members/admin/sermons')
   redirect('/members/admin/sermons?saved=1')
 }

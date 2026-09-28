@@ -74,8 +74,9 @@ export function EventCard({ event }: { event: ChurchEvent }) {
 }
 
 export function SermonCard({ sermon }: { sermon: Sermon }) {
+  const audioOnly = Boolean(sermon.audioUrl) && !sermon.videoUrl
   return (
-    <Surface tone="card" interactive className="flex h-full flex-col gap-3 p-0">
+    <Surface tone="card" interactive className="relative flex h-full flex-col gap-3 p-0">
       <div className="relative aspect-video overflow-hidden rounded-t-lg bg-surface-deep">
         <Image
           src={sermon.thumbnail}
@@ -90,14 +91,18 @@ export function SermonCard({ sermon }: { sermon: Sermon }) {
             <PlayIcon className="h-6 w-6" />
           </span>
         </span>
-        {sermon.series ? (
-          <span className="absolute left-3 top-3">
-            <Badge tone="gold">{sermon.series}</Badge>
-          </span>
-        ) : null}
+        <span className="absolute left-3 top-3 flex flex-wrap gap-2">
+          {sermon.series ? <Badge tone="gold">{sermon.series}</Badge> : null}
+          {audioOnly ? <Badge tone="primary">Audio</Badge> : null}
+        </span>
       </div>
       <div className="flex flex-1 flex-col gap-2 p-5">
-        <h3 className="text-xl">{sermon.title}</h3>
+        <h3 className="text-xl">
+          {/* The stretched link makes the whole card open the sermon. */}
+          <Link href={`/resources/sermons/${sermon.slug}`} className="after:absolute after:inset-0 hover:text-link-hover">
+            {sermon.title}
+          </Link>
+        </h3>
         <p className="text-sm font-semibold text-primary-strong">{sermon.scripture}</p>
         <p className="flex-1 text-ink">{sermon.summary}</p>
         <p className="flex items-center gap-3 text-sm text-muted">

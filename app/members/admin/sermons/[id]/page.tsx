@@ -7,6 +7,7 @@ import { Button } from '@/components/primitives/Button'
 import { CheckboxField, FieldShell, TextArea, TextField } from '@/components/primitives/Field'
 import { AdminNotices } from '@/components/members/AdminNotices'
 import { ImageUploadField } from '@/components/members/ImageUploadField'
+import { AudioUploadField } from '@/components/members/AudioUploadField'
 import { getSupabaseServer } from '@/lib/supabase-server'
 import { saveSermonAction } from '@/app/members/admin/actions'
 
@@ -40,7 +41,7 @@ export default async function EditSermonPage({
       <PageHero
         eyebrow="Site admin"
         title={isNew ? 'Add a sermon' : `Edit: ${sermon?.title}`}
-        lead="Sermons publish to the video library, and the newest one is featured on the homepage."
+        lead="Sermons publish to the sermon library as a video, an audio recording, or both. The newest one is featured at the top of the library."
       />
 
       <Section tone="light">
@@ -107,16 +108,25 @@ export default async function EditSermonPage({
                 <TextArea id="sermon-summary" name="summary" required rows={3} defaultValue={sermon?.summary ?? ''} />
               </FieldShell>
 
+              <AudioUploadField
+                id="sermon-audio"
+                name="audio_url"
+                label="Audio recording"
+                defaultValue={sermon?.audio_url ?? ''}
+                helper="Optional. Upload the MP3 of the lesson, or paste a link to one."
+                tip="Visitors can listen right on the sermon page. If the lesson also has a video, the video plays first and the audio is offered underneath."
+              />
+
               <div className="grid gap-5 sm:grid-cols-2">
                 <FieldShell
                   id="sermon-video"
-                  label="Video URL"
-                  helper="YouTube or file link. Blank shows the placeholder."
-                  tip="Paste the full YouTube link for the recording. Copy it from the address bar or YouTube's Share button."
+                  label="Video link"
+                  helper="Optional. A YouTube or Vimeo link."
+                  tip="Paste the full YouTube link for the recording. Copy it from the address bar or YouTube's Share button. Leave it blank for an audio-only lesson."
                 >
                   <TextField id="sermon-video" name="video_url" type="url" defaultValue={sermon?.video_url ?? ''} />
                 </FieldShell>
-                <FieldShell id="sermon-duration" label="Length in minutes" required tip="How long the recording runs. Shown on the video card so visitors know what to expect.">
+                <FieldShell id="sermon-duration" label="Length in minutes" required tip="How long the recording runs. Shown on the sermon card so visitors know what to expect.">
                   <TextField
                     id="sermon-duration"
                     name="duration_minutes"

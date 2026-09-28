@@ -74,6 +74,11 @@ export default async function SermonsPage() {
                 <p className="text-sm text-muted">
                   {featured.speaker} &middot; {featured.durationMinutes} min
                 </p>
+                <div className="mt-auto">
+                  <Button href={`/resources/sermons/${featured.slug}`}>
+                    {featured.audioUrl && !featured.videoUrl ? 'Listen now' : 'Watch now'}
+                  </Button>
+                </div>
               </div>
             </Surface>
           ) : null}
