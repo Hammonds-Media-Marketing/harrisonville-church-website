@@ -1179,6 +1179,7 @@ export type Database = {
           title: string
           updated_at: string
           video_url: string
+          audio_url: string
         }
         Insert: {
           created_at?: string
@@ -1197,6 +1198,7 @@ export type Database = {
           title: string
           updated_at?: string
           video_url?: string
+          audio_url?: string
         }
         Update: {
           created_at?: string
@@ -1215,6 +1217,7 @@ export type Database = {
           title?: string
           updated_at?: string
           video_url?: string
+          audio_url?: string
         }
         Relationships: []
       }

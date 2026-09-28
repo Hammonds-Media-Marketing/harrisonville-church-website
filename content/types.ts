@@ -64,6 +64,8 @@ export type Sermon = {
   series?: string
   summary: string
   videoUrl?: string
+  /** An MP3 (or other audio) recording; the sermon page plays it when there is no video. */
+  audioUrl?: string
   durationMinutes: number
   thumbnail: string
   thumbnailAlt: string

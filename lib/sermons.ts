@@ -22,6 +22,7 @@ function mapSermon(row: SermonRow): Sermon {
     series: row.series ?? undefined,
     summary: row.summary,
     videoUrl: row.video_url,
+    audioUrl: row.audio_url || undefined,
     durationMinutes: row.duration_minutes,
     thumbnail: row.thumbnail,
     thumbnailAlt: row.thumbnail_alt,
