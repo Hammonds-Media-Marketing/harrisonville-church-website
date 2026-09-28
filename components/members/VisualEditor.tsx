@@ -781,7 +781,7 @@ export function VisualEditor({ spec, overrides, elements: storedElements }: Prop
   }
 
   function onReset() {
-    if (!window.confirm('Return every line on this page to the wording in the code and remove every added element? This cannot be undone.')) return
+    if (!window.confirm('Return every line on this page to its original wording and remove every added element? The current version is kept in Version history, so this can be undone from there.')) return
     startTransition(async () => {
       const result = await resetPageCopyAction(spec.path)
       if (!result.ok) {
@@ -798,6 +798,18 @@ export function VisualEditor({ spec, overrides, elements: storedElements }: Prop
       if (doc) for (const [key, value] of Object.entries(defaults)) paint(doc, key, value)
       setNotice({ tone: 'ok', message: 'The page is back to its original wording, with nothing added.' })
     })
+  }
+
+  /** Throw away unsaved edits and go back to what is published. */
+  function onDiscard() {
+    if (!window.confirm('Discard your unsaved changes and go back to the last saved version?')) return
+    setValues(baseline)
+    setElements(elementsBaseline)
+    setSelectedEl(null)
+    setResetToken((n) => n + 1)
+    const doc = frameRef.current?.contentDocument
+    if (doc) for (const [key, value] of Object.entries(baseline)) paint(doc, key, value)
+    setNotice({ tone: 'ok', message: 'Unsaved changes discarded. The page matches the last save.' })
   }
 
   const zoneList: Zone[] = zones.map(({ id, label }) => ({ id, label }))
@@ -865,8 +877,14 @@ export function VisualEditor({ spec, overrides, elements: storedElements }: Prop
             <Button size="sm" variant="ghost" href={spec.path} target="_blank" rel="noopener noreferrer">
               Open the page
             </Button>
+            <Button type="button" size="sm" variant="ghost" onClick={onDiscard} disabled={pending || !dirty}>
+              Discard changes
+            </Button>
             <Button type="button" size="sm" variant="ghost" onClick={onReset} disabled={pending || (!changedFromCode && !addedCount)}>
               Reset all
+            </Button>
+            <Button size="sm" variant="link" href={`/members/admin/history?path=${encodeURIComponent(spec.path)}`}>
+              Version history
             </Button>
           </div>
           <p aria-live="polite" className="m-0 mt-2 text-sm text-muted">

@@ -7,7 +7,7 @@ import { pingIndexNow } from '@/lib/indexnow'
 import { parseBlocksJson, textToBlocks } from '@/lib/article-blocks'
 import { parsePageSections } from '@/lib/page-sections'
 import { parsePageElements, type PageElementMap } from '@/lib/page-elements'
-import { PAGE_CONTENT_TAG, pruneOverrides } from '@/lib/site-copy'
+import { PAGE_CONTENT_TAG, parseOverrides, pruneOverrides } from '@/lib/site-copy'
 import { getCopySpec } from '@/content/site-copy'
 import { normalizePageSlug } from '@/lib/pages'
 import { localInputToIso, slugify } from '@/lib/format'
@@ -487,3 +487,82 @@ export async function resetPageCopyAction(path: string): Promise<{ ok: boolean; 
   revalidatePath('/members/admin/editor')
   return { ok: true }
 }
+
+// ---------------------------------------------------------------------------
+// Version history
+// ---------------------------------------------------------------------------
+
+/**
+ * Put a page back the way it was in an earlier version. Database triggers
+ * keep the version each save replaces (content_revisions), so restoring is
+ * just another save: the current version is kept in turn, and a restore can
+ * be undone the same way.
+ *
+ * A built page gets its wording, sections, and search fields back, but keeps
+ * its current web address and published state, so a restore never moves a
+ * page or takes it live by surprise. A hand-built page gets its wording and
+ * added elements back; restoring the version from before a "Reset all"
+ * brings back everything that reset removed.
+ */
+export async function restoreRevisionAction(formData: FormData) {
+  const { supabase, ctx } = await requireEditor()
+  const id = Number(text(formData, 'id'))
+  const { data: revision } = Number.isFinite(id)
+    ? await supabase.from('content_revisions').select('*').eq('id', id).maybeSingle()
+    : { data: null }
+  if (!revision || !revision.snapshot || typeof revision.snapshot !== 'object') redirect('/members/admin?error=restore')
+
+  const snap = revision.snapshot as Record<string, unknown>
+  const str = (key: string) => (typeof snap[key] === 'string' ? (snap[key] as string) : '')
+
+  if (revision.entity === 'page') {
+    const pageId = revision.entity_key
+    const back = `/members/admin/history?page=${encodeURIComponent(pageId)}`
+    const { data: current } = await supabase.from('pages').select('slug').eq('id', pageId).maybeSingle()
+    if (!current) redirect(`${back}&error=gone`)
+    const { error } = await supabase
+      .from('pages')
+      .update({
+        title: str('title'),
+        hero_eyebrow: str('hero_eyebrow'),
+        hero_lead: str('hero_lead') || null,
+        meta_title: str('meta_title'),
+        meta_description: str('meta_description'),
+        og_title: str('og_title'),
+        og_description: str('og_description'),
+        og_image: str('og_image') || null,
+        og_image_alt: str('og_image_alt') || null,
+        sections: (Array.isArray(snap.sections) ? snap.sections : []) as Json,
+      })
+      .eq('id', pageId)
+    if (error) {
+      console.warn('[admin] page restore failed:', error.message)
+      redirect(`${back}&error=save`)
+    }
+    await publishRefresh([`/${current.slug}`])
+    revalidatePath('/members/admin/pages')
+    redirect(`${back}&restored=1`)
+  }
+
+  const path = revision.entity_key
+  const back = `/members/admin/history?path=${encodeURIComponent(path)}`
+  if (!getCopySpec(path)) redirect(`${back}&error=gone`)
+  const { error } = await supabase.from('page_content').upsert(
+    {
+      path,
+      values: pruneOverrides(getCopySpec(path)!, parseOverrides(snap.values)) as Json,
+      elements: parsePageElements(snap.elements ?? {}) as Json,
+      updated_by: ctx.user?.id ?? null,
+    },
+    { onConflict: 'path' }
+  )
+  if (error) {
+    console.warn('[admin] page copy restore failed:', error.message)
+    redirect(`${back}&error=save`)
+  }
+  updateTag(PAGE_CONTENT_TAG)
+  await publishRefresh([path])
+  revalidatePath('/members/admin/editor')
+  redirect(`${back}&restored=1`)
+}
+
