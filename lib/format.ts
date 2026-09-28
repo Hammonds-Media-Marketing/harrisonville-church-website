@@ -65,10 +65,17 @@ export function localInputToIso(naive: string): string {
   return new Date(`${naive}:00-06:00`).toISOString()
 }
 
+/**
+ * Lowercase, hyphenated web-address segment. Also cleans a slug an editor
+ * typed by hand: slashes, stray punctuation, and doubled or edge hyphens are
+ * dropped, so "/Gospel Meeting 2026/" becomes "gospel-meeting-2026".
+ */
 export function slugify(text: string): string {
   return text
     .toLowerCase()
     .replace(/[^\w\s-]/g, '')
     .trim()
-    .replace(/\s+/g, '-')
+    .replace(/[\s_]+/g, '-')
+    .replace(/-{2,}/g, '-')
+    .replace(/^-+|-+$/g, '')
 }

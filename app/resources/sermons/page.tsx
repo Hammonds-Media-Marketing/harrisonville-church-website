@@ -46,7 +46,7 @@ export default async function SermonsPage() {
 
       <Section tone="light">
         <Container>
-          {copy.blank('library.notice') ? null : <SampleNotice label={copy.t('library.notice')} />}
+          {sermons.some((s) => s.sample) && !copy.blank('library.notice') ? <SampleNotice label={copy.t('library.notice')} /> : null}
 
           {/* Featured player */}
           {featured ? (

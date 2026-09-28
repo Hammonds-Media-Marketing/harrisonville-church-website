@@ -77,7 +77,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
             {categories.map((c) => chip(c, `${PATH}?category=${encodeURIComponent(c)}`, active === c))}
           </nav>
 
-          {copy.blank('list.notice') ? null : <SampleNotice label={copy.t('list.notice')} />}
+          {posts.some((p) => p.sample) && !copy.blank('list.notice') ? <SampleNotice label={copy.t('list.notice')} /> : null}
 
           {posts.length ? (
             <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">

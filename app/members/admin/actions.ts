@@ -53,7 +53,7 @@ export async function saveEventAction(formData: FormData) {
   const { supabase } = await requireEditor()
   const id = text(formData, 'id')
   const title = text(formData, 'title')
-  const slug = text(formData, 'slug') || slugify(title)
+  const slug = slugify(text(formData, 'slug') || title)
   const recurring = text(formData, 'recurring')
   const image = text(formData, 'image')
 
@@ -110,7 +110,7 @@ export async function saveSermonAction(formData: FormData) {
   const title = text(formData, 'title')
 
   const values: Database['public']['Tables']['sermons']['Insert'] = {
-    slug: text(formData, 'slug') || slugify(title),
+    slug: slugify(text(formData, 'slug') || title),
     title,
     speaker: text(formData, 'speaker'),
     date: text(formData, 'date'),
@@ -159,7 +159,7 @@ export async function saveArticleAction(formData: FormData) {
   const { supabase } = await requireEditor()
   const id = text(formData, 'id')
   const title = text(formData, 'title')
-  const slug = text(formData, 'slug') || slugify(title)
+  const slug = slugify(text(formData, 'slug') || title)
 
   const values: Database['public']['Tables']['blog_posts']['Insert'] = {
     slug,
