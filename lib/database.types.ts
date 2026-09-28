@@ -1080,6 +1080,33 @@ export type Database = {
         }
         Relationships: []
       }
+      content_revisions: {
+        Row: {
+          created_at: string
+          entity: string
+          entity_key: string
+          id: number
+          replaced_by: string | null
+          snapshot: Json
+        }
+        Insert: {
+          created_at?: string
+          entity: string
+          entity_key: string
+          id?: never
+          replaced_by?: string | null
+          snapshot: Json
+        }
+        Update: {
+          created_at?: string
+          entity?: string
+          entity_key?: string
+          id?: never
+          replaced_by?: string | null
+          snapshot?: Json
+        }
+        Relationships: []
+      }
       page_content: {
         Row: {
           elements: Json

@@ -50,6 +50,9 @@ export default async function EditPagePage({
             <Button href={`/members/admin/pages/${page.id}/preview`} variant="ghost" size="sm">
               Preview draft
             </Button>
+            <Button href={`/members/admin/history?page=${page.id}`} variant="ghost" size="sm">
+              Version history
+            </Button>
             {page.published ? (
               <Button href={`/${page.slug}`} variant="ghost" size="sm">
                 View live page
