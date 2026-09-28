@@ -98,9 +98,14 @@ export default async function HistoryPage({
         title={`Version history: ${name}`}
         lead="Every time someone saves this page, the version it replaced is kept here. Restoring one puts the page back the way it was; the version you replace is kept too, so a restore can be undone the same way."
       >
-        <Button href={editHref} variant="ghost" size="sm">
-          Back to the editor
-        </Button>
+        <div className="flex flex-wrap gap-3">
+          <Button href="/members/admin/pages" variant="ghost" size="sm">
+            ← All pages
+          </Button>
+          <Button href={editHref} variant="ghost" size="sm">
+            Back to the editor
+          </Button>
+        </div>
       </PageHero>
 
       <Section tone="light">

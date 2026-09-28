@@ -47,7 +47,7 @@ export default async function AdminOverviewPage() {
   }
 
   const tiles: Array<{ label: string; value: number | string; href: string; cta: string }> = [
-    { label: 'Pages', value: pages, href: '/members/admin/pages', cta: 'Build and manage pages' },
+    { label: 'Pages', value: SITE_COPY.length + pages, href: '/members/admin/pages', cta: 'Edit and add pages' },
     { label: 'Events', value: events, href: '/members/admin/events', cta: 'Manage events' },
     { label: 'Sermons', value: sermons, href: '/members/admin/sermons', cta: 'Manage sermons' },
     { label: 'Articles', value: articles, href: '/members/admin/articles', cta: 'Manage articles' },

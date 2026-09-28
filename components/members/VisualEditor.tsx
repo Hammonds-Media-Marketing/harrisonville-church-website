@@ -896,6 +896,12 @@ export function VisualEditor({ spec, overrides, elements: storedElements }: Prop
       <div className="flex min-w-0 flex-col bg-surface-2">
         <div className="flex flex-wrap items-center gap-3 border-b border-border bg-bg px-4 py-3">
           <p className="m-0 mr-auto text-sm text-muted">
+            <a href="/members/admin/pages" className="font-semibold text-link hover:text-link-hover">
+              ← All pages
+            </a>
+            <span aria-hidden="true" className="mx-2">
+              /
+            </span>
             Editing <span className="font-semibold text-heading">{spec.name}</span>{' '}
             <span className="whitespace-nowrap">({spec.path})</span>
           </p>
