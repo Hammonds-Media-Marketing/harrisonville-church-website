@@ -9,9 +9,28 @@ import { createClient } from 'npm:@supabase/supabase-js@2'
  * when a request NEWER than the last notification exists — so a stray or
  * repeated call cannot generate mail on its own. Sending goes through the
  * Resend API using the RESEND_API_KEY function secret.
+ *
+ * Recipients: every approved admin (their profile email), plus any
+ * addresses in the NOTIFY_TO_EMAIL secret (comma-separated). One email goes
+ * out with everyone in "to". Only when that list is empty does it fall back
+ * to the interim address below.
  */
 
 const NOTIFY_KIND = 'member-access-request'
+const FALLBACK_TO = 'garrett@hmm.agency'
+const EMAIL = /^[^\s@<>,;]+@[^\s@<>,;]+\.[^\s@<>,;]+$/
+
+/** Lowercased, de-duplicated, valid addresses from any mix of sources. */
+const recipientList = (values: Array<string | null | undefined>) => {
+  const seen = new Set<string>()
+  for (const raw of values) {
+    for (const part of String(raw ?? '').split(',')) {
+      const email = part.trim().toLowerCase()
+      if (email && EMAIL.test(email)) seen.add(email)
+    }
+  }
+  return [...seen]
+}
 const ADMIN_URL = 'https://harrisonvillecoc.com/members/admin/members'
 
 const json = (body: Record<string, unknown>, status = 200) =>
@@ -51,10 +70,17 @@ Deno.serve(async () => {
   const resendKey = Deno.env.get('RESEND_API_KEY')
   if (!resendKey) return json({ error: 'RESEND_API_KEY is not configured' }, 500)
 
-  // Interim recipient while HMM manages approvals; hand back to the church
-  // office (gospel@harrisonvillecoc.com) by changing this default or setting
-  // the NOTIFY_TO_EMAIL function secret.
-  const to = Deno.env.get('NOTIFY_TO_EMAIL') ?? 'garrett@hmm.agency'
+  // Every approved admin hears about new requests, plus anyone listed in the
+  // NOTIFY_TO_EMAIL secret (for example the church office). The interim HMM
+  // address is used only if there is no admin and no secret yet.
+  const { data: admins, error: adminError } = await supabase
+    .from('member_profiles')
+    .select('email')
+    .eq('approved', true)
+    .eq('role', 'admin')
+  if (adminError) return json({ error: adminError.message }, 500)
+  const listed = recipientList([...(admins ?? []).map((a) => a.email), Deno.env.get('NOTIFY_TO_EMAIL')])
+  const to = listed.length ? listed : [FALLBACK_TO]
   // The Resend<->Supabase integration verifies the send. subdomain, so the
   // from address must live on it.
   const from = Deno.env.get('NOTIFY_FROM_EMAIL') ?? 'Harrisonville Church of Christ <no-reply@send.harrisonvillecoc.com>'
@@ -81,7 +107,7 @@ Deno.serve(async () => {
     headers: { Authorization: `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
       from,
-      to: [to],
+      to,
       subject,
       html: `<p>Someone requested access to the members area of the church website.</p><p>Waiting for approval:</p><ul>${rows}</ul><p><a href="${ADMIN_URL}">Review and approve requests</a> (sign in, then Admin &rarr; Members).</p>`,
       text: `Someone requested access to the members area of the church website.\n\nWaiting for approval:\n${textRows}\n\nReview and approve: ${ADMIN_URL}`,
@@ -94,5 +120,5 @@ Deno.serve(async () => {
   }
 
   await supabase.from('admin_notification_log').insert({ kind: NOTIFY_KIND })
-  return json({ sent: true, pending: count })
+  return json({ sent: true, pending: count, recipients: to.length })
 })

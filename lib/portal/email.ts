@@ -1,10 +1,13 @@
 import { SITE_URL, site } from '@/lib/site'
+import { formatWhen } from '@/lib/portal/time'
 
 /**
- * Welcome email, sent once when an admin approves a member. Delivery goes
- * through Resend's REST API with a plain fetch, so no SDK is needed. When
- * RESEND_API_KEY is unset the send reports "not_configured" and approval
- * still succeeds; the admin sees that in the confirmation message.
+ * Member portal email. Delivery goes through Resend's REST API with a plain
+ * fetch, so no SDK is needed. `sendEmail` and `sendEmailBatch` are the
+ * generic senders; the welcome email (sent once when an admin approves a
+ * member) and the event reminder email are built on them. When
+ * RESEND_API_KEY or the from address is unset a send reports
+ * "not_configured" and whatever triggered it still succeeds.
  */
 
 export type WelcomeEmailStatus = 'sent' | 'not_configured' | 'invalid_recipient' | 'rejected' | 'network_error'
@@ -123,6 +126,115 @@ export function renderWelcomeEmail(profile: { full_name?: string | null; email?:
   return { html, text }
 }
 
+// ---------------------------------------------------------------------------
+// Event reminder
+// ---------------------------------------------------------------------------
+
+export type EventReminderInput = {
+  title: string
+  startsAt: string
+  endsAt: string | null
+  allDay: boolean
+  location: string | null
+  /** Site path such as /members/events/<id>; made absolute here. */
+  path: string
+  type: '1d' | '2d'
+  recipientName?: string | null
+}
+
+/** The church building, for events with no location of their own. */
+export function churchBuildingAddress(): string {
+  return `${site.address.street}, ${site.address.city}, ${site.address.region} ${site.address.postalCode}`
+}
+
+export function eventReminderSubject(input: Pick<EventReminderInput, 'title' | 'type'>): string {
+  return input.type === '1d' ? `Tomorrow: ${input.title}` : `In two days: ${input.title}`
+}
+
+/**
+ * "Remember, we have singing at the building" as an email: event title,
+ * when (church time), where (the church building when no location is set),
+ * a link, and how to turn these emails off. Same table layout and brand
+ * colors as the welcome email.
+ */
+export function renderEventReminderEmail(input: EventReminderInput): { subject: string; html: string; text: string } {
+  const subject = eventReminderSubject(input)
+  const when = formatWhen(input.startsAt, input.endsAt, input.allDay)
+  const where = input.location?.trim() || `the church building, ${churchBuildingAddress()}`
+  const url = `${SITE_URL}${input.path.startsWith('/') ? input.path : `/${input.path}`}`
+  const settingsUrl = `${SITE_URL}/members/profile?tab=notifications`
+  const lead = input.type === '1d' ? 'This is a friendly reminder that this is coming up tomorrow.' : 'This is a friendly reminder that this is coming up in two days.'
+  const greeting = input.recipientName?.trim() ? `Hello ${input.recipientName.trim().split(/\s+/)[0]},` : 'Hello,'
+
+  const html = `<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>${escapeHtml(subject)}</title>
+  </head>
+  <body style="margin:0;background:#f1f6f9;font-family:Helvetica,Arial,sans-serif;color:#16293b;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f1f6f9;padding:24px 12px;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;background:#ffffff;border:1px solid #c3d4dc;border-radius:16px;overflow:hidden;">
+            <tr>
+              <td style="background:#0b2538;padding:28px;color:#eef5f9;">
+                <div style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;color:#ffcf5e;">${escapeHtml(site.name)}</div>
+                <h1 style="margin:12px 0 0;font-size:26px;line-height:1.25;font-weight:600;color:#ffffff;">${escapeHtml(input.title)}</h1>
+                <p style="margin:12px 0 0;font-size:15px;line-height:1.6;color:#a7c3d4;">${escapeHtml(input.type === '1d' ? 'Tomorrow' : 'In two days')}</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:28px;">
+                <p style="margin:0;font-size:16px;line-height:1.7;color:#16293b;">${escapeHtml(greeting)}</p>
+                <p style="margin:8px 0 0;font-size:16px;line-height:1.7;color:#16293b;">${escapeHtml(lead)}</p>
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top:20px;border:1px solid #c3d4dc;border-radius:12px;">
+                  <tr>
+                    <td style="padding:16px;">
+                      <div style="font-size:12px;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;color:#4c5f70;">When</div>
+                      <div style="margin-top:4px;font-size:16px;line-height:1.5;color:#0a1f31;">${escapeHtml(when)}</div>
+                      <div style="margin-top:14px;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;color:#4c5f70;">Where</div>
+                      <div style="margin-top:4px;font-size:16px;line-height:1.5;color:#0a1f31;">${escapeHtml(where)}</div>
+                    </td>
+                  </tr>
+                </table>
+                <table role="presentation" cellspacing="0" cellpadding="0" style="margin:24px 0 0;">
+                  <tr>
+                    <td style="border-radius:999px;background:#ffcf5e;">
+                      <a href="${escapeHtml(url)}" style="display:inline-block;padding:14px 22px;color:#281f04;text-decoration:none;font-size:15px;font-weight:700;">See the details</a>
+                    </td>
+                  </tr>
+                </table>
+                <p style="margin:24px 0 0;font-size:13px;line-height:1.6;color:#4c5f70;">Times are church time (Central). You are getting this because you are a member of ${escapeHtml(site.name)}. To stop reminder emails, turn off "Email me event reminders" in <a href="${escapeHtml(settingsUrl)}" style="color:#0a6c8c;">your notification settings</a>.</p>
+              </td>
+            </tr>
+          </table>
+          <p style="margin:16px 0 0;font-size:12px;color:#4c5f70;">${escapeHtml(site.name)} · ${escapeHtml(churchBuildingAddress())}</p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>`
+
+  const text = [
+    greeting,
+    '',
+    lead,
+    '',
+    input.title,
+    `When: ${when}`,
+    `Where: ${where}`,
+    '',
+    `Details: ${url}`,
+    '',
+    'Times are church time (Central).',
+    `To stop reminder emails, turn off "Email me event reminders" in your notification settings: ${settingsUrl}`,
+  ].join('\n')
+
+  return { subject, html, text }
+}
+
 export function approvalFeedback(status: WelcomeEmailStatus): string {
   switch (status) {
     case 'sent':
@@ -142,23 +254,32 @@ export function testEmailFeedback(status: WelcomeEmailStatus, email: string): st
   return 'The test email could not be sent. Check the Resend configuration and try again.'
 }
 
-/** Send through Resend. Never throws; every failure maps to a status. */
-export async function sendWelcomeEmail(
-  recipient: { email: string | null | undefined; full_name?: string | null },
-  opts: { fetchImpl?: typeof fetch; apiKey?: string; from?: string } = {}
-): Promise<WelcomeEmailResult> {
+export type EmailMessage = { to: string; subject: string; html: string; text: string }
+
+export type SendOptions = { fetchImpl?: typeof fetch; apiKey?: string; from?: string }
+
+function resendConfig(opts: SendOptions): { apiKey: string; from: string } | null {
   const apiKey = (opts.apiKey ?? process.env.RESEND_API_KEY ?? '').trim()
   const from = (opts.from ?? process.env.WELCOME_EMAIL_FROM ?? '').trim()
-  if (!apiKey || !from) return { status: 'not_configured' }
-  const to = normalizeRecipientEmail(recipient.email)
+  return apiKey && from ? { apiKey, from } : null
+}
+
+/**
+ * Send one email through Resend. Never throws; every failure maps to a
+ * status. The from address defaults to WELCOME_EMAIL_FROM, the church's
+ * verified sender for all member email.
+ */
+export async function sendEmail(message: EmailMessage, opts: SendOptions = {}): Promise<WelcomeEmailResult> {
+  const config = resendConfig(opts)
+  if (!config) return { status: 'not_configured' }
+  const to = normalizeRecipientEmail(message.to)
   if (!to) return { status: 'invalid_recipient' }
-  const { html, text } = renderWelcomeEmail(recipient)
   const doFetch = opts.fetchImpl ?? fetch
   try {
     const response = await doFetch('https://api.resend.com/emails', {
       method: 'POST',
-      headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from, to: [to], subject: welcomeEmailSubject(), html, text }),
+      headers: { Authorization: `Bearer ${config.apiKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ from: config.from, to: [to], subject: message.subject, html: message.html, text: message.text }),
     })
     if (!response.ok) return { status: 'rejected' }
     const data = (await response.json().catch(() => ({}))) as { id?: string }
@@ -166,6 +287,57 @@ export async function sendWelcomeEmail(
   } catch {
     return { status: 'network_error' }
   }
+}
+
+/** Resend's batch endpoint takes at most 100 emails per request. */
+export const EMAIL_BATCH_SIZE = 100
+
+/**
+ * Send many individual emails (each recipient sees only their own address)
+ * through Resend's batch endpoint, 100 per request. Returns one status per
+ * message, in order. Never throws.
+ */
+export async function sendEmailBatch(messages: EmailMessage[], opts: SendOptions = {}): Promise<WelcomeEmailStatus[]> {
+  const statuses: WelcomeEmailStatus[] = messages.map(() => 'not_configured')
+  const config = resendConfig(opts)
+  if (!config || messages.length === 0) return statuses
+  const doFetch = opts.fetchImpl ?? fetch
+
+  const valid: Array<{ index: number; to: string; message: EmailMessage }> = []
+  messages.forEach((message, index) => {
+    const to = normalizeRecipientEmail(message.to)
+    if (to) valid.push({ index, to, message })
+    else statuses[index] = 'invalid_recipient'
+  })
+
+  for (let i = 0; i < valid.length; i += EMAIL_BATCH_SIZE) {
+    const chunk = valid.slice(i, i + EMAIL_BATCH_SIZE)
+    let status: WelcomeEmailStatus
+    try {
+      const response = await doFetch('https://api.resend.com/emails/batch', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${config.apiKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(chunk.map(({ to, message }) => ({ from: config.from, to: [to], subject: message.subject, html: message.html, text: message.text }))),
+      })
+      status = response.ok ? 'sent' : 'rejected'
+    } catch {
+      status = 'network_error'
+    }
+    for (const { index } of chunk) statuses[index] = status
+  }
+  return statuses
+}
+
+/** Send the welcome email. Never throws; every failure maps to a status. */
+export async function sendWelcomeEmail(
+  recipient: { email: string | null | undefined; full_name?: string | null },
+  opts: SendOptions = {}
+): Promise<WelcomeEmailResult> {
+  if (!resendConfig(opts)) return { status: 'not_configured' }
+  const to = normalizeRecipientEmail(recipient.email)
+  if (!to) return { status: 'invalid_recipient' }
+  const { html, text } = renderWelcomeEmail(recipient)
+  return sendEmail({ to, subject: welcomeEmailSubject(), html, text }, opts)
 }
 
 /** Tiny in-memory rate limiter for the admin test-send button. */

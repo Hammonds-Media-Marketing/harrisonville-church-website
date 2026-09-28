@@ -147,8 +147,19 @@ export type CalendarItem = {
   /** Set for members-only rows so editors can open the edit form. */
   editableId: string | null
   recurring: string | null
-  visibility: 'members' | 'leaders' | 'public'
+  visibility: CalendarVisibility | 'public'
+  /** Members-calendar rows: the group that can see it (visibility 'group'). */
+  groupId?: string | null
+  groupName?: string | null
+  /** Members-calendar rows: the email reminder setting, for the edit form. */
+  emailReminder?: string
+  recurrenceEndsOn?: string | null
 }
+
+export type CalendarVisibility = 'members' | 'leaders' | 'group'
+
+/** A group offered as a calendar audience. */
+export type CalendarGroupOption = { id: string; name: string; kind: string }
 
 export type SpecialEventAudience = 'everyone' | 'women' | 'men'
 export type SpecialEventStatus = 'draft' | 'published'

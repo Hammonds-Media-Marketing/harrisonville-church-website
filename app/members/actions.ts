@@ -89,6 +89,8 @@ export async function updateNotificationPreferencesAction(formData: FormData) {
       calendar: flag(formData, 'calendar'),
       special_events: flag(formData, 'special_events'),
       admin_new_member: ctx.isAdmin ? flag(formData, 'admin_new_member') : true,
+      email_event_reminders: flag(formData, 'email_event_reminders'),
+      push_enabled: flag(formData, 'push_enabled'),
     },
     { onConflict: 'member_id' }
   )
@@ -105,6 +107,39 @@ export async function updateNotificationPreferencesAction(formData: FormData) {
   }
   revalidatePath('/members/profile')
   redirect('/members/profile?tab=notifications&saved=1')
+}
+
+// ---------------------------------------------------------------------------
+// Phone notifications (web push), one subscription per device
+// ---------------------------------------------------------------------------
+
+export type PushSubscriptionInput = { endpoint: string; p256dh: string; auth: string; userAgent?: string }
+
+const shortString = (value: unknown, max: number) => (typeof value === 'string' && value.length > 0 && value.length <= max ? value : null)
+
+/** Saves this device's push subscription. The definer RPC moves an endpoint
+ *  to the signed-in member if someone else used this browser before. */
+export async function savePushSubscriptionAction(input: PushSubscriptionInput): Promise<{ ok: boolean }> {
+  const ctx = await requireApprovedMember()
+  const endpoint = shortString(input?.endpoint, 2048)
+  const p256dh = shortString(input?.p256dh, 512)
+  const auth = shortString(input?.auth, 512)
+  if (!endpoint || !endpoint.startsWith('https://') || !p256dh || !auth) return { ok: false }
+  const { error } = await ctx.supabase.rpc('save_push_subscription', {
+    target_endpoint: endpoint,
+    target_p256dh: p256dh,
+    target_auth: auth,
+    target_user_agent: typeof input.userAgent === 'string' ? input.userAgent.slice(0, 300) : null,
+  })
+  if (error) console.warn('[members] push subscription save failed:', error.message)
+  return { ok: !error }
+}
+
+export async function removePushSubscriptionAction(endpoint: string): Promise<{ ok: boolean }> {
+  const ctx = await requireApprovedMember()
+  if (typeof endpoint !== 'string' || !endpoint) return { ok: false }
+  const { error } = await ctx.supabase.from('push_subscriptions').delete().eq('endpoint', endpoint).eq('member_id', ctx.userId)
+  return { ok: !error }
 }
 
 // ---------------------------------------------------------------------------

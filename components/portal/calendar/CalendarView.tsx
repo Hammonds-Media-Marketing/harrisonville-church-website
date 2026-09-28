@@ -10,7 +10,7 @@ import { SegmentedControl } from '@/components/primitives/Controls'
 import { ChevronLeftIcon, ChevronRightIcon, ClockIcon, MapPinIcon, PlusIcon } from '@/components/ui/icons'
 import { categoryTone } from '@/lib/portal/calendar'
 import { addDays, addMonths, formatKey, formatTimeRange, formatWeekRange, formatWhen, monthGridKeys, monthName, startOfWeek, weekKeys, weekdayName, type DateKey } from '@/lib/portal/time'
-import type { CalendarItem } from '@/lib/portal/types'
+import type { CalendarGroupOption, CalendarItem } from '@/lib/portal/types'
 import { CalendarEventForm } from '@/components/portal/calendar/CalendarEventForm'
 
 /**
@@ -53,12 +53,15 @@ export function CalendarView({
   todayKey,
   items,
   canManage,
+  groups = [],
 }: {
   mode: CalendarMode
   date: DateKey
   todayKey: DateKey
   items: CalendarItem[]
   canManage: boolean
+  /** Groups an editor can limit an event to. */
+  groups?: CalendarGroupOption[]
 }) {
   const router = useRouter()
   const [selectedDay, setSelectedDay] = useState<DateKey | null>(null)
@@ -265,7 +268,9 @@ export function CalendarView({
           <div className="flex flex-col gap-3">
             <div className="flex flex-wrap gap-2">
               <Badge tone="neutral">{openItem.category}</Badge>
-              <Badge tone={openItem.visibility === 'leaders' ? 'gold' : 'primary'}>{openItem.visibility === 'leaders' ? 'Leaders only' : sourceLabel[openItem.source]}</Badge>
+              <Badge tone={openItem.visibility === 'leaders' || openItem.visibility === 'group' ? 'gold' : 'primary'}>
+                {openItem.visibility === 'leaders' ? 'Leaders only' : openItem.visibility === 'group' ? (openItem.groupName ? `${openItem.groupName} only` : 'One group only') : sourceLabel[openItem.source]}
+              </Badge>
               {openItem.recurring ? <Badge tone="neutral">Repeats</Badge> : null}
             </div>
             <p className="m-0 flex items-start gap-2 text-ink">
@@ -303,7 +308,7 @@ export function CalendarView({
       </Dialog>
 
       <Dialog open={Boolean(editing)} onClose={() => setEditing(null)} title={editing?.item ? 'Edit event' : 'Add a members event'} size="lg">
-        {editing ? <CalendarEventForm item={editing.item} defaultDate={editing.dateKey} /> : null}
+        {editing ? <CalendarEventForm item={editing.item} defaultDate={editing.dateKey} groups={groups} /> : null}
       </Dialog>
     </div>
   )
