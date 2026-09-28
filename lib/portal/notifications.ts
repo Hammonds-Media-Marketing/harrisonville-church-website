@@ -12,7 +12,7 @@ export type NotificationIconKind = 'message' | 'calendar' | 'announcement' | 'me
 export function notificationIconKind(type: string): NotificationIconKind {
   if (type === 'direct_message' || type === 'group_message') return 'message'
   if (type === 'announcement') return 'announcement'
-  if (type === 'calendar_event' || type === 'communion_reminder' || type === 'communion_signup') return 'calendar'
+  if (type === 'calendar_event' || type === 'event_reminder' || type === 'communion_reminder' || type === 'communion_signup') return 'calendar'
   if (type.startsWith('special_event')) return 'event'
   if (type === 'member_pending' || type === 'member_approved') return 'member'
   return 'bell'

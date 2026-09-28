@@ -237,6 +237,7 @@ export type Database = {
           summary: string
           title: string
           updated_at: string
+          email_reminder: string
         }
         Insert: {
           category: string
@@ -255,6 +256,7 @@ export type Database = {
           summary: string
           title: string
           updated_at?: string
+          email_reminder?: string
         }
         Update: {
           category?: string
@@ -273,6 +275,7 @@ export type Database = {
           summary?: string
           title?: string
           updated_at?: string
+          email_reminder?: string
         }
         Relationships: []
       }
@@ -383,6 +386,8 @@ export type Database = {
           updated_at: string
           updated_by: string | null
           visibility: string
+          email_reminder: string
+          group_id: string | null
         }
         Insert: {
           all_day?: boolean
@@ -400,6 +405,8 @@ export type Database = {
           updated_at?: string
           updated_by?: string | null
           visibility?: string
+          email_reminder?: string
+          group_id?: string | null
         }
         Update: {
           all_day?: boolean
@@ -417,6 +424,8 @@ export type Database = {
           updated_at?: string
           updated_by?: string | null
           visibility?: string
+          email_reminder?: string
+          group_id?: string | null
         }
         Relationships: []
       }
@@ -696,6 +705,72 @@ export type Database = {
         }
         Relationships: []
       }
+      event_reminder_log: {
+        Row: {
+          created_at: string
+          email_status: string | null
+          event_id: string
+          event_kind: string
+          id: number
+          occurrence_start: string
+          recipient_id: string
+          reminder_type: string
+        }
+        Insert: {
+          created_at?: string
+          email_status?: string | null
+          event_id: string
+          event_kind: string
+          id?: never
+          occurrence_start: string
+          recipient_id: string
+          reminder_type: string
+        }
+        Update: {
+          created_at?: string
+          email_status?: string | null
+          event_id?: string
+          event_kind?: string
+          id?: never
+          occurrence_start?: string
+          recipient_id?: string
+          reminder_type?: string
+        }
+        Relationships: []
+      }
+      push_subscriptions: {
+        Row: {
+          auth: string
+          created_at: string
+          endpoint: string
+          id: string
+          last_used_at: string | null
+          member_id: string
+          p256dh: string
+          user_agent: string | null
+        }
+        Insert: {
+          auth: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          last_used_at?: string | null
+          member_id: string
+          p256dh: string
+          user_agent?: string | null
+        }
+        Update: {
+          auth?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          last_used_at?: string | null
+          member_id?: string
+          p256dh?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       in_app_notifications: {
         Row: {
           body: string
@@ -709,6 +784,7 @@ export type Database = {
           read_at: string | null
           recipient_id: string
           title: string
+          pushed_at: string | null
         }
         Insert: {
           body?: string
@@ -722,6 +798,7 @@ export type Database = {
           read_at?: string | null
           recipient_id: string
           title: string
+          pushed_at?: string | null
         }
         Update: {
           body?: string
@@ -735,6 +812,7 @@ export type Database = {
           read_at?: string | null
           recipient_id?: string
           title?: string
+          pushed_at?: string | null
         }
         Relationships: []
       }
@@ -818,6 +896,8 @@ export type Database = {
           member_id: string
           special_events: boolean
           updated_at: string
+          email_event_reminders: boolean
+          push_enabled: boolean
         }
         Insert: {
           admin_new_member?: boolean
@@ -829,6 +909,8 @@ export type Database = {
           member_id: string
           special_events?: boolean
           updated_at?: string
+          email_event_reminders?: boolean
+          push_enabled?: boolean
         }
         Update: {
           admin_new_member?: boolean
@@ -840,6 +922,8 @@ export type Database = {
           member_id?: string
           special_events?: boolean
           updated_at?: string
+          email_event_reminders?: boolean
+          push_enabled?: boolean
         }
         Relationships: []
       }
@@ -1039,6 +1123,7 @@ export type Database = {
           title: string
           updated_at: string
           updated_by: string | null
+          email_reminder: string
         }
         Insert: {
           all_day?: boolean
@@ -1058,6 +1143,7 @@ export type Database = {
           title: string
           updated_at?: string
           updated_by?: string | null
+          email_reminder?: string
         }
         Update: {
           all_day?: boolean
@@ -1077,6 +1163,7 @@ export type Database = {
           title?: string
           updated_at?: string
           updated_by?: string | null
+          email_reminder?: string
         }
         Relationships: []
       }
@@ -1248,6 +1335,14 @@ export type Database = {
         Args: { target_family_id: string; target_member_id: string }
         Returns: undefined
       }
+      calendar_group_options: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          name: string
+          kind: string
+        }[]
+      }
       can_access_group: {
         Args: { target_group_id: string }
         Returns: boolean
@@ -1267,6 +1362,18 @@ export type Database = {
       claim_signup_item: {
         Args: { target_item_id: string; target_note?: string | null }
         Returns: undefined
+      }
+      claim_push_notification: {
+        Args: { target_id: string }
+        Returns: {
+          id: string
+          recipient_id: string
+          notification_type: string
+          event_key: string
+          title: string
+          body: string
+          destination_url: string
+        }[]
       }
       direct_conversations: {
         Args: Record<PropertyKey, never>
@@ -1318,8 +1425,24 @@ export type Database = {
         Args: { target_id: string }
         Returns: undefined
       }
+      save_push_subscription: {
+        Args: { target_endpoint: string; target_p256dh: string; target_auth: string; target_user_agent?: string | null }
+        Returns: undefined
+      }
       send_communion_reminders: {
         Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      send_event_reminder_notifications: {
+        Args: {
+          target_recipients: string[]
+          target_key: string
+          target_title: string
+          target_body: string
+          target_url: string
+          target_entity_type: string
+          target_entity_id: string
+        }
         Returns: number
       }
       special_event_invitees: {

@@ -6,13 +6,29 @@ import { FieldShell, SelectField, TextArea, TextField } from '@/components/primi
 import { CALENDAR_CATEGORIES } from '@/lib/portal/calendar'
 import { RECURRENCE_OPTIONS } from '@/lib/recurrence'
 import { getDateKey, getTimeInput, type DateKey } from '@/lib/portal/time'
-import type { CalendarItem } from '@/lib/portal/types'
+import { EMAIL_REMINDER_OPTIONS, parseEmailReminder } from '@/lib/portal/reminders'
+import type { CalendarGroupOption, CalendarItem, CalendarVisibility } from '@/lib/portal/types'
 import { deleteCalendarEventAction, saveCalendarEventAction } from '@/app/members/calendar/actions'
 
-/** Editor form for members-only calendar events. Times are church time. */
-export function CalendarEventForm({ item, defaultDate }: { item: CalendarItem | null; defaultDate: DateKey }) {
+const VISIBILITY_OPTIONS: Array<{ value: CalendarVisibility; label: string }> = [
+  { value: 'members', label: 'Everyone in the congregation' },
+  { value: 'leaders', label: 'Editors and admins only' },
+  { value: 'group', label: 'One group…' },
+]
+
+/**
+ * Editor form for members-only calendar events. Times are church time.
+ * "Who can see it" can limit an event to one group (a speaking calendar for
+ * the men who speak, a ladies' class); editors and admins always see it.
+ */
+export function CalendarEventForm({ item, defaultDate, groups = [] }: { item: CalendarItem | null; defaultDate: DateKey; groups?: CalendarGroupOption[] }) {
   const [allDay, setAllDay] = useState(item?.allDay ?? false)
   const [recurring, setRecurring] = useState(item?.recurring ?? '')
+  const initialVisibility: CalendarVisibility = item?.visibility === 'leaders' || item?.visibility === 'group' ? item.visibility : 'members'
+  const [visibility, setVisibility] = useState<CalendarVisibility>(initialVisibility)
+  // Keep a group-only row's group selectable even if it was archived since.
+  const groupChoices =
+    item?.groupId && !groups.some((g) => g.id === item.groupId) ? [...groups, { id: item.groupId, name: item.groupName ?? 'Current group', kind: 'custom' }] : groups
   const startDate = item ? getDateKey(item.startsAt) : defaultDate
   const endDate = item?.endsAt ? getDateKey(item.endsAt) : ''
 
@@ -66,20 +82,45 @@ export function CalendarEventForm({ item, defaultDate }: { item: CalendarItem | 
           </FieldShell>
           {recurring ? (
             <FieldShell id="ce-until" label="Repeat until" helper="Optional last date.">
-              <TextField id="ce-until" name="recurrence_ends_on" type="date" />
+              <TextField id="ce-until" name="recurrence_ends_on" type="date" defaultValue={item?.recurrenceEndsOn ?? ''} />
             </FieldShell>
           ) : null}
         </div>
-        <FieldShell id="ce-visibility" label="Who can see it">
-          <SelectField
-            id="ce-visibility"
-            name="visibility"
-            options={[
-              { value: 'members', label: 'All approved members' },
-              { value: 'leaders', label: 'Editors and admins only' },
-            ]}
-            defaultValue={item?.visibility === 'leaders' ? 'leaders' : 'members'}
-          />
+        <div className="grid gap-4 sm:grid-cols-2">
+          <FieldShell id="ce-visibility" label="Who can see it" helper="Editors and admins always see every event.">
+            <select
+              id="ce-visibility"
+              name="visibility"
+              value={visibility}
+              onChange={(e) => setVisibility(e.target.value as CalendarVisibility)}
+              className="w-full rounded-md border border-border bg-input-bg px-4 py-3 text-ink focus:border-primary-strong"
+            >
+              {VISIBILITY_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value} disabled={o.value === 'group' && groupChoices.length === 0}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </FieldShell>
+          {visibility === 'group' ? (
+            <FieldShell id="ce-group" label="Group" required helper="Only this group's members (plus editors and admins) will see it. Admins set up groups under Admin, Groups.">
+              <SelectField
+                id="ce-group"
+                name="group_id"
+                required
+                placeholder="Choose a group"
+                options={groupChoices.map((g) => ({ value: g.id, label: g.name }))}
+                defaultValue={item?.groupId ?? ''}
+              />
+            </FieldShell>
+          ) : null}
+        </div>
+        <FieldShell
+          id="ce-reminder"
+          label="Email reminder"
+          helper="Emails everyone who can see the event, and adds a reminder to their notification bell. Repeating events get a reminder before each date."
+        >
+          <SelectField id="ce-reminder" name="email_reminder" options={EMAIL_REMINDER_OPTIONS} defaultValue={parseEmailReminder(item?.emailReminder)} />
         </FieldShell>
         <div className="flex flex-wrap gap-2">
           <Button type="submit" variant="primary">

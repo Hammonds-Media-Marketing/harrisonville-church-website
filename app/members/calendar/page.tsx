@@ -4,7 +4,7 @@ import { Container, Section } from '@/components/primitives/Layout'
 import { PageHero } from '@/components/blocks/PageHero'
 import { ParamNotices } from '@/components/primitives/Feedback'
 import { CalendarView, type CalendarMode } from '@/components/portal/calendar/CalendarView'
-import { getCalendarItems, requireApprovedMember } from '@/lib/portal/data'
+import { getCalendarGroupOptions, getCalendarItems, requireApprovedMember } from '@/lib/portal/data'
 import { addDays, getTodayKey, isValidDateKey, monthGridKeys, startOfWeek } from '@/lib/portal/time'
 
 export const metadata: Metadata = buildMetadata({
@@ -23,6 +23,7 @@ const notices = {
   'error:event_fields': 'A title and a valid date are required.',
   'error:event_time': 'That start time does not exist on that date. Pick another time.',
   'error:event_end': 'The end has to come after the start.',
+  'error:event_group': 'Choose which group can see the event.',
   error: 'That did not save. Check the form and try again.',
 }
 
@@ -43,7 +44,7 @@ export default async function CalendarPage({ searchParams }: { searchParams: Pro
         ? { start: startOfWeek(date), end: addDays(startOfWeek(date), 6) }
         : { start: date, end: date }
 
-  const items = await getCalendarItems(ctx, range)
+  const [items, groups] = await Promise.all([getCalendarItems(ctx, range), ctx.isEditor ? getCalendarGroupOptions(ctx) : Promise.resolve([])])
 
   return (
     <>
@@ -51,7 +52,7 @@ export default async function CalendarPage({ searchParams }: { searchParams: Pro
       <Section tone="light">
         <Container>
           <ParamNotices params={params} messages={notices} />
-          <CalendarView mode={mode} date={date} todayKey={today} items={items} canManage={ctx.isEditor} />
+          <CalendarView mode={mode} date={date} todayKey={today} items={items} canManage={ctx.isEditor} groups={groups} />
         </Container>
       </Section>
     </>

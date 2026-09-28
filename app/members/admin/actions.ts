@@ -12,6 +12,7 @@ import { getCopySpec } from '@/content/site-copy'
 import { normalizePageSlug } from '@/lib/pages'
 import { localInputToIso, slugify } from '@/lib/format'
 import { isRecurrenceRule } from '@/lib/recurrence'
+import { parseEmailReminder } from '@/lib/portal/reminders'
 import type { Database, Json } from '@/lib/database.types'
 
 /**
@@ -71,6 +72,7 @@ export async function saveEventAction(formData: FormData) {
     image_alt: image ? text(formData, 'image_alt') || title : null,
     published: flag(formData, 'published'),
     sample: false,
+    email_reminder: parseEmailReminder(text(formData, 'email_reminder')),
   }
 
   const { error } = id

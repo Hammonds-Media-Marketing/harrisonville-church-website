@@ -12,6 +12,7 @@ import { CheckboxField, FieldShell, SelectField, TextArea, TextField } from '@/c
 import { SegmentedControl, Switch } from '@/components/primitives/Controls'
 import { EmptyState, Notice, ParamNotices } from '@/components/primitives/Feedback'
 import { PhotoUploadField } from '@/components/portal/PhotoUploadField'
+import { PushNotificationsToggle } from '@/components/portal/PushNotificationsToggle'
 import { UsersIcon } from '@/components/ui/icons'
 import { getAuthContext } from '@/lib/supabase-server'
 import {
@@ -428,11 +429,13 @@ async function NotificationsTab({ ctx }: { ctx: Ctx }) {
   const [prefs, groups, groupPrefs] = await Promise.all([getNotificationPreferences(ctx), getAccessibleGroups(ctx), getGroupNotificationPreferences(ctx)])
   return (
     <Surface tone="card">
-      <h2 className="text-xl">Notification bell</h2>
+      <h2 className="text-xl">Notifications</h2>
       <p className="text-muted">
-        These control what shows up under the bell in the members area. Turning something off here never hides it from the page itself.
+        Choose what reaches you and where: the bell in the members area, your email inbox, and your phone. Turning something off here never hides it from the
+        page itself.
       </p>
       <form action={updateNotificationPreferencesAction} className="flex flex-col gap-2">
+        <h3 className="m-0 mt-2 text-lg">In the members area (the bell)</h3>
         <div className="divide-y divide-border/40">
           <Switch id="pref-dm" name="direct_messages" label="Direct messages" helper="Someone sends you a message." defaultChecked={prefs.direct_messages} />
           <Switch id="pref-group" name="group_messages" label="Group chat" helper="New messages in a group you belong to. Mute individual groups below." defaultChecked={prefs.group_messages} />
@@ -458,6 +461,32 @@ async function NotificationsTab({ ctx }: { ctx: Ctx }) {
         ) : (
           <EmptyState icon={<UsersIcon className="h-6 w-6" />} title="No group chats yet" className="mt-4" />
         )}
+
+        <h3 className="m-0 mt-6 text-lg">Email</h3>
+        <div className="divide-y divide-border/40">
+          <Switch
+            id="pref-email-reminders"
+            name="email_event_reminders"
+            label="Email me event reminders"
+            helper={`A day or two before events you are part of, when the organizer asks for a reminder. Sent to ${ctx.profile.email}.`}
+            defaultChecked={prefs.email_event_reminders}
+          />
+        </div>
+
+        <h3 className="m-0 mt-6 text-lg">Phone</h3>
+        <p className="m-0 text-sm text-muted">
+          Phone notifications pop up like a text message, for the same things as the bell above. Turn them on once on each phone or computer you use.
+        </p>
+        <div className="divide-y divide-border/40">
+          <Switch
+            id="pref-push"
+            name="push_enabled"
+            label="Send to my phone"
+            helper="Turn this off to pause phone notifications on every device at once."
+            defaultChecked={prefs.push_enabled}
+          />
+        </div>
+        <PushNotificationsToggle />
 
         <div className="mt-4">
           <Button type="submit" variant="primary">
