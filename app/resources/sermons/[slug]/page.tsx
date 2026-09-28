@@ -13,6 +13,7 @@ import { ClockIcon } from '@/components/ui/icons'
 import { formatDate } from '@/lib/format'
 import { videoEmbedUrl } from '@/lib/page-elements'
 import { getSermon, recentSermons } from '@/lib/sermons'
+import { LAUNCHED } from '@/lib/site'
 
 export const revalidate = 3600
 
@@ -28,9 +29,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     path: `/resources/sermons/${sermon.slug}`,
     ogTitle: `${sermon.title} | ${sermon.scripture}`,
     ogDescription: `A lesson from ${sermon.speaker} at the Harrisonville Church of Christ.`,
-    // The sermon library is hidden from navigation and search at the
-    // congregation's direction, so its lessons are too.
-    noindex: true,
+    // Hidden from navigation and search until sermons launch (lib/site.ts).
+    noindex: !LAUNCHED.sermons,
   })
 }
 

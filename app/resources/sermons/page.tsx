@@ -11,14 +11,15 @@ import { SampleNotice } from '@/components/blocks/SampleNotice'
 import { SermonCard } from '@/components/blocks/cards'
 import { PlayIcon } from '@/components/ui/icons'
 import { recentSermons } from '@/lib/sermons'
+import { LAUNCHED } from '@/lib/site'
 
 export const revalidate = 3600
 
 const PATH = '/resources/sermons'
 
 export async function generateMetadata(): Promise<Metadata> {
-  // Hidden from navigation and search at the congregation's direction.
-  return copyMetadata(PATH, { noindex: true })
+  // Hidden from navigation and search until sermons launch (lib/site.ts).
+  return copyMetadata(PATH, { noindex: !LAUNCHED.sermons })
 }
 
 const breadcrumbs = [

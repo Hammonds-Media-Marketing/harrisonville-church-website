@@ -8,6 +8,7 @@ import { SampleNotice } from '@/components/blocks/SampleNotice'
 import { PostCard } from '@/components/blocks/cards'
 import { LinkedInIcon } from '@/components/ui/icons'
 import { getAllAuthors, getAuthor, postsByAuthor } from '@/lib/blog'
+import { LAUNCHED } from '@/lib/site'
 
 export const dynamic = 'force-static'
 
@@ -28,8 +29,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     ogDescription: author.bio,
     ogImage: author.photo,
     ogImageAlt: author.photoAlt,
-    // Hidden from navigation and search while the blog is hidden.
-    noindex: true,
+    // Hidden from navigation and search until articles launch (lib/site.ts).
+    noindex: !LAUNCHED.articles,
   })
 }
 

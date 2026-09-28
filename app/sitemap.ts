@@ -1,15 +1,16 @@
 import type { MetadataRoute } from 'next'
-import { SITE_URL } from '@/lib/site'
+import { LAUNCHED, RESOURCES_HUB_LIVE, SITE_URL } from '@/lib/site'
 import { upcomingEvents } from '@/lib/events'
+import { getAllAuthors, getAllPosts } from '@/lib/blog'
+import { recentSermons } from '@/lib/sermons'
 import { getPublishedPages } from '@/lib/pages'
 import { leaders } from '@/content/leadership'
 
 /**
- * Sitemap generated from routes — never hardcoded. Blog, author,
- * member-stories, and sermon-library routes are intentionally omitted while
- * those sections are hidden at the congregation's direction; restore them here
- * when the pages are made visible again. changefreq and priority are set per
- * route type per the full-website mode doc.
+ * Sitemap generated from routes — never hardcoded. Articles (blog and
+ * authors) and sermons join only once they launch (LAUNCHED in lib/site.ts);
+ * the member-stories page stays out while it is hidden. changefreq and
+ * priority are set per route type per the full-website mode doc.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date()
@@ -40,6 +41,35 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.6,
     })),
     { url: url('/resources/bible-study'), lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
+    ...(RESOURCES_HUB_LIVE ? [{ url: url('/resources'), lastModified: now, changeFrequency: 'monthly' as const, priority: 0.6 }] : []),
+    ...(LAUNCHED.articles
+      ? [
+          { url: url('/blog'), lastModified: now, changeFrequency: 'weekly' as const, priority: 0.7 },
+          ...(await getAllPosts()).map((p) => ({
+            url: url(`/blog/${p.slug}`),
+            lastModified: new Date(p.dateModified ?? p.datePublished),
+            changeFrequency: 'monthly' as const,
+            priority: 0.6,
+          })),
+          ...(await getAllAuthors()).map((a) => ({
+            url: url(`/blog/author/${a.slug}`),
+            lastModified: now,
+            changeFrequency: 'monthly' as const,
+            priority: 0.4,
+          })),
+        ]
+      : []),
+    ...(LAUNCHED.sermons
+      ? [
+          { url: url('/resources/sermons'), lastModified: now, changeFrequency: 'weekly' as const, priority: 0.6 },
+          ...(await recentSermons()).map((s) => ({
+            url: url(`/resources/sermons/${s.slug}`),
+            lastModified: new Date(s.date),
+            changeFrequency: 'yearly' as const,
+            priority: 0.5,
+          })),
+        ]
+      : []),
     { url: url('/contact'), lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: url('/style-guide'), lastModified: now, changeFrequency: 'yearly', priority: 0.2 },
     { url: url('/privacy-policy'), lastModified: now, changeFrequency: 'yearly', priority: 0.3 },

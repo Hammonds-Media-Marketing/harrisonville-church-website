@@ -54,6 +54,12 @@ export const metadata: Metadata = {
     icon: '/favicon.svg',
     apple: '/assets/logos/apple-touch-icon.png',
   },
+  // Bing Webmaster Tools ownership check (covers Bing, Yahoo, and
+  // DuckDuckGo). Set the code Bing issues in the environment; unset renders
+  // nothing. Bing can also verify through DNS or by importing Search Console.
+  ...(process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
+    ? { verification: { other: { 'msvalidate.01': process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION } } }
+    : {}),
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
