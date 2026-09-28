@@ -49,12 +49,19 @@ export default async function EventsPage() {
 
       <Section tone="light">
         <Container>
-          {copy.blank('list.notice') ? null : <SampleNotice label={copy.t('list.notice')} />}
-          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {events.map((e) => (
-              <EventCard key={e.slug} event={e} />
-            ))}
-          </div>
+          {/* The placeholder notice only shows while a sample event is listed. */}
+          {events.some((e) => e.sample) && !copy.blank('list.notice') ? <SampleNotice label={copy.t('list.notice')} /> : null}
+          {events.length ? (
+            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {events.map((e) => (
+                <EventCard key={e.slug} event={e} />
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-lg text-muted">
+              No special events are on the calendar right now. Every Sunday and Wednesday assembly is open to visitors.
+            </p>
+          )}
         </Container>
       </Section>
       {copy.zone('after-events', 'After the event list')}

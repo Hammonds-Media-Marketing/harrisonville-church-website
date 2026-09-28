@@ -29,7 +29,7 @@ export const sermonsCopy: PageCopySpec = {
           label: 'Placeholder notice',
           kind: 'text',
           value: 'These recordings are placeholders; real video will be connected later.',
-          help: 'Shown above the library while the recordings are samples. Remove it once real video is connected.',
+          help: 'Shown above the library only while a sample recording is listed; it disappears on its own once every recording is real.',
         },
         { key: 'library.featuredBadge', label: 'Featured badge', kind: 'text', value: 'Latest lesson' },
         {

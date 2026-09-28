@@ -29,7 +29,7 @@ export const eventsCopy: PageCopySpec = {
           label: 'Placeholder notice',
           kind: 'text',
           value: 'The events below are placeholders.',
-          help: 'Shown above the list while the events are samples. Remove it once real events are published.',
+          help: 'Shown above the list only while a sample event is listed; it disappears on its own once every event is real.',
         },
       ],
     },

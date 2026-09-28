@@ -30,7 +30,7 @@ export const blogCopy: PageCopySpec = {
           label: 'Placeholder notice',
           kind: 'text',
           value: 'These articles are sample drafts written to demonstrate the layout.',
-          help: 'Shown above the list while the articles are samples. Remove it once real articles are published.',
+          help: 'Shown above the list only while a sample article is listed; it disappears on its own once every article is real.',
         },
         {
           key: 'list.empty',
