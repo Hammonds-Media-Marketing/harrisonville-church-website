@@ -4,9 +4,11 @@ import { Surface } from '@/components/primitives/Surface'
 import { Button } from '@/components/primitives/Button'
 import { Faq } from '@/components/blocks/Faq'
 import { ArticleBody } from '@/components/blog/ArticleBody'
+import { ZoneElements } from '@/components/pages/PageElements'
 import type {
   CardGridSection,
   CtaSection,
+  ElementsSection,
   FaqSection,
   ImageTextSection,
   PageSection,
@@ -172,23 +174,49 @@ function CtaBand({ section }: { section: CtaSection }) {
   )
 }
 
+function ElementsBand({ section, editing }: { section: ElementsSection; editing: boolean }) {
+  if (!section.elements.length) {
+    return editing ? (
+      <Section tone="light">
+        <Container>
+          <p className="m-0 rounded-md border-2 border-dashed border-border-strong/60 px-4 py-10 text-center text-muted">
+            An empty free layout. Add titles, photos, buttons, and more from the panel on the right.
+          </p>
+        </Container>
+      </Section>
+    ) : null
+  }
+  return <ZoneElements elements={section.elements} editing={editing} />
+}
+
+/**
+ * One section. The page builder's live preview renders sections one at a
+ * time through this (with `editing`, so free-layout elements are selectable
+ * and their links inert); the public page renders the whole list below.
+ */
+export function PageSectionView({ section, editing = false }: { section: PageSection; editing?: boolean }) {
+  switch (section.type) {
+    case 'richText':
+      return <RichTextBand section={section} />
+    case 'imageText':
+      return <ImageTextBand section={section} />
+    case 'cardGrid':
+      return <CardGridBand section={section} />
+    case 'faq':
+      return <FaqBand section={section} />
+    case 'cta':
+      return <CtaBand section={section} />
+    case 'elements':
+      return <ElementsBand section={section} editing={editing} />
+  }
+}
+
 export function PageRenderer({ sections }: { sections: PageSection[] }) {
   return (
     <>
-      {sections.map((section) => {
-        switch (section.type) {
-          case 'richText':
-            return <RichTextBand key={section.id} section={section} />
-          case 'imageText':
-            return <ImageTextBand key={section.id} section={section} />
-          case 'cardGrid':
-            return <CardGridBand key={section.id} section={section} />
-          case 'faq':
-            return <FaqBand key={section.id} section={section} />
-          case 'cta':
-            return <CtaBand key={section.id} section={section} />
-        }
-      })}
+      {sections.map((section) => (
+        <PageSectionView key={section.id} section={section} />
+      ))}
     </>
   )
 }
@@ -198,7 +226,16 @@ export function PageRenderer({ sections }: { sections: PageSection[] }) {
 export function heroWaveFill(sections: PageSection[]): string {
   const first = sections[0]
   if (!first) return 'var(--color-bg)'
-  const tone = first.type === 'cta' ? 'deep' : first.type === 'faq' && first.tone === 'deep' ? 'surface' : first.tone
+  const tone =
+    first.type === 'cta'
+      ? 'deep'
+      : first.type === 'elements'
+        ? first.elements[0]?.type === 'band'
+          ? first.elements[0].tone
+          : 'light'
+        : first.type === 'faq' && first.tone === 'deep'
+          ? 'surface'
+          : first.tone
   if (tone === 'deep') return 'var(--color-surface-deep)'
   if (tone === 'surface') return 'var(--color-surface)'
   return 'var(--color-bg)'

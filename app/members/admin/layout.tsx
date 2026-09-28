@@ -35,7 +35,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
 
   return (
     <>
-      <div className="border-b border-border bg-bg">
+      <div data-admin-nav="" className="border-b border-border bg-bg">
         <Container>
           <nav aria-label="Site admin" className="flex flex-wrap gap-x-5 gap-y-2 py-3">
             {links.map((l) => (

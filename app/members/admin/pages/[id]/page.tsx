@@ -9,7 +9,7 @@ import { AdminNotices } from '@/components/members/AdminNotices'
 import { ImageUploadField } from '@/components/members/ImageUploadField'
 import { PageBuilder } from '@/components/members/PageBuilder'
 import { getSupabaseServer } from '@/lib/supabase-server'
-import { parsePageSections } from '@/lib/page-sections'
+import { loadBuilderSections } from '@/lib/page-sections'
 import { savePageAction } from '@/app/members/admin/actions'
 
 export const metadata: Metadata = {
@@ -27,6 +27,7 @@ export default async function EditPagePage({
 }) {
   const { id } = await params
   const isNew = id === 'new'
+  const query = await searchParams
 
   let page = null
   if (!isNew) {
@@ -42,7 +43,7 @@ export default async function EditPagePage({
       <PageHero
         eyebrow="Site admin"
         title={isNew ? 'Build a page' : `Edit: ${page?.title}`}
-        lead="Compose the page from sections, then drag them into order. The page hero comes from the title, eyebrow, and lead below; every section renders with the site's design system."
+        lead="Build the page on the live preview: pick a starting layout, click any part to edit it, and add sections exactly where you want them. Everything renders with the site's own design, at desktop, tablet, and phone widths."
       >
         {page ? (
           <div className="flex flex-wrap gap-3">
@@ -58,23 +59,29 @@ export default async function EditPagePage({
         ) : null}
       </PageHero>
 
-      <Section tone="light">
-        <Container className="max-w-4xl">
-          <AdminNotices params={await searchParams} />
-          <form action={savePageAction} className="flex flex-col gap-8">
-            {page ? <input type="hidden" name="id" value={page.id} /> : null}
+      <form action={savePageAction}>
+        {page ? <input type="hidden" name="id" value={page.id} /> : null}
 
+        {query.error ? (
+          <Container className="pt-5">
+            <AdminNotices params={query} />
+          </Container>
+        ) : null}
+
+        <div className="border-y border-border">
+          <PageBuilder
+            name="sections"
+            defaultSections={loadBuilderSections(page?.sections ?? [])}
+            defaultHero={{ title: page?.title ?? '', eyebrow: page?.hero_eyebrow ?? '', lead: page?.hero_lead ?? '' }}
+            draftKey={`page-builder:${page?.id ?? 'new'}`}
+            restoreDraft={Boolean(query.error)}
+          />
+        </div>
+
+        <Section tone="light">
+          <Container className="flex max-w-4xl flex-col gap-8">
             <Surface tone="card" className="flex flex-col gap-5">
-              <h2 className="text-2xl">Page basics</h2>
-
-              <FieldShell
-                id="page-title"
-                label="Title"
-                required
-                tip="The page's main heading, shown large at the top of the page and in browser tabs."
-              >
-                <TextField id="page-title" name="title" required defaultValue={page?.title ?? ''} />
-              </FieldShell>
+              <h2 className="text-2xl">Web address</h2>
 
               <FieldShell
                 id="page-slug"
@@ -84,31 +91,7 @@ export default async function EditPagePage({
               >
                 <TextField id="page-slug" name="slug" defaultValue={page?.slug ?? ''} />
               </FieldShell>
-
-              <div className="grid gap-5 sm:grid-cols-2">
-                <FieldShell
-                  id="page-hero-eyebrow"
-                  label="Hero eyebrow"
-                  helper="The small label above the title."
-                  tip="A short phrase shown above the page title, like 'Our congregation' or 'Ministries'. Blank uses the church name."
-                >
-                  <TextField id="page-hero-eyebrow" name="hero_eyebrow" defaultValue={page?.hero_eyebrow ?? ''} />
-                </FieldShell>
-                <FieldShell
-                  id="page-hero-lead"
-                  label="Hero lead"
-                  helper="One or two sentences under the title."
-                  tip="The welcome text under the page title. Keep it short — the details belong in the sections below."
-                >
-                  <TextArea id="page-hero-lead" name="hero_lead" rows={2} defaultValue={page?.hero_lead ?? ''} />
-                </FieldShell>
-              </div>
             </Surface>
-
-            <div className="flex flex-col gap-3">
-              <h2 className="text-2xl">Sections</h2>
-              <PageBuilder name="sections" defaultSections={parsePageSections(page?.sections ?? [])} />
-            </div>
 
             <Surface tone="card" className="flex flex-col gap-5">
               <h2 className="text-2xl">Search and sharing</h2>
@@ -204,9 +187,9 @@ export default async function EditPagePage({
                 </Button>
               </div>
             </Surface>
-          </form>
-        </Container>
-      </Section>
+          </Container>
+        </Section>
+      </form>
     </>
   )
 }
