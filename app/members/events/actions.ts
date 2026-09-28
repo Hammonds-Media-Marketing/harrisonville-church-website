@@ -6,6 +6,7 @@ import { requireApprovedMember } from '@/lib/portal/data'
 import { AUDIENCES, SPECIAL_EVENT_CATEGORIES } from '@/lib/portal/special-events'
 import { chicagoToIso, isValidDateKey } from '@/lib/portal/time'
 import { isUuid } from '@/lib/portal/chat'
+import { parseEmailReminder } from '@/lib/portal/reminders'
 
 /**
  * Special events: create and edit (any approved member for their own
@@ -91,6 +92,7 @@ export async function saveSpecialEventAction(formData: FormData) {
     location: text(formData, 'location') || null,
     audience,
     rsvp_enabled: flag(formData, 'rsvp_enabled'),
+    email_reminder: parseEmailReminder(text(formData, 'email_reminder')),
     updated_by: ctx.userId,
   }
 

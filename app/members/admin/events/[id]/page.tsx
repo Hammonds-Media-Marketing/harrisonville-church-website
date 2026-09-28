@@ -10,6 +10,7 @@ import { AdminNotices } from '@/components/members/AdminNotices'
 import { ImageUploadField } from '@/components/members/ImageUploadField'
 import { getSupabaseServer } from '@/lib/supabase-server'
 import { RECURRENCE_OPTIONS, ruleFromStored } from '@/lib/recurrence'
+import { EMAIL_REMINDER_OPTIONS, parseEmailReminder } from '@/lib/portal/reminders'
 import { saveEventAction } from '@/app/members/admin/actions'
 
 export const metadata: Metadata = {
@@ -177,6 +178,20 @@ export default async function EditEventPage({
                 tip="Only fill this in when the event happens somewhere other than the church building — a park, a home, a community center."
               >
                 <TextField id="event-location" name="location_name" defaultValue={event?.location_name ?? ''} />
+              </FieldShell>
+
+              <FieldShell
+                id="event-reminder"
+                label="Email reminder"
+                helper="Emails every approved member before the event. Repeating events get a reminder before each date."
+                tip="Members get an email (and a note in their notification bell) ahead of the event, such as 'remember, we have singing at the building.' Members can turn reminder emails off in their own notification settings."
+              >
+                <SelectField
+                  id="event-reminder"
+                  name="email_reminder"
+                  options={EMAIL_REMINDER_OPTIONS}
+                  defaultValue={parseEmailReminder(event?.email_reminder)}
+                />
               </FieldShell>
 
               <CheckboxField

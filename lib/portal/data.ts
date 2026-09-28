@@ -15,7 +15,9 @@ import { bucketByDay, occurrencesInRange, sortItems, type CalendarRange } from '
 import { assemblyStartsAt, dutyLabel, type AssignmentInput } from '@/lib/portal/service-schedule'
 import { addDays, getTodayKey, type DateKey } from '@/lib/portal/time'
 import type {
+  CalendarGroupOption,
   CalendarItem,
+  CalendarVisibility,
   ChatCursor,
   ChatMessage,
   ChatPage,
@@ -398,13 +400,15 @@ export async function getConversations(ctx: PortalContext): Promise<{ groups: Co
 /** Every occurrence in the range from all four sources, sorted. */
 export async function getCalendarItems(ctx: PortalContext, range: CalendarRange): Promise<CalendarItem[]> {
   const publicClient = getSupabase()
-  const [publicEvents, { data: memberEvents }, { data: specials }, { data: assignments }, people] = await Promise.all([
+  const [publicEvents, { data: memberEvents }, { data: specials }, { data: assignments }, people, groupOptions] = await Promise.all([
     publicClient ? publicClient.from('events').select('*').eq('published', true) : Promise.resolve({ data: [] as Database['public']['Tables']['events']['Row'][] }),
     ctx.supabase.from('calendar_events').select('*'),
     ctx.supabase.from('special_events').select('*').eq('status', 'published').is('archived_at', null).not('starts_at', 'is', null),
     ctx.supabase.from('service_assignments').select('*').gte('service_date', addDays(range.start, -1)).lte('service_date', addDays(range.end, 1)).eq('duty', 'speaker'),
     getPeopleIndex(),
+    getCalendarGroupOptions(ctx),
   ])
+  const groupNames = new Map(groupOptions.map((g) => [g.id, g.name]))
 
   const items: CalendarItem[] = []
 
@@ -448,7 +452,10 @@ export async function getCalendarItems(ctx: PortalContext, range: CalendarRange)
           editableId: e.id,
           recurring: e.recurring,
           recurrenceEndsOn: e.recurrence_ends_on,
-          visibility: e.visibility as 'members' | 'leaders',
+          visibility: e.visibility as CalendarVisibility,
+          groupId: e.group_id,
+          groupName: e.group_id ? groupNames.get(e.group_id) ?? null : null,
+          emailReminder: e.email_reminder,
         },
         range
       )
@@ -501,6 +508,14 @@ export async function getCalendarItems(ctx: PortalContext, range: CalendarRange)
   }
 
   return sortItems(items)
+}
+
+/** Groups the calendar can be limited to (all active groups for editors). */
+export async function getCalendarGroupOptions(ctx: PortalContext): Promise<CalendarGroupOption[]> {
+  if (!ctx.approved) return []
+  const { data, error } = await ctx.supabase.rpc('calendar_group_options')
+  if (error) return []
+  return (data ?? []).map((g) => ({ id: g.id, name: g.name, kind: g.kind }))
 }
 
 export async function getCalendarBuckets(ctx: PortalContext, range: CalendarRange) {
@@ -624,6 +639,8 @@ export async function getNotificationPreferences(ctx: PortalContext) {
       calendar: true,
       special_events: true,
       admin_new_member: true,
+      email_event_reminders: true,
+      push_enabled: true,
       created_at: '',
       updated_at: '',
     }

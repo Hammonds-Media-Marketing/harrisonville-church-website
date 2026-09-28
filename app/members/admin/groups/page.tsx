@@ -13,10 +13,11 @@ import { getGroupsAdmin, getMembers, requireAdmin } from '@/lib/portal/data'
 import { archiveGroupAction, createGroupAction, deleteGroupAction, updateGroupAction } from '@/app/members/admin/portal-actions'
 
 export const metadata: Metadata = buildMetadata({
-  title: 'Manage Group Chats',
-  description: 'Create and manage group chats for the Harrisonville Church of Christ members area: who belongs, which are open to everyone, and which are archived.',
+  title: 'Manage Groups',
+  description:
+    'Create and manage groups for the Harrisonville Church of Christ members area: who belongs, which are open to everyone, and which are archived. Groups have a chat and can limit who sees calendar events.',
   path: '/members/admin/groups',
-  ogTitle: 'Group Chat Administration',
+  ogTitle: 'Group Administration',
   ogDescription: 'Set up groups and choose who belongs.',
   noindex: true,
 })
@@ -39,12 +40,16 @@ export default async function AdminGroupsPage({ searchParams }: { searchParams: 
 
   return (
     <>
-      <PageHero eyebrow="Site admin" title="Group chats" lead="The Congregation, Men, and Ladies chats manage themselves from each profile. Add groups here for classes, committees, or leadership, and choose who belongs." />
+      <PageHero
+        eyebrow="Site admin"
+        title="Groups"
+        lead="Every group has its own chat, and a members-calendar event can be limited to one group (for example, a speaking schedule only the men who speak can see). The Congregation, Men, and Ladies groups manage themselves from each profile. Add groups here for classes, committees, or leadership, and choose who belongs."
+      />
       <Section tone="light">
         <Container className="max-w-4xl">
           <ParamNotices params={params} messages={{ 'error:name': 'Give the group a name.', 'error:confirm': 'Type DELETE GROUP exactly to remove a group and all of its messages.', deleted: 'The group and its messages were deleted.' }} />
 
-          <SectionHeading eyebrow="Automatic" title="Standing chats" lead={noGender.length ? `${noGender.length} approved member${noGender.length === 1 ? ' has' : 's have'} no gender on their profile and cannot see the Men or Ladies chat yet.` : undefined} />
+          <SectionHeading eyebrow="Automatic" title="Standing groups" lead={noGender.length ? `${noGender.length} approved member${noGender.length === 1 ? ' has' : 's have'} no gender on their profile and cannot see the Men or Ladies group yet.` : undefined} />
           <ul className="mb-10 grid list-none gap-4 p-0 sm:grid-cols-3">
             {system.map((g) => (
               <li key={g.id}>
@@ -76,7 +81,7 @@ export default async function AdminGroupsPage({ searchParams }: { searchParams: 
                         <TextField id={`desc-${g.id}`} name="description" defaultValue={g.description ?? ''} />
                       </FieldShell>
                     </div>
-                    <CheckboxField id={`public-${g.id}`} name="is_public" label="Open to every approved member" helper="Unchecked means only the people picked below can see it." defaultChecked={g.is_public} />
+                    <CheckboxField id={`public-${g.id}`} name="is_public" label="Open to every approved member" helper="Unchecked means only the people picked below can see its chat and its calendar events." defaultChecked={g.is_public} />
                     <details className="rounded-md border border-border p-4" open={!g.is_public && g.members.length === 0}>
                       <summary className="cursor-pointer font-semibold text-heading">Members ({g.members.length})</summary>
                       <div className="mt-3 grid gap-2 sm:grid-cols-2">
@@ -101,7 +106,7 @@ export default async function AdminGroupsPage({ searchParams }: { searchParams: 
                     </form>
                     <form action={deleteGroupAction} className="flex items-end gap-2">
                       <input type="hidden" name="id" value={g.id} />
-                      <FieldShell id={`confirm-${g.id}`} label="Type DELETE GROUP to remove it and every message">
+                      <FieldShell id={`confirm-${g.id}`} label="Type DELETE GROUP to remove it and every message" helper="Calendar events limited to this group become editors-and-admins only.">
                         <TextField id={`confirm-${g.id}`} name="confirmation" />
                       </FieldShell>
                       <Button type="submit" variant="ghost" size="sm">
@@ -127,7 +132,7 @@ export default async function AdminGroupsPage({ searchParams }: { searchParams: 
                   <TextArea id="new-desc" name="description" rows={1} />
                 </FieldShell>
               </div>
-              <CheckboxField id="new-public" name="is_public" label="Open to every approved member" helper="Leave unchecked for a private group and pick members below." />
+              <CheckboxField id="new-public" name="is_public" label="Open to every approved member" helper="Leave unchecked for a private group and pick members below. Only they will see its chat and any calendar events limited to it." />
               <details className="rounded-md border border-border p-4">
                 <summary className="cursor-pointer font-semibold text-heading">Pick members</summary>
                 <div className="mt-3 grid gap-2 sm:grid-cols-2">

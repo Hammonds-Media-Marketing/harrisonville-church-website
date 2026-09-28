@@ -7,6 +7,7 @@ import { CheckboxField, FieldShell, SelectField, TextArea, TextField } from '@/c
 import { Notice } from '@/components/primitives/Feedback'
 import { CloseIcon, PlusIcon, TrashIcon } from '@/components/ui/icons'
 import { AUDIENCES, SPECIAL_EVENT_CATEGORIES, isAudienceEligible } from '@/lib/portal/special-events'
+import { EMAIL_REMINDER_OPTIONS, parseEmailReminder } from '@/lib/portal/reminders'
 import { getDateKey, getTimeInput } from '@/lib/portal/time'
 import type { Gender, PersonSummary, SignupItemRow, SpecialEventAudience, SpecialEventRow } from '@/lib/portal/types'
 import { saveSpecialEventAction } from '@/app/members/events/actions'
@@ -181,6 +182,13 @@ export function SpecialEventForm({
           </ul>
         ) : null}
         <CheckboxField id="ev-rsvp" name="rsvp_enabled" label="Ask for RSVPs" helper="Invited members can say yes, maybe, or no, and how many they are bringing." defaultChecked={event?.rsvp_enabled ?? true} />
+        <FieldShell
+          id="ev-reminder"
+          label="Email reminder"
+          helper="Emails the people who said yes or maybe, and you. Without RSVPs, everyone invited gets it. It also shows in their notification bell."
+        >
+          <SelectField id="ev-reminder" name="email_reminder" options={EMAIL_REMINDER_OPTIONS} defaultValue={parseEmailReminder(event?.email_reminder)} />
+        </FieldShell>
       </section>
 
       <section aria-labelledby="ev-signups" className="flex flex-col gap-4">

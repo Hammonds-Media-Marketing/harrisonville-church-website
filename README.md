@@ -92,6 +92,10 @@ site's own tokens and primitives:
   direct messages; realtime, with reactions, edits, photos, and read counts.
 - **Calendar** — month, week, and day views merging public events,
   members-only events, special events, and the speaker for each assembly.
+  An event can be for everyone, for editors and admins, or for one group.
+- **Event reminders** — editors and organizers can have members emailed a
+  day and/or two days before an event (hourly cron); members can turn
+  reminder emails off.
 - **Events and sign-ups** — member-organized events with an audience,
   RSVPs, sign-up needs with capacity, and an event chat.
 - **Communion preparation** — sign a household up for a month; reminders a
@@ -100,8 +104,12 @@ site's own tokens and primitives:
   the schedule page, the calendar, the home page, and a printable sheet.
 - **Notification bell** — in-app notifications fanned out by database
   triggers, with per-kind and per-group preferences.
+- **Phone notifications** — web push (service worker plus the `send-push`
+  Edge Function) for the same notifications, turned on per device.
 - **Admin** — approvals with a one-time welcome email (Resend), roles,
-  groups, an app-readiness dashboard, schedule entry, and an email preview.
+  groups (chat and calendar audiences), an app-readiness dashboard, schedule
+  entry, and an email preview. Every admin is emailed about new access
+  requests.
 
 Data model, policies, and environment are documented in
 `supabase/README.md`. Pure logic is covered by `npm test`.

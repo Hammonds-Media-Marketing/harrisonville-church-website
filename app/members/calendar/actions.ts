@@ -7,6 +7,8 @@ import { CALENDAR_CATEGORIES } from '@/lib/portal/calendar'
 import { chicagoToIso, getTodayKey, isValidDateKey } from '@/lib/portal/time'
 import { isRecurrenceRule } from '@/lib/recurrence'
 import { assemblyDates, isServiceDuty, isServiceSlot } from '@/lib/portal/service-schedule'
+import { parseEmailReminder } from '@/lib/portal/reminders'
+import { isUuid } from '@/lib/portal/chat'
 
 /**
  * Calendar, communion signup, and service schedule actions.
@@ -39,7 +41,10 @@ export async function saveCalendarEventAction(formData: FormData) {
     if (!endsAt || endsAt < startsAt) redirect(`${back}&error=event_end`)
   }
   const category = text(formData, 'category')
-  const visibility = text(formData, 'visibility') === 'leaders' ? 'leaders' : 'members'
+  const requested = text(formData, 'visibility')
+  const visibility = requested === 'leaders' || requested === 'group' ? requested : 'members'
+  const groupId = visibility === 'group' ? text(formData, 'group_id') : ''
+  if (visibility === 'group' && !isUuid(groupId)) redirect(`${back}&error=event_group`)
   const recurring = text(formData, 'recurring')
   const recurrenceEndsOn = text(formData, 'recurrence_ends_on')
 
@@ -52,6 +57,8 @@ export async function saveCalendarEventAction(formData: FormData) {
     all_day: allDay,
     category: (CALENDAR_CATEGORIES as readonly string[]).includes(category) ? category : 'Fellowship',
     visibility,
+    group_id: visibility === 'group' ? groupId : null,
+    email_reminder: parseEmailReminder(text(formData, 'email_reminder')),
     recurring: isRecurrenceRule(recurring) ? recurring : null,
     recurrence_ends_on: isRecurrenceRule(recurring) && isValidDateKey(recurrenceEndsOn) ? recurrenceEndsOn : null,
     updated_by: ctx.userId,
