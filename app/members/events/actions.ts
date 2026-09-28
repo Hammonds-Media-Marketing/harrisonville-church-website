@@ -100,10 +100,16 @@ export async function saveSpecialEventAction(formData: FormData) {
   if (id) {
     // Publish in a separate step so the status trigger sees the final row.
     const { error } = await ctx.supabase.from('special_events').update({ ...values, status }).eq('id', id)
-    if (error) redirect(`${back}?error=save`)
+    if (error) {
+      console.warn('[events] special event update failed:', error.message)
+      redirect(`${back}?error=save`)
+    }
   } else {
     const { data, error } = await ctx.supabase.from('special_events').insert({ ...values, status: 'draft', created_by: ctx.userId }).select('id').single()
-    if (error || !data) redirect(`${back}?error=save`)
+    if (error || !data) {
+      console.warn('[events] special event create failed:', error?.message ?? 'no row returned')
+      redirect(`${back}?error=save`)
+    }
     eventId = data.id
   }
 
