@@ -101,21 +101,13 @@ export function ElementIcon({ type, className = 'h-[1.9rem] w-[1.9rem]' }: { typ
 export type Zone = { id: string; label: string }
 
 export function AddElementsPanel({
-  zones,
-  placement,
-  onPlacementChange,
-  canAddAfterSelected,
-  selectedLabel,
+  target,
   onAdd,
   onDragStart,
   onDragEnd,
 }: {
-  zones: Zone[]
-  /** A zone id, or "selected" to add after (or inside) the selected element. */
-  placement: string
-  onPlacementChange: (value: string) => void
-  canAddAfterSelected: boolean
-  selectedLabel?: string
+  /** Where a clicked element lands, in words: "below the lighthouse hero". */
+  target: string
   onAdd: (type: ElementType) => void
   onDragStart: (type: ElementType, event: DragEvent) => void
   onDragEnd: () => void
@@ -123,30 +115,13 @@ export function AddElementsPanel({
   return (
     <div className="flex flex-col gap-4">
       <p className="m-0 text-sm text-muted">
-        Drag an element onto the page. A gold line shows where it will land; the dashed spots between the page&apos;s
-        bands are where new elements can go. You can also click an element to add it.
+        Click an element to add it, or drag it onto the page. To put it somewhere else, use{' '}
+        <span className="font-semibold text-heading">+ Add section</span> on the page.
       </p>
 
-      <div className="flex flex-col gap-1">
-        <label htmlFor="element-placement" className="text-sm font-semibold text-heading">
-          Clicking adds it
-        </label>
-        <select
-          id="element-placement"
-          value={placement}
-          onChange={(e) => onPlacementChange(e.target.value)}
-          className="w-full rounded-md border border-border bg-input-bg px-3 py-2 text-ink focus:border-primary-strong"
-        >
-          {canAddAfterSelected ? (
-            <option value="selected">Next to the selected {selectedLabel?.toLowerCase() ?? 'element'}</option>
-          ) : null}
-          {zones.map((zone) => (
-            <option key={zone.id} value={zone.id}>
-              {zone.label}
-            </option>
-          ))}
-        </select>
-      </div>
+      <p className="m-0 rounded-md bg-surface px-3 py-2 text-sm text-ink" aria-live="polite">
+        New elements go <span className="font-semibold text-heading">{target}</span>.
+      </p>
 
       <ul className="grid list-none grid-cols-3 gap-2.5 p-0">
         {ELEMENT_PALETTE.map((item) => (
@@ -166,59 +141,6 @@ export function AddElementsPanel({
           </li>
         ))}
       </ul>
-    </div>
-  )
-}
-
-// ---------------------------------------------------------------------------
-// Outline of added elements
-// ---------------------------------------------------------------------------
-
-export function ElementOutline({
-  zones,
-  elements,
-  selectedId,
-  onSelect,
-}: {
-  zones: Zone[]
-  elements: PageElementMap
-  selectedId: string | null
-  onSelect: (id: string) => void
-}) {
-  const used = zones.filter((z) => elements[z.id]?.length)
-  if (!used.length) return <p className="m-0 text-sm text-muted">Nothing added to this page yet.</p>
-
-  const renderList = (list: PageElement[], depth: number): ReactNode => (
-    <ul className="m-0 flex list-none flex-col gap-1 p-0">
-      {list.map((el) => (
-        <li key={el.id}>
-          <button
-            type="button"
-            onClick={() => onSelect(el.id)}
-            aria-current={selectedId === el.id ? 'true' : undefined}
-            style={{ paddingLeft: `${0.5 + depth * 1.1}rem` }}
-            className={`flex w-full items-center gap-2 rounded-md py-1.5 pr-2 text-left text-sm transition-colors ${
-              selectedId === el.id ? 'bg-surface-2 font-semibold text-heading' : 'text-ink hover:bg-surface'
-            }`}
-          >
-            <ElementIcon type={el.type} className="h-4 w-4 shrink-0 text-primary-strong" />
-            <span className="shrink-0">{ELEMENT_LABELS[el.type]}</span>
-            <span className="min-w-0 truncate text-muted">{elementSummary(el)}</span>
-          </button>
-          {isContainer(el) && el.children.length ? renderList(el.children, depth + 1) : null}
-        </li>
-      ))}
-    </ul>
-  )
-
-  return (
-    <div className="flex flex-col gap-3">
-      {used.map((zone) => (
-        <div key={zone.id}>
-          <p className="m-0 mb-1 text-xs font-semibold uppercase tracking-wide text-muted">{zone.label}</p>
-          {renderList(elements[zone.id], 0)}
-        </div>
-      ))}
     </div>
   )
 }

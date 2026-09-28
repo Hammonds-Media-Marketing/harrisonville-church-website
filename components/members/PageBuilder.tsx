@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 import { Button } from '@/components/primitives/Button'
 import { RichTextBodyEditor } from '@/components/members/RichTextBodyEditor'
 import { ImageUploadField } from '@/components/members/ImageUploadField'
-import { ElementIcon, ElementInspector, ElementOutline } from '@/components/members/ElementPanels'
+import { ElementIcon, ElementInspector } from '@/components/members/ElementPanels'
 import {
   SECTION_LABELS,
   SECTION_TYPES,
@@ -548,10 +548,9 @@ function ElementsFields({
         </div>
       ) : null}
 
-      <div className="flex flex-col gap-2">
-        <p className="m-0 text-sm font-semibold text-heading">In this section</p>
-        <ElementOutline zones={[{ id: MAIN, label: 'Elements' }]} elements={map} selectedId={selectedId} onSelect={onSelect} />
-      </div>
+      {!found ? (
+        <p className="m-0 text-sm text-muted">Click any element in the preview to change, move, or delete it.</p>
+      ) : null}
     </div>
   )
 }
@@ -1031,25 +1030,19 @@ export function PageBuilder({
         </div>
       ) : null}
 
-      <div className="flex flex-col gap-1">
-        <label htmlFor="builder-insert-at" className="text-sm font-semibold text-heading">
-          Adds the new section
-        </label>
-        <select
-          id="builder-insert-at"
-          value={insertAt === null ? 'auto' : String(insertAt)}
-          onChange={(e) => setInsertAt(e.target.value === 'auto' ? null : Number(e.target.value))}
-          className={inputClass}
-        >
-          <option value="auto">{selectedIndex >= 0 ? 'After the selected section' : 'At the end of the page'}</option>
-          {sections.map((s, i) => (
-            <option key={s.id} value={i}>
-              Before section {i + 1}: {SECTION_LABELS[s.type].label}
-            </option>
-          ))}
-          {sections.length ? <option value={sections.length}>At the end of the page</option> : null}
-        </select>
-      </div>
+      <p className="m-0 rounded-md bg-surface px-3 py-2 text-sm text-ink" aria-live="polite">
+        The new section goes{' '}
+        <span className="font-semibold text-heading">
+          {insertAt !== null
+            ? insertAt >= sections.length
+              ? 'at the end of the page'
+              : `before section ${insertAt + 1}`
+            : selectedIndex >= 0
+              ? 'after the selected section'
+              : 'at the end of the page'}
+        </span>
+        . To put it somewhere else, use <span className="font-semibold text-heading">+ Add a section here</span> on the page.
+      </p>
 
       <ul className="grid list-none grid-cols-2 gap-2.5 p-0">
         {SECTION_TYPES.map((type) => (

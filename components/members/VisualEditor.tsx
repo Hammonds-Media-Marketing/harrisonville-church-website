@@ -7,7 +7,6 @@ import { ImageUploadField } from '@/components/members/ImageUploadField'
 import {
   AddElementsPanel,
   ElementInspector,
-  ElementOutline,
   EmptyInspector,
   type Zone,
 } from '@/components/members/ElementPanels'
@@ -102,9 +101,10 @@ const FRAME_STYLES = `
 
   /* Drop slots: the served copy of a slot's elements is hidden, and the
      editor's live copy renders in the host it appends. */
-  [data-element-zone] > :not([data-zone-editor]) { display: none !important; }
+  [data-element-zone] { position: relative; }
+  [data-element-zone] > :not([data-zone-editor]):not([data-zone-add]) { display: none !important; }
   html[data-el-dragging] [data-zone-editor]:empty,
-  html[data-el-show-zones] [data-zone-editor]:empty {
+  [data-element-zone][data-zone-target] [data-zone-editor]:empty {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -116,8 +116,8 @@ const FRAME_STYLES = `
     background: rgba(240, 180, 41, 0.06);
   }
   html[data-el-dragging] [data-zone-editor]:empty::before,
-  html[data-el-show-zones] [data-zone-editor]:empty::before {
-    content: '+ ' attr(data-zone-label);
+  [data-element-zone][data-zone-target] [data-zone-editor]:empty::before {
+    content: 'New elements go here';
     font: 600 14px/1.2 system-ui, sans-serif;
     color: #0b4f6c;
   }
@@ -126,6 +126,32 @@ const FRAME_STYLES = `
     border-color: #0b4f6c !important;
     background: rgba(240, 180, 41, 0.22) !important;
   }
+
+  /* "+ Add section" on each spot between bands: a thin strip on the
+     boundary that shows a line and a button on hover, while the Add panel
+     is open, or when it is the spot new elements go. */
+  [data-zone-add] {
+    position: absolute; left: 0; right: 0; top: -18px; height: 36px; z-index: 60;
+    display: flex; align-items: center; justify-content: center;
+  }
+  [data-zone-add]::before {
+    content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 2px;
+    background: #0b4f6c; opacity: 0; transition: opacity .12s;
+  }
+  [data-zone-add] button {
+    position: relative; display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 16px; border: 0; border-radius: 999px; cursor: pointer;
+    background: #0b4f6c; color: #fff; font: 600 14px/1 system-ui, sans-serif;
+    box-shadow: 0 2px 8px rgba(11, 36, 56, 0.25);
+    opacity: 0; transform: scale(.96); transition: opacity .12s, transform .12s;
+  }
+  [data-zone-add]:hover::before, [data-zone-add]:focus-within::before,
+  [data-element-zone][data-zone-target] > [data-zone-add]::before { opacity: 1; }
+  [data-zone-add]:hover button, [data-zone-add]:focus-within button,
+  html[data-el-show-zones] [data-zone-add] button,
+  [data-element-zone][data-zone-target] > [data-zone-add] button { opacity: 1; transform: none; }
+  [data-element-zone][data-zone-target] > [data-zone-add] button { background: #f0b429; color: #0b2438; }
+  html[data-el-dragging] [data-zone-add] { display: none; }
 
   /* Added elements: grab to move, click to select. */
   [data-zone-editor] [data-el] { position: relative; cursor: grab; }
@@ -395,6 +421,15 @@ export function VisualEditor({ spec, overrides, elements: storedElements }: Prop
     if (reveal) revealRef.current = id
   }, [])
 
+  /** Make a spot between bands the place clicked elements land, and open the palette. */
+  const chooseZone = useCallback((zone: string) => {
+    setPlacement(zone)
+    setSelectedEl(null)
+    setTab('add')
+    const label = hostsRef.current.get(zone)?.dataset.zoneLabel ?? 'there'
+    setAnnouncement(`New elements go ${label.toLowerCase()}. Choose one from the panel.`)
+  }, [])
+
   const updateElements = useCallback((next: PageElementMap) => {
     setNotice(null)
     setElements(next)
@@ -469,6 +504,17 @@ export function VisualEditor({ spec, overrides, elements: storedElements }: Prop
         hosts.set(id, host)
       }
       if (host.parentElement !== zoneNode) zoneNode.appendChild(host)
+      if (!zoneNode.querySelector(':scope > [data-zone-add]')) {
+        const bar = doc.createElement('div')
+        bar.dataset.zoneAdd = id
+        const button = doc.createElement('button')
+        button.type = 'button'
+        button.textContent = '+ Add section'
+        button.title = `Add elements ${label.toLowerCase()}`
+        button.setAttribute('aria-label', `Add elements ${label.toLowerCase()}`)
+        bar.appendChild(button)
+        zoneNode.insertBefore(bar, zoneNode.firstChild)
+      }
       next.push({ id, label, host })
     })
     setZones((prev) =>
@@ -507,6 +553,14 @@ export function VisualEditor({ spec, overrides, elements: storedElements }: Prop
       (event) => {
         const target = event.target as HTMLElement | null
         if (target?.closest('a')) event.preventDefault()
+
+        // "+ Add section": that spot is where clicked elements now land.
+        const addBar = target?.closest<HTMLElement>('[data-zone-add]')
+        if (addBar?.dataset.zoneAdd) {
+          event.preventDefault()
+          chooseZone(addBar.dataset.zoneAdd)
+          return
+        }
 
         const added = target?.closest<HTMLElement>('[data-zone-editor] [data-el]')
         if (added?.dataset.el) {
@@ -642,7 +696,7 @@ export function VisualEditor({ spec, overrides, elements: storedElements }: Prop
     })
 
     doc.addEventListener('dragend', endDrag)
-  }, [attachZones, beginDrag, commitDrop, endDrag, fieldByKey, paint, select, selectElement, updateElements])
+  }, [attachZones, beginDrag, chooseZone, commitDrop, endDrag, fieldByKey, paint, select, selectElement, updateElements])
 
   // A frame that finished loading before React attached its load handler still
   // needs wiring; decorate() ignores a document it has already prepared.
@@ -664,11 +718,19 @@ export function VisualEditor({ spec, overrides, elements: storedElements }: Prop
     }
   }, [selectedEl, elements, zones])
 
-  // The empty slots show while the palette is open, so it is clear where
-  // elements can go before anything is dragged.
+  // While the palette is open every "+ Add section" button shows, so it is
+  // clear where elements can go, and the chosen spot is marked.
+  const targetZone = placement !== 'selected' && zones.some((z) => z.id === placement) ? placement : zones[0]?.id
+  const addingAfterSelected = placement === 'selected' && Boolean(selectedEl)
   useEffect(() => {
-    frameRef.current?.contentDocument?.documentElement.toggleAttribute('data-el-show-zones', tab === 'add')
-  }, [tab, zones])
+    const doc = frameRef.current?.contentDocument
+    if (!doc) return
+    doc.documentElement.toggleAttribute('data-el-show-zones', tab === 'add')
+    doc.querySelectorAll('[data-zone-target]').forEach((n) => n.removeAttribute('data-zone-target'))
+    if (tab === 'add' && !addingAfterSelected && targetZone) {
+      doc.querySelector(`[data-element-zone="${CSS.escape(targetZone)}"]`)?.setAttribute('data-zone-target', '')
+    }
+  }, [tab, zones, targetZone, addingAfterSelected])
 
   // Dropping a selection that no longer exists (deleted, or dropped on save).
   useEffect(() => {
@@ -812,8 +874,9 @@ export function VisualEditor({ spec, overrides, elements: storedElements }: Prop
     setNotice({ tone: 'ok', message: 'Unsaved changes discarded. The page matches the last save.' })
   }
 
-  const zoneList: Zone[] = zones.map(({ id, label }) => ({ id, label }))
-  const placementValue = placement === 'selected' && !selectedEl ? (zones[0]?.id ?? '') : placement
+  const targetText = addingAfterSelected && selectedFound
+    ? `after the selected ${ELEMENT_LABELS[selectedFound.element.type].toLowerCase()}`
+    : (zones.find((z) => z.id === targetZone)?.label.toLowerCase() ?? 'on the page')
 
   const tabs: { id: Tab; label: string }[] = [
     { id: 'add', label: 'Add elements' },
@@ -928,24 +991,7 @@ export function VisualEditor({ spec, overrides, elements: storedElements }: Prop
 
         <div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`} className="flex-1 overflow-y-auto px-5 py-4">
           {tab === 'add' ? (
-            <div className="flex flex-col gap-7">
-              <AddElementsPanel
-                zones={zoneList}
-                placement={placementValue}
-                onPlacementChange={setPlacement}
-                canAddAfterSelected={Boolean(selectedFound)}
-                selectedLabel={selectedFound ? ELEMENT_LABELS[selectedFound.element.type] : undefined}
-                onAdd={addByClick}
-                onDragStart={onPaletteDragStart}
-                onDragEnd={endDrag}
-              />
-              <section aria-labelledby="outline-heading">
-                <h2 id="outline-heading" className="mb-2 text-lg">
-                  Added to this page
-                </h2>
-                <ElementOutline zones={zoneList} elements={elements} selectedId={selectedEl} onSelect={(id) => selectElement(id, true)} />
-              </section>
-            </div>
+            <AddElementsPanel target={targetText} onAdd={addByClick} onDragStart={onPaletteDragStart} onDragEnd={endDrag} />
           ) : tab === 'element' ? (
             selectedFound ? (
               <ElementInspector
