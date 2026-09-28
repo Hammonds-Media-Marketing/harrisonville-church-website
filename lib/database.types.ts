@@ -1082,18 +1082,21 @@ export type Database = {
       }
       page_content: {
         Row: {
+          elements: Json
           path: string
           updated_at: string
           updated_by: string | null
           values: Json
         }
         Insert: {
+          elements?: Json
           path: string
           updated_at?: string
           updated_by?: string | null
           values?: Json
         }
         Update: {
+          elements?: Json
           path?: string
           updated_at?: string
           updated_by?: string | null

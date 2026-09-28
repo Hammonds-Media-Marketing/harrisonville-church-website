@@ -40,6 +40,7 @@ export default async function CookiePolicyPage() {
           <p className="text-muted">{copy.t('header.updated')}</p>
         </Container>
       </Section>
+      {copy.zone('after-intro', 'Below the introduction')}
 
       <Section tone="light">
         <Container prose>
@@ -63,6 +64,7 @@ export default async function CookiePolicyPage() {
           ))}
         </Container>
       </Section>
+      {copy.zone('page-end', 'At the end of the page')}
     </>
   )
 }

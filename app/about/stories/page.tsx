@@ -42,6 +42,7 @@ export default async function StoriesPage() {
           />
         </Container>
       </Section>
+      {copy.zone('after-intro', 'Below the introduction')}
 
       <Section tone="light">
         <Container>
@@ -53,6 +54,7 @@ export default async function StoriesPage() {
           </div>
         </Container>
       </Section>
+      {copy.zone('after-stories', 'After the stories')}
 
       <Section tone="deep">
         <Container className="flex flex-col items-center gap-5 text-center">
@@ -63,6 +65,7 @@ export default async function StoriesPage() {
           </Button>
         </Container>
       </Section>
+      {copy.zone('page-end', 'At the end of the page')}
     </>
   )
 }

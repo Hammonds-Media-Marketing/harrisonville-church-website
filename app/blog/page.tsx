@@ -67,6 +67,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
           />
         </Container>
       </Section>
+      {copy.zone('after-intro', 'Below the introduction')}
 
       <Section tone="light">
         <Container>
@@ -89,6 +90,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
           )}
         </Container>
       </Section>
+      {copy.zone('page-end', 'At the end of the page')}
     </>
   )
 }

@@ -36,6 +36,7 @@ export default async function LeadershipPage() {
         lead={copy.t('hero.lead')}
         portraits={leaders.map((l) => ({ src: l.photo, alt: l.photoAlt }))}
       />
+      {copy.zone('after-hero', 'Below the page header')}
 
       <Section tone="light">
         <Container>
@@ -46,6 +47,7 @@ export default async function LeadershipPage() {
           </div>
         </Container>
       </Section>
+      {copy.zone('after-leaders', 'After the leaders')}
 
       <Section tone="surface">
         <Container prose>
@@ -53,6 +55,7 @@ export default async function LeadershipPage() {
           <p>{copy.t('structure.body')}</p>
         </Container>
       </Section>
+      {copy.zone('page-end', 'At the end of the page')}
     </>
   )
 }

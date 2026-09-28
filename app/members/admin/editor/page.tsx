@@ -34,7 +34,7 @@ export default async function EditorIndexPage() {
       <PageHero
         eyebrow="Site admin"
         title="Edit pages visually"
-        lead="Open a page, click any words on it, and rewrite them in place. Photographs, buttons, and the wording search engines show can be changed the same way."
+        lead="Open a page, click any words on it, and rewrite them in place. Photographs, buttons, and the wording search engines show can be changed the same way, and new elements (titles, paragraphs, photos, buttons, videos, and more) can be dragged onto the page."
       />
 
       <Section tone="light">
@@ -42,7 +42,7 @@ export default async function EditorIndexPage() {
           <SectionHeading
             eyebrow="The site's core pages"
             title={`${SITE_COPY.length} pages you can edit`}
-            lead="These pages are designed in code, so their layout and custom visuals stay intact. Everything a visitor reads on them is yours to change."
+            lead="These pages are designed in code, so their layout and custom visuals stay intact. Everything a visitor reads on them is yours to change, and the spots between their sections take any elements you add."
           />
           <ul className="flex list-none flex-col gap-4 p-0">
             {SITE_COPY.map((spec) => {

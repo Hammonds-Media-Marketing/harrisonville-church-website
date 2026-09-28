@@ -32,6 +32,7 @@ export default async function ResourcesPage() {
         ]}
       />
       <PageHero eyebrow={copy.t('hero.eyebrow')} title={copy.t('hero.title')} lead={copy.t('hero.lead')} />
+      {copy.zone('after-hero', 'Below the page header')}
       <Section tone="light">
         <Container>
           <div className="grid gap-5 md:grid-cols-2">
@@ -47,6 +48,7 @@ export default async function ResourcesPage() {
           </div>
         </Container>
       </Section>
+      {copy.zone('page-end', 'At the end of the page')}
     </>
   )
 }

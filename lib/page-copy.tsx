@@ -7,6 +7,8 @@ import { buildMetadata } from '@/lib/seo'
 import { renderInline } from '@/lib/inline-markup'
 import { applyCopyTokens } from '@/lib/copy-tokens'
 import { getCopySpec } from '@/content/site-copy'
+import { ElementZone } from '@/components/pages/PageElements'
+import { parsePageElements, type PageElementMap } from '@/lib/page-elements'
 import {
   PAGE_CONTENT_TAG,
   copyDefaults,
@@ -70,6 +72,26 @@ const getAllOverrides = cache(async (): Promise<Record<string, Record<string, st
   return byPath
 })
 
+/**
+ * Dropped-in elements for every page. Read separately from the wording so a
+ * database that has not had the elements column added yet still serves every
+ * edited line; the elements simply read as empty.
+ */
+const getAllElements = cache(async (): Promise<Record<string, PageElementMap>> => {
+  const supabase = getTaggedClient()
+  if (!supabase) return {}
+
+  const { data, error } = await supabase.from('page_content').select('path, elements')
+  if (error || !data) {
+    if (error) console.warn('[page-copy] elements read failed:', error.message)
+    return {}
+  }
+
+  const byPath: Record<string, PageElementMap> = {}
+  for (const row of data) byPath[row.path] = parsePageElements(row.elements)
+  return byPath
+})
+
 /** Stored overrides for one page path. */
 export async function getPageOverrides(path: string): Promise<Record<string, string>> {
   return (await getAllOverrides())[path] ?? {}
@@ -86,6 +108,11 @@ export type PageCopy = {
   mark(key: string): { 'data-copy': string; 'data-copy-kind': string }
   /** True when a field resolves to nothing, so its element can be skipped. */
   blank(key: string): boolean
+  /**
+   * An open slot between two bands where an editor can drop elements in the
+   * visual editor. `label` names the spot for the editor ("After the welcome").
+   */
+  zone(id: string, label: string): ReactNode
 }
 
 /**
@@ -99,7 +126,10 @@ export async function pageCopy(path: string): Promise<PageCopy> {
 
   const defaults = copyDefaults(spec)
   const fields = copyFieldMap(spec)
-  const overrides = await getPageOverrides(path)
+  const [overrides, elements] = await Promise.all([
+    getPageOverrides(path),
+    getAllElements().then((all) => all[path] ?? {}),
+  ])
 
   const field = (key: string): CopyField | undefined => {
     const found = fields.get(key)
@@ -130,7 +160,11 @@ export async function pageCopy(path: string): Promise<PageCopy> {
     )
   }
 
-  return { path, spec, s, t, mark, blank }
+  const zone = (id: string, label: string): ReactNode => (
+    <ElementZone key={`zone-${id}`} id={id} label={label} elements={elements[id] ?? []} />
+  )
+
+  return { path, spec, s, t, mark, blank, zone }
 }
 
 /**

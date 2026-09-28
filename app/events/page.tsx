@@ -45,6 +45,7 @@ export default async function EventsPage() {
       />
 
       <PageHero eyebrow={copy.t('hero.eyebrow')} title={copy.t('hero.title')} lead={copy.t('hero.lead')} />
+      {copy.zone('after-hero', 'Below the page header')}
 
       <Section tone="light">
         <Container>
@@ -56,6 +57,7 @@ export default async function EventsPage() {
           </div>
         </Container>
       </Section>
+      {copy.zone('after-events', 'After the event list')}
 
       <Section tone="deep">
         <Container className="flex flex-col items-center gap-5 text-center">
@@ -66,6 +68,7 @@ export default async function EventsPage() {
           </Button>
         </Container>
       </Section>
+      {copy.zone('page-end', 'At the end of the page')}
     </>
   )
 }
