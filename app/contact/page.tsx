@@ -68,6 +68,7 @@ export default async function ContactPage() {
         lead={copy.t('hero.lead')}
         photo={{ src: copy.s('hero.photo'), alt: copy.s('hero.photoAlt') }}
       />
+      {copy.zone('after-hero', 'Below the page header')}
 
       <Section tone="light">
         <Container>
@@ -164,6 +165,7 @@ export default async function ContactPage() {
           </div>
         </Container>
       </Section>
+      {copy.zone('page-end', 'At the end of the page')}
     </>
   )
 }

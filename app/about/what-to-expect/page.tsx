@@ -123,6 +123,7 @@ export default async function WhatToExpectPage() {
         lead={copy.t('hero.lead')}
         photo={{ src: copy.s('hero.photo'), alt: copy.s('hero.photoAlt') }}
       />
+      {copy.zone('after-hero', 'Below the page header')}
 
       {/* Reassurance */}
       <Section tone="light">
@@ -159,6 +160,7 @@ export default async function WhatToExpectPage() {
           </div>
         </Container>
       </Section>
+      {copy.zone('after-reassurance', 'After the reassurance section')}
 
       {/* Step-by-step — cards pin below the header and stack as you scroll,
           each new step sliding over the last with the earlier card edges
@@ -187,6 +189,7 @@ export default async function WhatToExpectPage() {
           </div>
         </Container>
       </Section>
+      {copy.zone('after-steps', 'After the step-by-step visit')}
 
       {/* Worship, explained — order of service and the meaning of each part,
           selected by service time. All panels are in the served HTML; tabs
@@ -202,6 +205,7 @@ export default async function WhatToExpectPage() {
           <p className="mt-6 max-w-prose text-muted">{copy.t('worship.closing')}</p>
         </Container>
       </Section>
+      {copy.zone('after-worship', 'After worship, explained')}
 
       {/* FAQ */}
       <Section tone="surface">
@@ -210,6 +214,7 @@ export default async function WhatToExpectPage() {
           <Faq items={faqs} />
         </Container>
       </Section>
+      {copy.zone('after-faq', 'After the questions')}
 
       <Section tone="deep">
         <Container className="flex flex-col items-center gap-5 text-center">
@@ -220,6 +225,7 @@ export default async function WhatToExpectPage() {
           </Button>
         </Container>
       </Section>
+      {copy.zone('page-end', 'At the end of the page')}
     </>
   )
 }

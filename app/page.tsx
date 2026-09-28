@@ -67,6 +67,7 @@ export default async function HomePage() {
         </div>
         <Wave fill="var(--color-bg)" />
       </section>
+      {copy.zone('after-hero', 'Below the lighthouse hero')}
 
       {/* ------------------------------------------------------------ Welcome */}
       <Section tone="light" ariaLabelledby="welcome-heading">
@@ -107,6 +108,7 @@ export default async function HomePage() {
           </p>
         </Container>
       </Section>
+      {copy.zone('after-welcome', 'After the welcome section')}
 
       {/* ------------------------------------------------- Service times band */}
       <Section tone="deep" ariaLabelledby="visit-heading">
@@ -153,6 +155,7 @@ export default async function HomePage() {
           </div>
         </Container>
       </Section>
+      {copy.zone('after-visit', 'After the service times')}
 
       {/* ----------------------------------------------------------- Beliefs */}
       <Section tone="surface" ariaLabelledby="beliefs-heading">
@@ -173,6 +176,7 @@ export default async function HomePage() {
           </p>
         </Container>
       </Section>
+      {copy.zone('after-beliefs', 'After the beliefs section')}
 
       {/* ------------------------------------------------- Bible study course */}
       <Section tone="light" ariaLabelledby="course-heading">
@@ -193,6 +197,7 @@ export default async function HomePage() {
           </Surface>
         </Container>
       </Section>
+      {copy.zone('after-course', 'After the Bible study course')}
 
       {/* ----------------------------------------------------------- Final CTA */}
       <Section tone="deep">
@@ -209,6 +214,7 @@ export default async function HomePage() {
           </div>
         </Container>
       </Section>
+      {copy.zone('page-end', 'At the end of the page')}
     </>
   )
 }

@@ -42,6 +42,7 @@ export default async function SermonsPage() {
       />
 
       <PageHero eyebrow={copy.t('hero.eyebrow')} title={copy.t('hero.title')} lead={copy.t('hero.lead')} />
+      {copy.zone('after-hero', 'Below the page header')}
 
       <Section tone="light">
         <Container>
@@ -89,6 +90,7 @@ export default async function SermonsPage() {
           </div>
         </Container>
       </Section>
+      {copy.zone('page-end', 'At the end of the page')}
     </>
   )
 }

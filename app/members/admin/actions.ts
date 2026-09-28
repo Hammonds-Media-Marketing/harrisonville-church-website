@@ -6,6 +6,7 @@ import { getSupabaseServer, getAuthContext, isEditorRole, isAdminRole } from '@/
 import { pingIndexNow } from '@/lib/indexnow'
 import { parseBlocksJson, textToBlocks } from '@/lib/article-blocks'
 import { parsePageSections } from '@/lib/page-sections'
+import { parsePageElements, type PageElementMap } from '@/lib/page-elements'
 import { PAGE_CONTENT_TAG, pruneOverrides } from '@/lib/site-copy'
 import { getCopySpec } from '@/content/site-copy'
 import { normalizePageSlug } from '@/lib/pages'
@@ -410,21 +411,41 @@ export async function removeMemberAction(formData: FormData) {
  * Save an editor's rewrite of a hand-built page. The editor posts every field
  * it knows about; pruneOverrides keeps only the ones that actually differ from
  * the wording in the code, so the stored row stays a small diff rather than a
- * frozen copy of the page. Publishing revalidates the copy tag (every page
- * reads its words through it), the page's own path, and IndexNow.
+ * frozen copy of the page. Dropped-in elements travel with the wording and go
+ * through the same parser the page renders with, and the cleaned list comes
+ * back so the editor shows exactly what was published. Publishing revalidates
+ * the copy tag (every page reads its words through it), the page's own path,
+ * and IndexNow.
  */
 export async function savePageCopyAction(
   path: string,
-  values: Record<string, string>
-): Promise<{ ok: boolean; error?: string }> {
+  values: Record<string, string>,
+  rawElements?: unknown
+): Promise<{ ok: boolean; error?: string; elements?: PageElementMap }> {
   const { supabase, ctx } = await requireEditor()
   const spec = getCopySpec(path)
   if (!spec) return { ok: false, error: 'That page is not editable.' }
 
   const overrides = pruneOverrides(spec, values)
-  const { error } = await supabase
+  const elements = parsePageElements(rawElements ?? {})
+  const row = { path, values: overrides as Json, updated_by: ctx.user?.id ?? null }
+
+  let { error } = await supabase
     .from('page_content')
-    .upsert({ path, values: overrides as Json, updated_by: ctx.user?.id ?? null }, { onConflict: 'path' })
+    .upsert({ ...row, elements: elements as Json }, { onConflict: 'path' })
+
+  // A database that has not had the elements column added yet can still take
+  // a wording-only save; elements need the migration first.
+  if (error && /elements/.test(error.message)) {
+    if (Object.keys(elements).length) {
+      console.warn('[admin] page elements save failed:', error.message)
+      return {
+        ok: false,
+        error: 'Added elements cannot be saved until the site database is updated. Ask the site administrator to apply the latest migration.',
+      }
+    }
+    ;({ error } = await supabase.from('page_content').upsert(row, { onConflict: 'path' }))
+  }
 
   if (error) {
     console.warn('[admin] page copy save failed:', error.message)
@@ -435,10 +456,10 @@ export async function savePageCopyAction(
   updateTag(PAGE_CONTENT_TAG)
   await publishRefresh([path])
   revalidatePath('/members/admin/editor')
-  return { ok: true }
+  return { ok: true, elements }
 }
 
-/** Drop every override on a page, returning it to the wording in the code. */
+/** Drop every override and added element on a page, returning it to the code. */
 export async function resetPageCopyAction(path: string): Promise<{ ok: boolean; error?: string }> {
   const { supabase } = await requireEditor()
   if (!getCopySpec(path)) return { ok: false, error: 'That page is not editable.' }

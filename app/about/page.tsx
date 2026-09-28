@@ -40,6 +40,7 @@ export default async function AboutPage() {
         lead={copy.t('hero.lead')}
         photo={{ src: copy.s('hero.photo'), alt: copy.s('hero.photoAlt') }}
       />
+      {copy.zone('after-hero', 'Below the page header')}
 
       {/* Welcome — written by the congregation's evangelist */}
       <Section tone="light">
@@ -68,6 +69,7 @@ export default async function AboutPage() {
           <p>{copy.t('kind.p2')}</p>
         </Container>
       </Section>
+      {copy.zone('after-welcome', 'After the welcome section')}
 
       <Section tone="surface">
         <Container>
@@ -82,6 +84,7 @@ export default async function AboutPage() {
           </div>
         </Container>
       </Section>
+      {copy.zone('after-pillars', 'After the three questions')}
 
       {/* Internal links to the deeper pages */}
       <Section tone="light">
@@ -98,6 +101,7 @@ export default async function AboutPage() {
           </div>
         </Container>
       </Section>
+      {copy.zone('after-links', 'After the links to more pages')}
 
       <Section tone="deep">
         <Container className="flex flex-col items-center gap-5 text-center">
@@ -108,6 +112,7 @@ export default async function AboutPage() {
           </Button>
         </Container>
       </Section>
+      {copy.zone('page-end', 'At the end of the page')}
     </>
   )
 }

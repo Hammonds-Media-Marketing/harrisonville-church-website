@@ -5,6 +5,7 @@ import { VisualEditor } from '@/components/members/VisualEditor'
 import { getSupabaseServer } from '@/lib/supabase-server'
 import { getCopySpec } from '@/content/site-copy'
 import { parseOverrides } from '@/lib/site-copy'
+import { parsePageElements } from '@/lib/page-elements'
 
 /**
  * The visual editor for one hand-built page. The route mirrors the page's own
@@ -44,14 +45,23 @@ export default async function VisualEditorPage({ params }: Params) {
   if (!spec) notFound()
 
   const supabase = await getSupabaseServer()
-  const { data } = supabase
-    ? await supabase.from('page_content').select('values').eq('path', spec.path).maybeSingle()
-    : { data: null }
+  // Elements are read on their own so a database without the elements column
+  // still opens the editor with every saved line.
+  const [{ data }, { data: elementRow }] = supabase
+    ? await Promise.all([
+        supabase.from('page_content').select('values').eq('path', spec.path).maybeSingle(),
+        supabase.from('page_content').select('elements').eq('path', spec.path).maybeSingle(),
+      ])
+    : [{ data: null }, { data: null }]
 
   return (
     <>
       <h1 className="sr-only">Editing {spec.name}</h1>
-      <VisualEditor spec={spec} overrides={parseOverrides(data?.values)} />
+      <VisualEditor
+        spec={spec}
+        overrides={parseOverrides(data?.values)}
+        elements={parsePageElements(elementRow?.elements)}
+      />
     </>
   )
 }

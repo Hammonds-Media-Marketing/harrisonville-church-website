@@ -42,6 +42,7 @@ export default async function PrivacyPolicyPage() {
           <p className="text-muted">{copy.t('header.updated')}</p>
         </Container>
       </Section>
+      {copy.zone('after-intro', 'Below the introduction')}
 
       <Section tone="light">
         <Container prose>
@@ -56,6 +57,7 @@ export default async function PrivacyPolicyPage() {
           ))}
         </Container>
       </Section>
+      {copy.zone('page-end', 'At the end of the page')}
     </>
   )
 }

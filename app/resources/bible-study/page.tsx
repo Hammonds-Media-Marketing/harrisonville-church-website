@@ -58,6 +58,7 @@ export default async function BibleStudyPage() {
           </Button>
         </div>
       </PageHero>
+      {copy.zone('after-hero', 'Below the page header')}
 
       {/* Two ways to take the course */}
       <Section tone="surface">
@@ -94,6 +95,7 @@ export default async function BibleStudyPage() {
           </div>
         </Container>
       </Section>
+      {copy.zone('after-options', 'After the two ways to take the course')}
 
       <Section tone="light" id="lessons">
         <Container>
@@ -124,6 +126,7 @@ export default async function BibleStudyPage() {
           </ol>
         </Container>
       </Section>
+      {copy.zone('after-lessons', 'After the lessons')}
 
       <Section tone="deep">
         <Container className="flex flex-col items-center gap-5 text-center">
@@ -134,6 +137,7 @@ export default async function BibleStudyPage() {
           </Button>
         </Container>
       </Section>
+      {copy.zone('page-end', 'At the end of the page')}
     </>
   )
 }
