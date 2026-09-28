@@ -6,13 +6,14 @@ import { PageHero } from '@/components/blocks/PageHero'
 import { Surface } from '@/components/primitives/Surface'
 import { CardLink } from '@/components/blocks/cards'
 import { BookIcon } from '@/components/ui/icons'
+import { RESOURCES_HUB_LIVE } from '@/lib/site'
 
 const PATH = '/resources'
 
 export async function generateMetadata(): Promise<Metadata> {
-  // The hub is unlinked while the sermon library is hidden; the Bible study
-  // course is reached directly from the primary navigation instead.
-  return copyMetadata(PATH, { noindex: true })
+  // The hub is unlinked until articles or sermons launch (lib/site.ts); the
+  // Bible study course is reached directly from the navigation until then.
+  return copyMetadata(PATH, { noindex: !RESOURCES_HUB_LIVE })
 }
 
 const breadcrumbs = [

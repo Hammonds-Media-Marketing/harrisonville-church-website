@@ -6,14 +6,15 @@ import { Container, Section, SectionHeading } from '@/components/primitives/Layo
 import { SampleNotice } from '@/components/blocks/SampleNotice'
 import { PostCard } from '@/components/blocks/cards'
 import { getAllAuthors, getBlogCategories, recentPosts } from '@/lib/blog'
+import { LAUNCHED } from '@/lib/site'
 
 export const revalidate = 3600
 
 const PATH = '/blog'
 
 export async function generateMetadata(): Promise<Metadata> {
-  // Hidden from navigation and search at the congregation's direction.
-  return copyMetadata(PATH, { noindex: true })
+  // Hidden from navigation and search until articles launch (lib/site.ts).
+  return copyMetadata(PATH, { noindex: !LAUNCHED.articles })
 }
 
 const breadcrumbs = [

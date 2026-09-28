@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { buildMetadata } from '@/lib/seo'
 import { JsonLd, articleSchema, breadcrumbSchema } from '@/lib/jsonld'
-import { SITE_URL } from '@/lib/site'
+import { LAUNCHED, SITE_URL } from '@/lib/site'
 import { Container, Section } from '@/components/primitives/Layout'
 import { Badge } from '@/components/primitives/Badge'
 import { SampleNotice } from '@/components/blocks/SampleNotice'
@@ -47,8 +47,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       authors: [author?.name || ''],
       tags: post.tags,
     },
-    // Hidden from navigation and search while the blog is hidden.
-    noindex: true,
+    // Hidden from navigation and search until articles launch (lib/site.ts).
+    noindex: !LAUNCHED.articles,
   })
 }
 

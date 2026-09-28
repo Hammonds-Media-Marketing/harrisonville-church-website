@@ -56,10 +56,30 @@ export type NavItem = {
   children?: NavItem[]
 }
 
-/** Primary navigation. A dropdown groups the About section.
- *  The blog, member-stories, and sermon-library pages are hidden from all
- *  navigation for now, at the congregation's direction; the routes remain so
- *  they can be made visible again later. */
+/**
+ * Sections that are built but hidden at the congregation's direction. The
+ * pages work (editors can fill them from the admin) but nothing links to
+ * them and search engines are asked to skip them. Launching one is this one
+ * switch: set it to true and the section joins the Resources menu and the
+ * footer, and its pages enter the sitemap and search.
+ */
+export const LAUNCHED: { articles: boolean; sermons: boolean } = {
+  articles: false,
+  sermons: false,
+}
+
+/** Whether the /resources hub has anything beyond the Bible study course. */
+export const RESOURCES_HUB_LIVE = LAUNCHED.articles || LAUNCHED.sermons
+
+const resourceItems: NavItem[] = [
+  { label: 'Bible Study Course', href: '/resources/bible-study', description: 'A free study you can work through at home' },
+  ...(LAUNCHED.articles ? [{ label: 'Articles', href: '/blog', description: 'What the Bible says, one question at a time' }] : []),
+  ...(LAUNCHED.sermons ? [{ label: 'Sermons', href: '/resources/sermons', description: 'Recent lessons to watch or listen to' }] : []),
+]
+
+/** Primary navigation. Dropdowns group the About section and, once articles
+ *  or sermons launch, the Resources section; until then the Bible study
+ *  course is linked on its own. The member-stories page stays hidden. */
 export const primaryNav: NavItem[] = [
   {
     label: 'About',
@@ -71,7 +91,7 @@ export const primaryNav: NavItem[] = [
     ],
   },
   { label: 'Events', href: '/events' },
-  { label: 'Bible Study Course', href: '/resources/bible-study' },
+  RESOURCES_HUB_LIVE ? { label: 'Resources', href: '/resources', children: resourceItems } : resourceItems[0],
   { label: 'Contact Us', href: '/contact' },
 ]
 
@@ -86,10 +106,7 @@ export const footerNav: { heading: string; items: NavItem[] }[] = [
   },
   {
     heading: 'Resources',
-    items: [
-      { label: 'Bible Study Course', href: '/resources/bible-study' },
-      { label: 'Events', href: '/events' },
-    ],
+    items: [...resourceItems.map(({ label, href }) => ({ label, href })), { label: 'Events', href: '/events' }],
   },
   {
     heading: 'Connect',
