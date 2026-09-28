@@ -11,6 +11,7 @@ export const SPECIAL_EVENT_CATEGORIES = [
   { value: 'fellowship', label: 'Fellowship meal' },
   { value: 'gospel_meeting', label: 'Gospel meeting' },
   { value: 'baby_shower', label: 'Baby shower' },
+  { value: 'wedding_shower', label: 'Wedding shower' },
   { value: 'birthday', label: 'Birthday' },
   { value: 'meal_train', label: 'Meal train' },
   { value: 'service_project', label: 'Service project' },
