@@ -8,9 +8,12 @@
  * The list is stored as JSONB. parsePageSections is the single validating
  * gate on both save and read: unknown section types and malformed fields are
  * dropped, so a bad payload degrades to a skipped section — never a broken
- * page. This module is dependency-free and safe to import from client
- * components (the builder) and server components (the renderer) alike.
+ * page. This module is safe to import from client components (the builder)
+ * and server components (the renderer) alike; its one import is the element
+ * model, which is dependency-free too.
  */
+
+import { parsePageElements, type PageElement } from '@/lib/page-elements'
 
 /** Prose block inside a rich text section — the article body model. */
 export type ProseBlock = {
@@ -79,9 +82,20 @@ export type CtaSection = {
   secondaryHref?: string
 }
 
-export type PageSection = RichTextSection | ImageTextSection | CardGridSection | FaqSection | CtaSection
+/**
+ * A free-form band built from the visual editor's elements: titles,
+ * paragraphs, photos, buttons, columns, galleries, videos, and bands with
+ * their own background. For layouts the fixed section types do not cover.
+ */
+export type ElementsSection = {
+  id: string
+  type: 'elements'
+  elements: PageElement[]
+}
 
-export const SECTION_TYPES = ['richText', 'imageText', 'cardGrid', 'faq', 'cta'] as const
+export type PageSection = RichTextSection | ImageTextSection | CardGridSection | FaqSection | CtaSection | ElementsSection
+
+export const SECTION_TYPES = ['richText', 'imageText', 'cardGrid', 'faq', 'cta', 'elements'] as const
 export type SectionType = (typeof SECTION_TYPES)[number]
 
 /** Editor-facing names and one-line explanations for the builder palette. */
@@ -91,6 +105,7 @@ export const SECTION_LABELS: Record<SectionType, { label: string; hint: string }
   cardGrid: { label: 'Card grid', hint: 'A row of cards for ministries, reasons, or next steps.' },
   faq: { label: 'Questions and answers', hint: 'An accordion of common questions, marked up for search.' },
   cta: { label: 'Call to action', hint: 'A deep-navy band with a headline and buttons.' },
+  elements: { label: 'Free layout', hint: 'Build your own from titles, photos, buttons, columns, galleries, and video.' },
 }
 
 // ---------------------------------------------------------------------------
@@ -223,6 +238,12 @@ function parseSection(item: unknown, index: number): PageSection | null {
         secondaryHref: str(s.secondaryHref),
       }
     }
+    case 'elements': {
+      // The element parser is the same gate the visual editor's zones use.
+      const elements = parsePageElements({ main: s.elements }).main ?? []
+      if (!elements.length) return null
+      return { id, type: 'elements', elements }
+    }
     default:
       return null
   }
@@ -260,5 +281,161 @@ export function sectionSummary(section: PageSection): string {
       return `${section.title} (${section.items.length} question${section.items.length === 1 ? '' : 's'})`
     case 'cta':
       return section.title
+    case 'elements': {
+      const first = section.elements.find((el) => 'text' in el && typeof el.text === 'string')
+      const count = `${section.elements.length} element${section.elements.length === 1 ? '' : 's'}`
+      return first && 'text' in first ? `${String(first.text).slice(0, 50)} (${count})` : count
+    }
   }
+}
+
+// ---------------------------------------------------------------------------
+// Preview
+// ---------------------------------------------------------------------------
+
+/** Stand-in photo for a section whose photo has not been chosen yet. */
+export const PLACEHOLDER_IMAGE = '/assets/images/placeholder.jpg'
+
+/**
+ * A render-safe copy of a section the editor is still filling in, for the
+ * builder's live preview only. The validating parser drops a half-finished
+ * section, which would make it vanish from the preview the moment it is
+ * added; here every blank field shows a prompt instead, so the section keeps
+ * its real size and shape while the editor writes it.
+ */
+export function previewSection(section: PageSection): PageSection {
+  const or = (value: string | undefined, prompt: string) => (value && value.trim() ? value : prompt)
+  switch (section.type) {
+    case 'richText': {
+      const blocks = section.blocks.filter((b) => (b.text && b.text.trim()) || b.items?.some((i) => i.trim()))
+      return {
+        ...section,
+        blocks: blocks.length || section.title ? blocks : [{ type: 'p', text: 'Write this section in the panel on the right.' }],
+      }
+    }
+    case 'imageText':
+      return {
+        ...section,
+        title: or(section.title, 'Section heading'),
+        body: or(section.body, 'Write a few sentences in the panel on the right.'),
+        image: or(section.image, PLACEHOLDER_IMAGE),
+        imageAlt: section.imageAlt || '',
+      }
+    case 'cardGrid':
+      return {
+        ...section,
+        title: or(section.title, 'Section heading'),
+        cards: (section.cards.length ? section.cards : [{ title: '', body: '' }]).map((c) => ({
+          ...c,
+          title: or(c.title, 'Card heading'),
+          body: or(c.body, 'A sentence or two for this card.'),
+        })),
+      }
+    case 'faq':
+      return {
+        ...section,
+        title: or(section.title, 'Questions and answers'),
+        items: (section.items.length ? section.items : [{ question: '', answer: '' }]).map((i) => ({
+          question: or(i.question, 'A question visitors ask'),
+          answer: or(i.answer, 'Its answer.'),
+        })),
+      }
+    case 'cta':
+      return {
+        ...section,
+        title: or(section.title, 'Headline'),
+        primaryLabel: or(section.primaryLabel, 'Button label'),
+        primaryHref: or(section.primaryHref, '#'),
+      }
+    case 'elements':
+      return section
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Loading a draft into the builder
+// ---------------------------------------------------------------------------
+
+/**
+ * The stored section list as the builder should reopen it. A draft save keeps
+ * half-finished sections (a card grid without its cards filled in yet), and
+ * the strict parser would drop those, so reopening a draft would lose work.
+ * This keeps every section of a known type, fills missing fields with blanks,
+ * and still runs element lists and prose through their validating parsers.
+ * Only the builder uses it; the public page always goes through
+ * parsePageSections.
+ */
+export function loadBuilderSections(raw: unknown): PageSection[] {
+  if (!Array.isArray(raw)) return []
+  const known = new Set<string>(SECTION_TYPES)
+  const text = (v: unknown) => (typeof v === 'string' ? v : '')
+  return raw.flatMap((item, index): PageSection[] => {
+    if (!item || typeof item !== 'object') return []
+    const s = item as Record<string, unknown>
+    if (typeof s.type !== 'string' || !known.has(s.type)) return []
+    const type = s.type as SectionType
+    const id = sectionId(s.id, index)
+    switch (type) {
+      case 'richText':
+        return [{ id, type, tone: tone(s.tone), eyebrow: text(s.eyebrow), title: text(s.title), blocks: parseBlocks(s.blocks) }]
+      case 'imageText':
+        return [{
+          id,
+          type,
+          tone: tone(s.tone),
+          eyebrow: text(s.eyebrow),
+          title: text(s.title),
+          body: text(s.body),
+          image: text(s.image),
+          imageAlt: text(s.imageAlt),
+          imageSide: s.imageSide === 'left' ? 'left' : 'right',
+          ctaLabel: text(s.ctaLabel),
+          ctaHref: text(s.ctaHref),
+        }]
+      case 'cardGrid':
+        return [{
+          id,
+          type,
+          tone: tone(s.tone),
+          eyebrow: text(s.eyebrow),
+          title: text(s.title),
+          lead: text(s.lead),
+          columns: s.columns === 2 ? 2 : 3,
+          cards: Array.isArray(s.cards)
+            ? s.cards.map((c) => {
+                const card = (c && typeof c === 'object' ? c : {}) as Record<string, unknown>
+                return { title: text(card.title), body: text(card.body), linkLabel: text(card.linkLabel), linkHref: text(card.linkHref) }
+              })
+            : [],
+        }]
+      case 'faq':
+        return [{
+          id,
+          type,
+          tone: tone(s.tone),
+          eyebrow: text(s.eyebrow),
+          title: text(s.title),
+          lead: text(s.lead),
+          items: Array.isArray(s.items)
+            ? s.items.map((i) => {
+                const qa = (i && typeof i === 'object' ? i : {}) as Record<string, unknown>
+                return { question: text(qa.question), answer: text(qa.answer) }
+              })
+            : [],
+        }]
+      case 'cta':
+        return [{
+          id,
+          type,
+          title: text(s.title),
+          body: text(s.body),
+          primaryLabel: text(s.primaryLabel),
+          primaryHref: text(s.primaryHref),
+          secondaryLabel: text(s.secondaryLabel),
+          secondaryHref: text(s.secondaryHref),
+        }]
+      case 'elements':
+        return [{ id, type, elements: parsePageElements({ main: s.elements }).main ?? [] }]
+    }
+  })
 }
