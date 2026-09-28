@@ -42,24 +42,29 @@ export default async function EditPagePage({
     <>
       <PageHero
         eyebrow="Site admin"
-        title={isNew ? 'Build a page' : `Edit: ${page?.title}`}
+        title={isNew ? 'New page' : `Edit: ${page?.title}`}
         lead="Build the page on the live preview: pick a starting layout, click any part to edit it, and add sections exactly where you want them. Everything renders with the site's own design, at desktop, tablet, and phone widths."
       >
-        {page ? (
-          <div className="flex flex-wrap gap-3">
-            <Button href={`/members/admin/pages/${page.id}/preview`} variant="ghost" size="sm">
-              Preview draft
-            </Button>
-            <Button href={`/members/admin/history?page=${page.id}`} variant="ghost" size="sm">
-              Version history
-            </Button>
-            {page.published ? (
-              <Button href={`/${page.slug}`} variant="ghost" size="sm">
-                View live page
+        <div className="flex flex-wrap gap-3">
+          <Button href="/members/admin/pages" variant="ghost" size="sm">
+            ← All pages
+          </Button>
+          {page ? (
+            <>
+              <Button href={`/members/admin/pages/${page.id}/preview`} variant="ghost" size="sm">
+                Preview draft
               </Button>
-            ) : null}
-          </div>
-        ) : null}
+              <Button href={`/members/admin/history?page=${page.id}`} variant="ghost" size="sm">
+                Version history
+              </Button>
+              {page.published ? (
+                <Button href={`/${page.slug}`} variant="ghost" size="sm">
+                  View live page
+                </Button>
+              ) : null}
+            </>
+          ) : null}
+        </div>
       </PageHero>
 
       <form action={savePageAction}>
@@ -186,7 +191,7 @@ export default async function EditPagePage({
                   {isNew ? 'Create page' : 'Save changes'}
                 </Button>
                 <Button href="/members/admin/pages" variant="ghost">
-                  Cancel
+                  Back to all pages
                 </Button>
               </div>
             </Surface>

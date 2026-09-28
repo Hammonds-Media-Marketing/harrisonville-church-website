@@ -469,6 +469,7 @@ export async function savePageCopyAction(
   updateTag(PAGE_CONTENT_TAG)
   await publishRefresh([path])
   revalidatePath('/members/admin/editor')
+  revalidatePath('/members/admin/pages')
   return { ok: true, elements }
 }
 
@@ -487,6 +488,7 @@ export async function resetPageCopyAction(path: string): Promise<{ ok: boolean; 
   updateTag(PAGE_CONTENT_TAG)
   await publishRefresh([path])
   revalidatePath('/members/admin/editor')
+  revalidatePath('/members/admin/pages')
   return { ok: true }
 }
 
@@ -565,6 +567,7 @@ export async function restoreRevisionAction(formData: FormData) {
   updateTag(PAGE_CONTENT_TAG)
   await publishRefresh([path])
   revalidatePath('/members/admin/editor')
+  revalidatePath('/members/admin/pages')
   redirect(`${back}&restored=1`)
 }
 
