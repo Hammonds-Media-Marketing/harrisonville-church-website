@@ -12,7 +12,52 @@ import { formatWhen } from '@/lib/portal/time'
 
 export type WelcomeEmailStatus = 'sent' | 'not_configured' | 'invalid_recipient' | 'rejected' | 'network_error'
 
-export type WelcomeEmailResult = { status: WelcomeEmailStatus; messageId?: string }
+/** Why Resend refused a send, when it said. Carried to the admin as a hint. */
+export type EmailFailureReason = 'api_key' | 'domain' | 'testing_only' | 'from' | 'rate_limit' | 'other'
+
+export type WelcomeEmailResult = { status: WelcomeEmailStatus; messageId?: string; reason?: EmailFailureReason }
+
+const FAILURE_REASONS: EmailFailureReason[] = ['api_key', 'domain', 'testing_only', 'from', 'rate_limit', 'other']
+
+export function parseFailureReason(value: string | null | undefined): EmailFailureReason | undefined {
+  return FAILURE_REASONS.find((r) => r === value)
+}
+
+/**
+ * Map a Resend error response to a reason. Resend answers with
+ * { statusCode, name, message }; the message is the most specific part
+ * (it names an unverified domain, or the testing-only restriction).
+ */
+export function classifyResendError(status: number, body: { name?: string; message?: string }): EmailFailureReason {
+  const name = String(body.name ?? '').toLowerCase()
+  const message = String(body.message ?? '').toLowerCase()
+  if (status === 429 || name.includes('rate_limit')) return 'rate_limit'
+  if (message.includes('testing emails') || message.includes('own email address')) return 'testing_only'
+  if (message.includes('domain') && (message.includes('not verified') || message.includes('verify'))) return 'domain'
+  if (status === 401 || name.includes('api_key') || message.includes('api key')) return 'api_key'
+  if (name.includes('from') || message.includes('`from`') || message.includes('from field') || message.includes('from address')) return 'from'
+  return 'other'
+}
+
+/** One plain sentence on what to fix in Resend or Vercel for each reason. */
+export function failureReasonHint(reason: EmailFailureReason | undefined): string {
+  switch (reason) {
+    case 'api_key':
+      return 'Resend did not accept the API key. Check RESEND_API_KEY in Vercel: it should be a key with sending access, copied whole, with no quotes or spaces.'
+    case 'domain':
+      return 'The sending domain is not verified in Resend. Finish verifying it under Resend > Domains, or change WELCOME_EMAIL_FROM to an address on a domain that is verified.'
+    case 'testing_only':
+      return 'Resend is in testing mode and only sends to the account owner. Verify the church domain in Resend and send from an address on it.'
+    case 'from':
+      return 'Resend did not accept the from address. Set WELCOME_EMAIL_FROM in Vercel to Name <address@verified-domain> with no surrounding quotes.'
+    case 'rate_limit':
+      return 'Resend is limiting how fast emails go out. Wait a minute and try again.'
+    case 'other':
+      return 'Resend refused the email. The exact reason is in the Vercel logs and under Logs in Resend.'
+    default:
+      return ''
+  }
+}
 
 export const TEST_EMAIL_LIMIT = { limit: 5, windowMs: 10 * 60 * 1000 }
 
@@ -235,7 +280,12 @@ export function renderEventReminderEmail(input: EventReminderInput): { subject: 
   return { subject, html, text }
 }
 
-export function approvalFeedback(status: WelcomeEmailStatus): string {
+function withHint(message: string, reason: EmailFailureReason | undefined): string {
+  const hint = failureReasonHint(reason)
+  return hint ? `${message} ${hint}` : message
+}
+
+export function approvalFeedback(status: WelcomeEmailStatus, reason?: EmailFailureReason): string {
   switch (status) {
     case 'sent':
       return 'Member approved. A welcome email is on its way.'
@@ -244,14 +294,30 @@ export function approvalFeedback(status: WelcomeEmailStatus): string {
     case 'invalid_recipient':
       return 'Member approved. Their email address did not look valid, so no welcome email was sent.'
     default:
-      return 'Member approved. The welcome email could not be sent; you may want to reach out directly.'
+      return withHint('Member approved, but the welcome email could not be sent.', reason)
   }
 }
 
-export function testEmailFeedback(status: WelcomeEmailStatus, email: string): string {
+/** Feedback for the Send / Resend welcome email button on an approved member. */
+export function welcomeSendFeedback(status: WelcomeEmailStatus, reason?: EmailFailureReason): string {
+  switch (status) {
+    case 'sent':
+      return 'Welcome email sent.'
+    case 'not_configured':
+      return 'Nothing was sent: email is not set up. Add RESEND_API_KEY and WELCOME_EMAIL_FROM in Vercel, then redeploy.'
+    case 'invalid_recipient':
+      return 'Nothing was sent: this member\'s email address does not look valid.'
+    case 'network_error':
+      return 'Nothing was sent: the site could not reach Resend. Try again in a minute.'
+    default:
+      return withHint('Nothing was sent.', reason)
+  }
+}
+
+export function testEmailFeedback(status: WelcomeEmailStatus, email: string, reason?: EmailFailureReason): string {
   if (status === 'sent') return `Test welcome email sent to ${email}.`
   if (status === 'not_configured') return 'Email delivery is not configured. Add RESEND_API_KEY and WELCOME_EMAIL_FROM to send email.'
-  return 'The test email could not be sent. Check the Resend configuration and try again.'
+  return withHint('The test email could not be sent.', reason)
 }
 
 export type EmailMessage = { to: string; subject: string; html: string; text: string }
@@ -281,7 +347,12 @@ export async function sendEmail(message: EmailMessage, opts: SendOptions = {}): 
       headers: { Authorization: `Bearer ${config.apiKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ from: config.from, to: [to], subject: message.subject, html: message.html, text: message.text }),
     })
-    if (!response.ok) return { status: 'rejected' }
+    if (!response.ok) {
+      const body = (await response.json().catch(() => ({}))) as { name?: string; message?: string }
+      const reason = classifyResendError(response.status, body)
+      console.error(`[email] Resend refused the send (${response.status} ${body.name ?? ''}): ${body.message ?? 'no message'}`)
+      return { status: 'rejected', reason }
+    }
     const data = (await response.json().catch(() => ({}))) as { id?: string }
     return { status: 'sent', messageId: typeof data.id === 'string' ? data.id : undefined }
   } catch {
@@ -320,6 +391,10 @@ export async function sendEmailBatch(messages: EmailMessage[], opts: SendOptions
         body: JSON.stringify(chunk.map(({ to, message }) => ({ from: config.from, to: [to], subject: message.subject, html: message.html, text: message.text }))),
       })
       status = response.ok ? 'sent' : 'rejected'
+      if (!response.ok) {
+        const body = (await response.json().catch(() => ({}))) as { name?: string; message?: string }
+        console.error(`[email] Resend refused a batch (${response.status} ${body.name ?? ''}): ${body.message ?? 'no message'}`)
+      }
     } catch {
       status = 'network_error'
     }
