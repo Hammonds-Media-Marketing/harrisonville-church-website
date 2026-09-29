@@ -35,7 +35,7 @@ export async function approveMemberAction(formData: FormData) {
     if (result.status === 'sent') {
       await ctx.supabase.from('member_profiles').update({ welcome_email_sent_at: new Date().toISOString() }).eq('id', id).is('welcome_email_sent_at', null)
     }
-    notice = `email_${result.status}`
+    notice = `email_${result.status}${result.reason ? `&reason=${result.reason}` : ''}`
   }
   revalidatePath('/members', 'layout')
   redirect(`/members/admin/members?notice=${notice}`)
@@ -62,7 +62,7 @@ export async function resendWelcomeEmailAction(formData: FormData) {
     await ctx.supabase.from('member_profiles').update({ welcome_email_sent_at: new Date().toISOString() }).eq('id', id)
   }
   revalidatePath('/members/admin/members')
-  redirect(`/members/admin/members?notice=email_${result.status}`)
+  redirect(`/members/admin/members?notice=welcome_${result.status}${result.reason ? `&reason=${result.reason}` : ''}`)
 }
 
 export async function sendTestWelcomeEmailAction(_prev: { message: string; ok: boolean }, formData: FormData) {
@@ -71,7 +71,7 @@ export async function sendTestWelcomeEmailAction(_prev: { message: string; ok: b
   if (!email) return { message: 'Enter one valid email address.', ok: false }
   if (!takeRateLimitSlot(`welcome-test:${ctx.userId}`)) return { message: 'Too many test emails. Wait a few minutes and try again.', ok: false }
   const result = await sendWelcomeEmail({ email, full_name: 'Test Member' })
-  return { message: testEmailFeedback(result.status, email), ok: result.status === 'sent' }
+  return { message: testEmailFeedback(result.status, email, result.reason), ok: result.status === 'sent' }
 }
 
 export async function approvalNoticeText(notice: string): Promise<string> {

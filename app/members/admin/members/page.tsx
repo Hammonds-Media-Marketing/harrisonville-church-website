@@ -13,7 +13,7 @@ import { EmptyState, Notice, ParamNotices, StatTile } from '@/components/primiti
 import { UsersIcon } from '@/components/ui/icons'
 import { getAuthContext, isAdminRole } from '@/lib/supabase-server'
 import { getAllProfiles, requireAdmin } from '@/lib/portal/data'
-import { approvalFeedback } from '@/lib/portal/email'
+import { approvalFeedback, parseFailureReason, welcomeSendFeedback } from '@/lib/portal/email'
 import { removeMemberAction, setMemberStatusAction } from '@/app/members/admin/actions'
 import { approveMemberAction, rejectMemberAction, resendWelcomeEmailAction } from '@/app/members/admin/portal-actions'
 import { formatRelative } from '@/lib/portal/time'
@@ -29,7 +29,7 @@ export const metadata: Metadata = buildMetadata({
 
 const ROLES = ['member', 'editor', 'admin']
 
-export default async function AdminMembersPage({ searchParams }: { searchParams: Promise<{ saved?: string; deleted?: string; error?: string; notice?: string; filter?: string }> }) {
+export default async function AdminMembersPage({ searchParams }: { searchParams: Promise<{ saved?: string; deleted?: string; error?: string; notice?: string; reason?: string; filter?: string }> }) {
   const { profile } = await getAuthContext()
   if (!isAdminRole(profile)) redirect('/members/admin')
   const ctx = await requireAdmin()
@@ -41,21 +41,28 @@ export default async function AdminMembersPage({ searchParams }: { searchParams:
   const approved = profiles.filter((p) => p.approved)
   const filter = params.filter === 'declined' ? 'declined' : 'approved'
 
+  // Email outcomes: email_* after approving, welcome_* after the send button.
+  // Anything but a sent email shows as a warning so it cannot pass for success.
+  const reason = parseFailureReason(params.reason)
+  const emailStatus = params.notice?.match(/^(?:email|welcome)_(.+)$/)?.[1] as Parameters<typeof approvalFeedback>[0] | undefined
   const noticeText = params.notice
     ? params.notice.startsWith('email_')
-      ? approvalFeedback(params.notice.slice(6) as Parameters<typeof approvalFeedback>[0])
-      : params.notice === 'rejected'
-        ? 'The request was declined. The person can still sign in, but sees only a notice.'
-        : 'Saved.'
+      ? approvalFeedback(emailStatus!, reason)
+      : params.notice.startsWith('welcome_')
+        ? welcomeSendFeedback(emailStatus!, reason)
+        : params.notice === 'rejected'
+          ? 'The request was declined. The person can still sign in, but sees only a notice.'
+          : 'Saved.'
     : null
+  const noticeTone = emailStatus && emailStatus !== 'sent' ? 'warning' : 'success'
 
   return (
     <>
       <PageHero eyebrow="Site admin" title="Members" lead="Approve access requests, set roles, and manage accounts. Editors manage content and the calendar; admins also manage members and groups." />
       <Section tone="light">
         <Container className="max-w-4xl">
-          {noticeText ? <Notice tone="success" className="mb-5">{noticeText}</Notice> : null}
-          <ParamNotices params={params} messages={{ 'error:self': 'You cannot remove, decline, or demote your own admin account.', 'error:rate': 'Too many emails in a short time. Wait a few minutes.', deleted: 'The account was removed.' }} />
+          {noticeText ? <Notice tone={noticeTone} className="mb-5">{noticeText}</Notice> : null}
+          <ParamNotices params={{ ...params, notice: undefined }} messages={{ 'error:self': 'You cannot remove, decline, or demote your own admin account.', 'error:rate': 'Too many emails in a short time. Wait a few minutes.', deleted: 'The account was removed.' }} />
 
           <div className="mb-8 grid grid-cols-3 gap-3">
             <StatTile label="Waiting" value={pending.length} tone={pending.length ? 'gold' : 'default'} />
