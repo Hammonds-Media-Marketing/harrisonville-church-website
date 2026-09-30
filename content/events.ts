@@ -4,13 +4,34 @@ import type { ChurchEvent } from './types'
  *  in the near future so the collection renders an "upcoming" view. */
 export const events: ChurchEvent[] = [
   {
-    slug: 'gospel-meeting-spring',
-    title: 'Spring Gospel Meeting',
-    summary: 'A week of evening lessons from a visiting Gospel preacher. All are welcome.',
+    slug: 'gospel-meeting-fall',
+    title: 'Fall Gospel Meeting',
+    summary: 'Three evenings of lessons from a visiting Gospel preacher. All are welcome.',
     description:
-      'A Gospel meeting is a series of evening sermons, usually over several nights, where a visiting preacher walks through a theme from the New Testament. There is no cost, no registration, and no pressure to participate. Come for one night or every night.',
-    startDate: '2026-09-13T19:00:00-05:00',
-    endDate: '2026-09-17T20:00:00-05:00',
+      'A Gospel meeting is a series of sermons, usually over several days, where a visiting preacher walks through a theme from the New Testament. There is no cost, no registration, and no pressure to participate. Come for one lesson or every one.',
+    startDate: '2026-11-13T19:00:00-06:00',
+    endDate: '2026-11-15T11:00:00-06:00',
+    sessions: [
+      { startDate: '2026-11-13T19:00:00-06:00', endDate: '2026-11-13T20:00:00-06:00' },
+      { startDate: '2026-11-14T19:00:00-06:00', endDate: '2026-11-14T20:00:00-06:00' },
+      { startDate: '2026-11-15T10:00:00-06:00', endDate: '2026-11-15T11:00:00-06:00' },
+    ],
+    faqs: [
+      {
+        question: 'Is there a cost to attend?',
+        answer: 'No. Every lesson is free and open to the public, and no collection is taken from visitors.',
+      },
+      {
+        question: 'Do I need to come every night?',
+        answer: 'No. Each lesson stands on its own, so come to whichever ones you can.',
+      },
+    ],
+    infoSections: [
+      {
+        heading: 'Bringing children',
+        body: 'Children are welcome in every lesson. Families sit together, and there is a quiet room near the auditorium if a little one needs a break.',
+      },
+    ],
     category: 'Outreach',
     sample: true,
   },

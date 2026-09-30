@@ -8,8 +8,10 @@ import { Button } from '@/components/primitives/Button'
 import { CheckboxField, FieldShell, SelectField, TextArea, TextField } from '@/components/primitives/Field'
 import { AdminNotices } from '@/components/members/AdminNotices'
 import { ImageUploadField } from '@/components/members/ImageUploadField'
+import { RepeaterField } from '@/components/members/RepeaterField'
 import { getSupabaseServer } from '@/lib/supabase-server'
 import { RECURRENCE_OPTIONS, ruleFromStored } from '@/lib/recurrence'
+import { parseFaqs, parseInfoSections, parseSessions, parseSpeakers } from '@/lib/event-details'
 import { EMAIL_REMINDER_OPTIONS, parseEmailReminder } from '@/lib/portal/reminders'
 import { saveEventAction } from '@/app/members/admin/actions'
 
@@ -39,6 +41,23 @@ export default async function EditEventPage({
     if (!data) notFound()
     event = data
   }
+
+  // Each date of the event: its stored sessions, or the single start/end.
+  const storedSessions = parseSessions(event?.sessions)
+  const sessionRows = storedSessions.length
+    ? storedSessions.map((x) => ({ start: isoToLocalInput(x.startDate), end: x.endDate ? isoToLocalInput(x.endDate) : '' }))
+    : event
+      ? [{ start: isoToLocalInput(event.start_date), end: event.end_date ? isoToLocalInput(event.end_date) : '' }]
+      : []
+  const speakerRows = parseSpeakers(event?.speakers).map((x) => ({
+    name: x.name,
+    role: x.role ?? '',
+    bio: x.bio ?? '',
+    image: x.image ?? '',
+    image_alt: x.imageAlt ?? '',
+  }))
+  const faqRows = parseFaqs(event?.faqs).map((x) => ({ question: x.question, answer: x.answer }))
+  const infoRows = parseInfoSections(event?.info_sections).map((x) => ({ heading: x.heading, body: x.body }))
 
   return (
     <>
@@ -112,35 +131,21 @@ export default async function EditEventPage({
                 <TextField id="event-image-alt" name="image_alt" defaultValue={event?.image_alt ?? ''} />
               </FieldShell>
 
-              <div className="grid gap-5 sm:grid-cols-2">
-                <FieldShell
-                  id="event-start"
-                  label="Starts"
-                  required
-                  tip="The date and time the event begins, in church-local time. For a repeating event this is the first date of the series."
-                >
-                  <TextField
-                    id="event-start"
-                    name="start_date"
-                    type="datetime-local"
-                    required
-                    defaultValue={event ? isoToLocalInput(event.start_date) : ''}
-                  />
-                </FieldShell>
-                <FieldShell
-                  id="event-end"
-                  label="Ends"
-                  helper="Optional."
-                  tip="When the event wraps up. Leave blank for open-ended gatherings; use a later date for multi-day events."
-                >
-                  <TextField
-                    id="event-end"
-                    name="end_date"
-                    type="datetime-local"
-                    defaultValue={event?.end_date ? isoToLocalInput(event.end_date) : ''}
-                  />
-                </FieldShell>
-              </div>
+              <RepeaterField
+                id="event-sessions"
+                prefix="session"
+                label="Dates and times"
+                itemLabel="Date"
+                addLabel="Add another date"
+                minRows={1}
+                initialRows={sessionRows}
+                helper="Add one entry per day for events that run over several days, like a Friday–Sunday meeting. Each date is listed on the event page."
+                tip="Times are church-local. A one-day event needs just one entry. For a multi-day event, add each day with its own start and end time; the calendar shows the event until the last day ends."
+                fields={[
+                  { key: 'start', label: 'Starts', type: 'datetime-local', required: true, half: true },
+                  { key: 'end', label: 'Ends', type: 'datetime-local', helper: 'Optional.', half: true },
+                ]}
+              />
 
               <div className="grid gap-5 sm:grid-cols-2">
                 <FieldShell
@@ -160,6 +165,7 @@ export default async function EditEventPage({
                 <FieldShell
                   id="event-recurring"
                   label="Repeats"
+                  helper="Ignored when the event has more than one date."
                   tip="Pick a schedule and the calendar fills in every upcoming date automatically, based on the start date. Pick 'Does not repeat' for one-time events."
                 >
                   <SelectField
@@ -173,12 +179,81 @@ export default async function EditEventPage({
 
               <FieldShell
                 id="event-location"
-                label="Location"
+                label="Location name"
                 helper="Blank means the church building."
-                tip="Only fill this in when the event happens somewhere other than the church building — a park, a home, a community center."
+                tip="The name of the place, like 'Norman Church of Christ' or 'Harrisonville City Park'. Leave blank for events at the church building."
               >
                 <TextField id="event-location" name="location_name" defaultValue={event?.location_name ?? ''} />
               </FieldShell>
+
+              <fieldset className="flex flex-col gap-4">
+                <legend className="mb-1.5 font-semibold text-heading">Location address</legend>
+                <p className="-mt-1 text-sm text-muted">
+                  Only for events away from the church building. Used for the map, directions, and search results.
+                </p>
+                <FieldShell id="event-street" label="Street address">
+                  <TextField id="event-street" name="location_street" autoComplete="off" defaultValue={event?.location_street ?? ''} />
+                </FieldShell>
+                <div className="grid gap-4 sm:grid-cols-[1fr_6rem_8rem]">
+                  <FieldShell id="event-city" label="City">
+                    <TextField id="event-city" name="location_city" autoComplete="off" defaultValue={event?.location_city ?? ''} />
+                  </FieldShell>
+                  <FieldShell id="event-region" label="State">
+                    <TextField id="event-region" name="location_region" autoComplete="off" placeholder="MO" defaultValue={event?.location_region ?? ''} />
+                  </FieldShell>
+                  <FieldShell id="event-postal" label="ZIP">
+                    <TextField id="event-postal" name="location_postal_code" autoComplete="off" defaultValue={event?.location_postal_code ?? ''} />
+                  </FieldShell>
+                </div>
+              </fieldset>
+
+              <RepeaterField
+                id="event-speakers"
+                prefix="speaker"
+                label="Speakers"
+                itemLabel="Speaker"
+                addLabel="Add a speaker"
+                initialRows={speakerRows}
+                helper="Optional. Each speaker gets a short profile on the event page."
+                tip="Visiting preachers or teachers for the event. A name is all that's required; a photo, where they're from, and a short bio help visitors know who they'll hear."
+                fields={[
+                  { key: 'name', label: 'Name', required: true, half: true },
+                  { key: 'role', label: 'Role or congregation', helper: 'For example, "Minister, Norman Church of Christ".', half: true },
+                  { key: 'bio', label: 'Short bio', type: 'textarea' },
+                  { key: 'image', label: 'Photo', type: 'image', folder: 'speakers', helper: 'Optional. A square head-and-shoulders photo works best.' },
+                  { key: 'image_alt', label: 'Photo description', helper: 'Optional. Defaults to the speaker\'s name.' },
+                ]}
+              />
+
+              <RepeaterField
+                id="event-faqs"
+                prefix="faq"
+                label="Frequently asked questions"
+                itemLabel="Question"
+                addLabel="Add a question"
+                initialRows={faqRows}
+                helper="Optional. Shown as a questions-and-answers section on the event page."
+                tip="Answer what visitors are likely to ask: Is there a cost? Is childcare provided? Where do I park? Is there a meal?"
+                fields={[
+                  { key: 'question', label: 'Question', required: true },
+                  { key: 'answer', label: 'Answer', type: 'textarea', required: true },
+                ]}
+              />
+
+              <RepeaterField
+                id="event-info"
+                prefix="info"
+                label="Additional information"
+                itemLabel="Section"
+                addLabel="Add a section"
+                initialRows={infoRows}
+                helper="Optional. Extra sections with their own heading, for anything else the event needs: what to bring, lodging, meals, a schedule of lessons."
+                tip="Each section appears on the event page under its heading. Blank lines in the text start new paragraphs."
+                fields={[
+                  { key: 'heading', label: 'Heading', required: true },
+                  { key: 'body', label: 'Text', type: 'textarea', required: true },
+                ]}
+              />
 
               <FieldShell
                 id="event-reminder"

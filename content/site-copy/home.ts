@@ -10,7 +10,7 @@ import type { PageCopySpec } from '@/lib/site-copy'
 export const homeCopy: PageCopySpec = {
   path: '/',
   name: 'Home',
-  summary: 'The front door of the site: the hero, the welcome, service times, beliefs, and the closing invitation.',
+  summary: 'The front door of the site: the hero, the welcome, service times, upcoming events, beliefs, and the closing invitation.',
   groups: [
     {
       id: 'hero',
@@ -140,6 +140,23 @@ export const homeCopy: PageCopySpec = {
           value: 'Map to Harrisonville Church of Christ at 1203 Outlook Drive, Harrisonville, Missouri',
           help: 'Names the embedded map for screen readers.',
         },
+      ],
+    },
+    {
+      id: 'events',
+      label: 'Upcoming events',
+      hint: 'Shown only while there are upcoming events on the public calendar; hidden otherwise.',
+      fields: [
+        { key: 'events.eyebrow', label: 'Eyebrow', kind: 'text', value: 'Coming up' },
+        { key: 'events.title', label: 'Heading', kind: 'text', value: 'Upcoming events' },
+        {
+          key: 'events.lead',
+          label: 'Intro sentence',
+          kind: 'longText',
+          value: 'Gospel meetings, studies, and fellowship on the calendar. Visitors are welcome at every one.',
+        },
+        { key: 'events.linkLabel', label: 'Link label', kind: 'text', value: 'See all events' },
+        { key: 'events.linkHref', label: 'Link target', kind: 'href', value: '/events' },
       ],
     },
     {

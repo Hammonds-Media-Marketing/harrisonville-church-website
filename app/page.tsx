@@ -8,17 +8,26 @@ import { Button } from '@/components/primitives/Button'
 import { Surface } from '@/components/primitives/Surface'
 import { Wave } from '@/components/decor/Wave'
 import { LighthouseScene } from '@/components/hero/LighthouseScene'
-import { CardLink } from '@/components/blocks/cards'
+import { CardLink, EventCard } from '@/components/blocks/cards'
+import { upcomingEvents } from '@/lib/events'
 import { BookIcon, CheckIcon, ClockIcon, MapPinIcon } from '@/components/ui/icons'
 
 const PATH = '/'
+
+// Hourly, so the upcoming-events section drops past events (and disappears
+// when none are left) even without an edit; saving an event refreshes it at once.
+export const revalidate = 3600
+
+/** How many upcoming events the homepage shows. */
+const HOME_EVENT_LIMIT = 3
 
 export async function generateMetadata(): Promise<Metadata> {
   return copyMetadata(PATH, { rawTitle: true })
 }
 
 export default async function HomePage() {
-  const copy = await pageCopy(PATH)
+  const [copy, events] = await Promise.all([pageCopy(PATH), upcomingEvents()])
+  const homeEvents = events.slice(0, HOME_EVENT_LIMIT)
   const reassurances = [1, 2, 3] as const
 
   return (
@@ -156,6 +165,32 @@ export default async function HomePage() {
         </Container>
       </Section>
       {copy.zone('after-visit', 'After the service times')}
+
+      {/* --------------------------------------------------- Upcoming events
+          Rendered only while something is on the calendar. */}
+      {homeEvents.length ? (
+        <>
+          <Section tone="light" ariaLabelledby="events-heading">
+            <Container>
+              <SectionHeading
+                id="events-heading"
+                eyebrow={copy.t('events.eyebrow')}
+                title={copy.t('events.title')}
+                lead={copy.t('events.lead')}
+              />
+              <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+                {homeEvents.map((e) => (
+                  <EventCard key={e.slug} event={e} />
+                ))}
+              </div>
+              <p className="mt-6">
+                <CardLink href={copy.s('events.linkHref')}>{copy.t('events.linkLabel')}</CardLink>
+              </p>
+            </Container>
+          </Section>
+          {copy.zone('after-events', 'After the upcoming events')}
+        </>
+      ) : null}
 
       {/* ----------------------------------------------------------- Beliefs */}
       <Section tone="surface" ariaLabelledby="beliefs-heading">

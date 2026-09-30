@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { eventOccurrences, getEvent } from '@/lib/events'
 import { SITE_URL, site } from '@/lib/site'
+import { eventPlace } from '@/lib/event-details'
 
 export const revalidate = 3600
 
@@ -8,7 +9,8 @@ export const revalidate = 3600
  * iCalendar download for an event — the "other calendars" path next to the
  * Google Calendar link (Apple Calendar, Outlook, and everything else that
  * opens .ics files). Recurring events include each upcoming date as its own
- * entry, matching what the event page shows.
+ * entry, matching what the event page shows; so does each remaining day of a
+ * multi-day event.
  */
 
 function icsStamp(iso: string): string {
@@ -26,8 +28,8 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
 
   const occurrences = eventOccurrences(event)
   const dates = occurrences.length ? occurrences : [{ startDate: event.startDate, endDate: event.endDate }]
-  const address = `${site.address.street}, ${site.address.city}, ${site.address.region} ${site.address.postalCode}`
-  const location = event.locationName || `${site.name}, ${address}`
+  const place = eventPlace(event)
+  const location = `${place.name}, ${place.line}`
   const now = icsStamp(new Date().toISOString())
 
   const vevents = dates
