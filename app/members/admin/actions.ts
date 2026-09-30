@@ -12,6 +12,7 @@ import { getCopySpec } from '@/content/site-copy'
 import { normalizePageSlug } from '@/lib/pages'
 import { localInputToIso, slugify } from '@/lib/format'
 import { isRecurrenceRule } from '@/lib/recurrence'
+import { detailsFromForm } from '@/lib/event-details'
 import { parseEmailReminder } from '@/lib/portal/reminders'
 import type { Database, Json } from '@/lib/database.types'
 
@@ -60,17 +61,32 @@ export async function saveEventAction(formData: FormData) {
   const slug = slugify(text(formData, 'slug') || title)
   const recurring = text(formData, 'recurring')
   const image = text(formData, 'image')
+  const details = detailsFromForm(formData)
+  const [first] = details.sessions
+  if (!first) redirect(`/members/admin/events/${id || 'new'}?error=save`)
+  const last = details.sessions[details.sessions.length - 1]
+  const multiDay = details.sessions.length > 1
 
   const values: Database['public']['Tables']['events']['Insert'] = {
     slug,
     title,
     summary: text(formData, 'summary'),
     description: text(formData, 'description'),
-    start_date: localInputToIso(text(formData, 'start_date')),
-    end_date: text(formData, 'end_date') ? localInputToIso(text(formData, 'end_date')) : null,
+    // start/end span the whole event; the individual dates live in sessions.
+    start_date: first.start,
+    end_date: last.end ?? (multiDay ? last.start : null),
+    sessions: multiDay ? details.sessions : [],
     location_name: text(formData, 'location_name') || null,
+    location_street: text(formData, 'location_street') || null,
+    location_city: text(formData, 'location_city') || null,
+    location_region: text(formData, 'location_region') || null,
+    location_postal_code: text(formData, 'location_postal_code') || null,
+    speakers: details.speakers,
+    faqs: details.faqs,
+    info_sections: details.info_sections,
     category: text(formData, 'category'),
-    recurring: isRecurrenceRule(recurring) ? recurring : null,
+    // A multi-day event lists its own dates, so it never also repeats.
+    recurring: !multiDay && isRecurrenceRule(recurring) ? recurring : null,
     image: image || null,
     image_alt: image ? text(formData, 'image_alt') || title : null,
     published: flag(formData, 'published'),
@@ -87,7 +103,8 @@ export async function saveEventAction(formData: FormData) {
     redirect(`/members/admin/events/${id || 'new'}?error=save`)
   }
 
-  await publishRefresh(['/events', `/events/${slug}`])
+  // The homepage lists upcoming events too.
+  await publishRefresh(['/', '/events', `/events/${slug}`])
   revalidatePath('/members/admin/events')
   redirect('/members/admin/events?saved=1')
 }
@@ -100,7 +117,7 @@ export async function deleteEventAction(formData: FormData) {
     console.warn('[admin] event delete failed:', error.message)
     redirect('/members/admin/events?error=delete')
   }
-  await publishRefresh(slug ? ['/events', `/events/${slug}`] : ['/events'])
+  await publishRefresh(slug ? ['/', '/events', `/events/${slug}`] : ['/', '/events'])
   revalidatePath('/members/admin/events')
   redirect('/members/admin/events?deleted=1')
 }

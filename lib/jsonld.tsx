@@ -190,43 +190,6 @@ export function articleSchema(a: {
   }
 }
 
-export function eventSchema(e: {
-  name: string
-  description: string
-  slug: string
-  startDate: string
-  endDate?: string
-  locationName?: string
-  image?: string
-}): Json {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'Event',
-    name: e.name,
-    description: e.description,
-    startDate: e.startDate,
-    ...(e.endDate ? { endDate: e.endDate } : {}),
-    ...(e.image ? { image: e.image.startsWith('http') ? e.image : `${SITE_URL}${e.image}` } : {}),
-    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
-    eventStatus: 'https://schema.org/EventScheduled',
-    url: `${SITE_URL}/events/${e.slug}`,
-    location: {
-      '@type': 'Place',
-      name: e.locationName || site.name,
-      address: {
-        '@type': 'PostalAddress',
-        streetAddress: site.address.street,
-        addressLocality: site.address.city,
-        addressRegion: site.address.region,
-        postalCode: site.address.postalCode,
-        addressCountry: site.address.country,
-      },
-    },
-    organizer: { '@id': ORG_ID },
-    isAccessibleForFree: true,
-  }
-}
-
 export function courseSchema(c: { name: string; description: string; path: string; lessons: number }): Json {
   return {
     '@context': 'https://schema.org',

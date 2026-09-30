@@ -37,6 +37,18 @@ export type Testimonial = {
   sample: boolean
 }
 
+/** One date/time of a multi-day event. */
+export type EventSession = { startDate: string; endDate?: string }
+
+export type EventAddress = { street: string; city: string; region: string; postalCode: string }
+
+export type EventSpeaker = { name: string; role?: string; bio?: string; image?: string; imageAlt?: string }
+
+export type EventFaq = { question: string; answer: string }
+
+/** A free-form extra section on the event page (what to bring, lodging, meals). */
+export type EventInfoSection = { heading: string; body: string }
+
 export type ChurchEvent = {
   slug: string
   title: string
@@ -45,6 +57,14 @@ export type ChurchEvent = {
   startDate: string // ISO 8601
   endDate?: string
   locationName?: string
+  /** Street address of an off-site event; absent means the church building. */
+  address?: EventAddress
+  /** Each date/time of a multi-day event, soonest first. When present,
+   *  startDate/endDate span the whole event. */
+  sessions?: EventSession[]
+  speakers?: EventSpeaker[]
+  faqs?: EventFaq[]
+  infoSections?: EventInfoSection[]
   category: 'Worship' | 'Bible Study' | 'Fellowship' | 'Outreach' | 'Youth'
   /** Human-readable repeat label shown on cards, e.g. "First Sunday monthly". */
   recurring?: string

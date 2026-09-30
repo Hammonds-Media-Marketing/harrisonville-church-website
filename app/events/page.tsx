@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { copyMetadata, pageCopy } from '@/lib/page-copy'
-import { JsonLd, breadcrumbSchema, eventSchema, webPageSchema } from '@/lib/jsonld'
+import { JsonLd, breadcrumbSchema, webPageSchema } from '@/lib/jsonld'
+import { eventSchemas } from '@/lib/event-schema'
 import { Container, Section } from '@/components/primitives/Layout'
 import { PageHero } from '@/components/blocks/PageHero'
 import { Button } from '@/components/primitives/Button'
@@ -30,17 +31,7 @@ export default async function EventsPage() {
         data={[
           webPageSchema({ name: 'Events', description: copy.s('seo.description'), path: PATH }),
           breadcrumbSchema(breadcrumbs),
-          ...events.map((e) =>
-            eventSchema({
-              name: e.title,
-              description: e.summary,
-              slug: e.slug,
-              startDate: e.startDate,
-              endDate: e.endDate,
-              locationName: e.locationName,
-              image: e.image,
-            })
-          ),
+          ...events.flatMap((e) => eventSchemas(e)),
         ]}
       />
 

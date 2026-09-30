@@ -237,6 +237,14 @@ export type Database = {
           summary: string
           title: string
           updated_at: string
+          location_street: string | null
+          location_city: string | null
+          location_region: string | null
+          location_postal_code: string | null
+          sessions: Json
+          speakers: Json
+          faqs: Json
+          info_sections: Json
           email_reminder: string
         }
         Insert: {
@@ -256,6 +264,14 @@ export type Database = {
           summary: string
           title: string
           updated_at?: string
+          location_street?: string | null
+          location_city?: string | null
+          location_region?: string | null
+          location_postal_code?: string | null
+          sessions?: Json
+          speakers?: Json
+          faqs?: Json
+          info_sections?: Json
           email_reminder?: string
         }
         Update: {
@@ -275,6 +291,14 @@ export type Database = {
           summary?: string
           title?: string
           updated_at?: string
+          location_street?: string | null
+          location_city?: string | null
+          location_region?: string | null
+          location_postal_code?: string | null
+          sessions?: Json
+          speakers?: Json
+          faqs?: Json
+          info_sections?: Json
           email_reminder?: string
         }
         Relationships: []

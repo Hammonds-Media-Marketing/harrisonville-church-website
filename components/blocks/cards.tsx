@@ -2,6 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Surface } from '@/components/primitives/Surface'
 import { Badge } from '@/components/primitives/Badge'
+import { EventShare } from '@/components/events/EventShare'
 import { ArrowRightIcon, CalendarIcon, ClockIcon, EyeIcon, PlayIcon, QuoteIcon } from '@/components/ui/icons'
 import { formatDate, formatDateRange, formatViews } from '@/lib/format'
 import type { BlogPost, ChurchEvent, Leader, MemberStory, Sermon, Testimonial } from '@/content/types'
@@ -37,9 +38,11 @@ export function TestimonialCard({ t }: { t: Testimonial }) {
 }
 
 export function EventCard({ event }: { event: ChurchEvent }) {
+  const when = formatDateRange(event.startDate, event.endDate)
+  const dateCount = event.sessions?.length ?? 0
   return (
     <Surface id={event.slug} tone="card" interactive className="flex h-full flex-col p-0">
-      <Link href={`/events/${event.slug}`} className="group flex h-full flex-col">
+      <Link href={`/events/${event.slug}`} className="group flex flex-1 flex-col">
         {event.image ? (
           <div className="relative aspect-[16/9] overflow-hidden rounded-t-lg bg-surface">
             <Image
@@ -55,12 +58,16 @@ export function EventCard({ event }: { event: ChurchEvent }) {
         <div className="flex flex-1 flex-col gap-3 p-5">
           <div className="flex items-center justify-between gap-2">
             <Badge tone="primary">{event.category}</Badge>
-            {event.recurring ? <span className="text-sm text-muted">{event.recurring}</span> : null}
+            {event.recurring ? (
+              <span className="text-sm text-muted">{event.recurring}</span>
+            ) : dateCount > 1 ? (
+              <span className="text-sm text-muted">{dateCount} dates</span>
+            ) : null}
           </div>
           <h3 className="text-xl text-heading group-hover:text-link-hover">{event.title}</h3>
           <p className="flex items-center gap-2 text-sm text-muted">
             <CalendarIcon className="h-4 w-4 shrink-0 text-primary-strong" />
-            {formatDateRange(event.startDate, event.endDate)}
+            {when}
           </p>
           <p className="flex-1 text-ink">{event.summary}</p>
           <p className="inline-flex items-center gap-1.5 text-sm font-semibold text-link group-hover:text-link-hover">
@@ -69,6 +76,10 @@ export function EventCard({ event }: { event: ChurchEvent }) {
           </p>
         </div>
       </Link>
+      {/* Outside the card link: links can't nest. */}
+      <div className="border-t border-border/60 px-5 py-3">
+        <EventShare title={event.title} summary={event.summary} slug={event.slug} when={when} compact />
+      </div>
     </Surface>
   )
 }

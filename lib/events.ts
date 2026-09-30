@@ -4,6 +4,14 @@ import type { Database } from '@/lib/database.types'
 import type { ChurchEvent } from '@/content/types'
 import { events as seedEvents } from '@/content/events'
 import { recurrenceLabel, ruleFromStored, upcomingOccurrences, type Occurrence } from '@/lib/recurrence'
+import {
+  parseAddress,
+  parseFaqs,
+  parseInfoSections,
+  parseSessions,
+  parseSpeakers,
+  sessionSpan,
+} from '@/lib/event-details'
 
 /**
  * Events data-access layer. Reads come from Supabase (Row Level Security
@@ -14,23 +22,41 @@ import { recurrenceLabel, ruleFromStored, upcomingOccurrences, type Occurrence }
  *
  * Recurring events are stored once with a recurrence rule and expanded here:
  * the calendar always shows the NEXT upcoming date of each event, and the
- * detail page lists the run of upcoming dates.
+ * detail page lists the run of upcoming dates. Multi-day events instead carry
+ * an explicit list of sessions; their start/end span the whole run, and they
+ * never also repeat.
  */
 
 type EventRow = Database['public']['Tables']['events']['Row']
 
 function mapEvent(row: EventRow): ChurchEvent {
-  const rule = ruleFromStored(row.recurring)
+  const sessions = parseSessions(row.sessions)
+  const span = sessionSpan(sessions)
+  const rule = span ? null : ruleFromStored(row.recurring)
+  const address = parseAddress({
+    street: row.location_street,
+    city: row.location_city,
+    region: row.location_region,
+    postalCode: row.location_postal_code,
+  })
+  const speakers = parseSpeakers(row.speakers)
+  const faqs = parseFaqs(row.faqs)
+  const infoSections = parseInfoSections(row.info_sections)
   return {
     slug: row.slug,
     title: row.title,
     summary: row.summary,
     description: row.description,
-    startDate: row.start_date,
-    endDate: row.end_date ?? undefined,
+    startDate: span?.startDate ?? row.start_date,
+    endDate: span ? span.endDate : row.end_date ?? undefined,
     locationName: row.location_name ?? undefined,
+    ...(address ? { address } : {}),
+    ...(sessions.length > 1 ? { sessions } : {}),
+    ...(speakers.length ? { speakers } : {}),
+    ...(faqs.length ? { faqs } : {}),
+    ...(infoSections.length ? { infoSections } : {}),
     category: row.category as ChurchEvent['category'],
-    recurring: rule ? recurrenceLabel(rule, row.start_date) : row.recurring ?? undefined,
+    recurring: rule ? recurrenceLabel(rule, row.start_date) : span ? undefined : row.recurring ?? undefined,
     recurrenceRule: rule ?? undefined,
     image: row.image ?? undefined,
     imageAlt: row.image_alt ?? undefined,
@@ -40,9 +66,11 @@ function mapEvent(row: EventRow): ChurchEvent {
 
 /** Seed events run through the same recurrence recognition as live rows. */
 function mapSeed(e: ChurchEvent): ChurchEvent {
-  const rule = ruleFromStored(e.recurring)
+  const span = sessionSpan(e.sessions ?? [])
+  const rule = span ? null : ruleFromStored(e.recurring)
   return {
     ...e,
+    ...(span ? { startDate: span.startDate, endDate: span.endDate } : {}),
     recurring: rule ? recurrenceLabel(rule, e.startDate) : e.recurring,
     recurrenceRule: rule ?? undefined,
   }
@@ -87,8 +115,13 @@ export async function getEvent(slug: string): Promise<ChurchEvent | undefined> {
   return (await fetchEvents()).find((e) => e.slug === slug)
 }
 
-/** The run of upcoming dates for an event (one entry for one-time events). */
+/** The run of upcoming dates for an event: its remaining sessions for a
+ *  multi-day event, the next repeats for a recurring one, or its single date. */
 export function eventOccurrences(event: ChurchEvent, max = 6): Occurrence[] {
+  if (event.sessions?.length) {
+    const now = Date.now()
+    return event.sessions.filter((s) => new Date(s.endDate ?? s.startDate).getTime() >= now)
+  }
   return upcomingOccurrences(
     { startDate: event.startDate, endDate: event.endDate, recurring: event.recurrenceRule },
     { max }

@@ -18,6 +18,7 @@ import {
 } from '@/lib/portal/reminders'
 import { formatWhen } from '@/lib/portal/time'
 import type { Gender } from '@/lib/portal/types'
+import { parseSessions } from '@/lib/event-details'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -75,7 +76,12 @@ export async function GET(request: Request) {
       .is('archived_at', null)
       .not('starts_at', 'is', null)
       .gte('starts_at', new Date(window.start).toISOString()),
-    supabase.from('events').select('*').neq('email_reminder', 'none').eq('published', true).or(`recurring.not.is.null,start_date.gte.${from}`),
+    supabase
+      .from('events')
+      .select('*')
+      .neq('email_reminder', 'none')
+      .eq('published', true)
+      .or(`recurring.not.is.null,start_date.gte.${from},end_date.gte.${from}`),
   ])
   const loadError = calendar.error ?? specials.error ?? publicEvents.error
   if (loadError) return NextResponse.json({ error: loadError.message }, { status: 500 })
@@ -114,19 +120,25 @@ export async function GET(request: Request) {
           ]
         : []
     ),
-    ...(publicEvents.data ?? []).map((e) => ({
-      kind: 'public' as const,
-      id: e.id,
-      slug: e.slug,
-      title: e.title,
-      startsAt: e.start_date,
-      endsAt: e.end_date,
-      allDay: false,
-      location: e.location_name,
-      recurring: e.recurring,
-      recurrenceEndsOn: null,
-      emailReminder: e.email_reminder,
-    })),
+    // A multi-day event is one source per session, so each day gets its own
+    // reminder (the log's occurrence_start keeps them apart).
+    ...(publicEvents.data ?? []).flatMap((e) => {
+      const sessions = parseSessions(e.sessions)
+      const dates = sessions.length > 1 ? sessions : [{ startDate: e.start_date, endDate: e.end_date ?? undefined }]
+      return dates.map((d) => ({
+        kind: 'public' as const,
+        id: e.id,
+        slug: e.slug,
+        title: e.title,
+        startsAt: d.startDate,
+        endsAt: d.endDate ?? null,
+        allDay: false,
+        location: e.location_name,
+        recurring: sessions.length > 1 ? null : e.recurring,
+        recurrenceEndsOn: null,
+        emailReminder: e.email_reminder,
+      }))
+    }),
   ]
 
   const due = dueReminders(sources, window)
