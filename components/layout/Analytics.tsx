@@ -1,13 +1,17 @@
 import Script from 'next/script'
 
+// GA4 measurement ID for harrisonvillecoc.com. Public by design (it ships in the
+// page source); NEXT_PUBLIC_GA4_ID overrides it, and setting that to an empty
+// string disables GA4 (e.g. for a preview environment).
+const DEFAULT_GA4_ID = 'G-9KVFGML4WG'
+
 /**
- * Analytics — GA4 and Mixpanel, loaded only when their IDs are configured via
- * environment variables. With no IDs set (the current state), nothing loads, so
- * the site ships clean until the accounts are provisioned. `afterInteractive`
+ * Analytics — GA4 and Mixpanel. GA4 loads with the site's measurement ID unless
+ * overridden; Mixpanel loads only when its token is configured. `afterInteractive`
  * keeps these off the critical path.
  */
 export function Analytics() {
-  const ga = process.env.NEXT_PUBLIC_GA4_ID
+  const ga = process.env.NEXT_PUBLIC_GA4_ID ?? DEFAULT_GA4_ID
   const mixpanel = process.env.NEXT_PUBLIC_MIXPANEL_TOKEN
 
   return (
